@@ -40,6 +40,7 @@ repositories {
 }
 
 apply plugin: 'opensearch.opensearchplugin'
+apply plugin: 'opensearch.internal-cluster-test'
 
 opensearchplugin {
   name 'custom-codecs'
