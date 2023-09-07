@@ -13,6 +13,8 @@ buildscript {
   ext {
     opensearch_group = "org.opensearch"
     opensearch_version = System.getProperty("opensearch.version", "3.0.0-SNAPSHOT")
+    isSnapshot = "true" == System.getProperty("build.snapshot", "true")
+    buildVersionQualifier = System.getProperty("build.version_qualifier", "")
   }
 
   repositories {
@@ -39,11 +41,22 @@ repositories {
   maven { url "https://aws.oss.sonatype.org/content/repositories/snapshots" }
 }
 
+allprojects {
+  group 'org.opensearch'
+  version = opensearch_version.tokenize('-')[0] + '.0'
+  if (buildVersionQualifier) {
+    version += "-${buildVersionQualifier}"
+  }
+  if (isSnapshot) {
+    version += "-SNAPSHOT"
+  }
+}
+
 apply plugin: 'opensearch.opensearchplugin'
 apply plugin: 'opensearch.internal-cluster-test'
 
 opensearchplugin {
-  name 'custom-codecs'
+  name 'opensearch-custom-codecs'
   description 'A plugin that implements custom compression codecs.'
   classname 'org.opensearch.index.codec.customcodecs.CustomCodecPlugin'
   licenseFile rootProject.file('LICENSE')
