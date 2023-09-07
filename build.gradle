@@ -1,0 +1,75 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * The OpenSearch Contributors require contributions made to
+ * this file be licensed under the Apache-2.0 license or a
+ * compatible open source license.
+ *
+ * Modifications Copyright OpenSearch Contributors. See
+ * GitHub history for details.
+ */
+
+buildscript {
+  ext {
+    opensearch_group = "org.opensearch"
+    opensearch_version = System.getProperty("opensearch.version", "3.0.0-SNAPSHOT")
+  }
+
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://plugins.gradle.org/m2/" }
+    maven { url "https://aws.oss.sonatype.org/content/repositories/snapshots" }
+  }
+
+  dependencies {
+    classpath "${opensearch_group}.gradle:build-tools:${opensearch_version}"
+    classpath "org.jacoco:org.jacoco.agent:0.8.5"
+  }
+}
+
+plugins {
+  id 'java'
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+  maven { url "https://plugins.gradle.org/m2/" }
+  maven { url "https://aws.oss.sonatype.org/content/repositories/snapshots" }
+}
+
+apply plugin: 'opensearch.opensearchplugin'
+
+opensearchplugin {
+  name 'custom-codecs'
+  description 'A plugin that implements custom compression codecs.'
+  classname 'org.opensearch.index.codec.customcodecs.CustomCodecPlugin'
+  licenseFile rootProject.file('LICENSE')
+  noticeFile rootProject.file('NOTICE')
+}
+
+dependencies {
+  api "com.github.luben:zstd-jni:1.5.5-5"
+}
+
+// ignore missing javadocs
+tasks.withType(Javadoc).configureEach { Javadoc javadoc ->
+  // the -quiet here is because of a bug in gradle, in that adding a string option
+  // by itself is not added to the options. By adding quiet, both this option and
+  // the "value" -quiet is added, separated by a space. This is ok since the javadoc
+  // command already adds -quiet, so we are just duplicating it
+  // see https://discuss.gradle.org/t/add-custom-javadoc-option-that-does-not-take-an-argument/5959
+  javadoc.options.encoding = 'UTF8'
+  javadoc.options.addStringOption('Xdoclint:all,-missing', '-quiet')
+  boolean failOnJavadocWarning = project.ext.has('failOnJavadocWarning') ? project.ext.get('failOnJavadocWarning') : true
+  if (failOnJavadocWarning) {
+    javadoc.options.addStringOption('Xwerror', '-quiet')
+  }
+  javadoc.options.tags = ["opensearch.internal", "opensearch.api", "opensearch.experimental"]
+  javadoc.options.addStringOption("-release", java.targetCompatibility.majorVersion)
+}
+
+testingConventions.enabled = false;
+loggerUsageCheck.enabled = false
+validateNebulaPom.enabled = false
