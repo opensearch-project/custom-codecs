@@ -32,6 +32,7 @@ buildscript {
 
 plugins {
   id 'java'
+  
 }
 
 repositories {
@@ -42,7 +43,7 @@ repositories {
 }
 
 allprojects {
-  group 'org.opensearch'
+  group 'org.opensearch.plugin'
   version = opensearch_version.tokenize('-')[0] + '.0'
   if (buildVersionQualifier) {
     version += "-${buildVersionQualifier}"
@@ -84,7 +85,7 @@ publishing {
                 developers {
                     developer {
                         name = "OpenSearch"
-                        url = "https://github.com/opensearch-project/index-management"
+                        url = "https://github.com/opensearch-project/custom-codecs"
                     }
                 }
             }
