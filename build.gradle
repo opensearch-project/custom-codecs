@@ -20,8 +20,8 @@ buildscript {
   repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "https://plugins.gradle.org/m2/" }
     maven { url "https://aws.oss.sonatype.org/content/repositories/snapshots" }
+    maven { url "https://plugins.gradle.org/m2/" }
   }
 
   dependencies {
@@ -32,7 +32,6 @@ buildscript {
 
 plugins {
   id 'java'
-  
 }
 
 repositories {
@@ -43,7 +42,7 @@ repositories {
 }
 
 allprojects {
-  group 'org.opensearch.plugin'
+  group 'org.opensearch'
   version = opensearch_version.tokenize('-')[0] + '.0'
   if (buildVersionQualifier) {
     version += "-${buildVersionQualifier}"
@@ -92,6 +91,10 @@ publishing {
         }
     }
     repositories {
+        maven {
+            name = 'staging'
+            url = "${rootProject.buildDir}/local-staging-repo"
+        }
         maven {
             name = "Snapshots"
             url = "https://aws.oss.sonatype.org/content/repositories/snapshots"
