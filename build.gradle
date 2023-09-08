@@ -123,6 +123,11 @@ tasks.withType(Javadoc).configureEach { Javadoc javadoc ->
   javadoc.options.addStringOption("-release", java.targetCompatibility.majorVersion)
 }
 
-testingConventions.enabled = false;
+testingConventions.enabled = false
 loggerUsageCheck.enabled = false
-validateNebulaPom.enabled = false
+
+tasks.matching {it.path in [":validateMavenPom", ":validateNebulaPom", ":validatePluginZipPom"]}.all { task ->
+  task.dependsOn ':generatePomFileForNebulaPublication', ':generatePomFileForPluginZipPublication'
+}
+
+tasks.named("publishNebulaPublicationToMavenLocal").configure { dependsOn("generatePomFileForPluginZipPublication") }
