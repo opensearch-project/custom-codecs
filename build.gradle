@@ -59,7 +59,7 @@ apply plugin: 'opensearch.pluginzip'
 
 opensearchplugin {
   name 'opensearch-custom-codecs'
-  description 'A plugin that implements custom compression codecs.'
+  description 'OpenSearch plugin that implements custom compression codecs'
   classname 'org.opensearch.index.codec.customcodecs.CustomCodecPlugin'
   licenseFile rootProject.file('LICENSE')
   noticeFile rootProject.file('NOTICE')
