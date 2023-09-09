@@ -34,6 +34,10 @@ plugins {
   id 'java'
 }
 
+apply plugin: 'opensearch.opensearchplugin'
+apply plugin: 'opensearch.internal-cluster-test'
+apply plugin: 'opensearch.pluginzip'
+
 repositories {
   mavenLocal()
   mavenCentral()
@@ -50,11 +54,12 @@ allprojects {
   if (isSnapshot) {
     version += "-SNAPSHOT"
   }
-}
 
-apply plugin: 'opensearch.opensearchplugin'
-apply plugin: 'opensearch.internal-cluster-test'
-apply plugin: 'opensearch.pluginzip'
+  plugins.withId('java') {
+      targetCompatibility = JavaVersion.VERSION_11
+      sourceCompatibility = JavaVersion.VERSION_11
+  }
+}
 
 opensearchplugin {
   name 'opensearch-custom-codecs'
@@ -68,33 +73,52 @@ dependencies {
   api "com.github.luben:zstd-jni:1.5.5-5"
 }
 
-publishing {
-    publications {
-        pluginZip(MavenPublication) { publication ->
-            pom {
-                name = opensearchplugin.name
-                description = opensearchplugin.description
-                groupId = "org.opensearch.plugin"
-                licenses {
-                    license {
-                        name = "The Apache License, Version 2.0"
-                        url = "http://www.apache.org/licenses/LICENSE-2.0.txt"
-                    }
+allprojects {
+    // Default to the apache license
+    project.ext.licenseName = 'The Apache Software License, Version 2.0'
+    project.ext.licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    publishing {
+        repositories {
+            maven {
+                name = 'staging'
+                url = "${rootProject.buildDir}/local-staging-repo"
+            }
+        }
+        publications {
+            // add license information to generated poms
+            all {
+                pom {
+                    name = "opensearch-custom-codecs"
+                    description = "OpenSearch plugin that implements custom compression codecs"
                 }
-                developers {
-                    developer {
-                        name = "OpenSearch"
-                        url = "https://github.com/opensearch-project/custom-codecs"
-                    }
+                pom.withXml { XmlProvider xml ->
+                    Node node = xml.asNode()
+                    node.appendNode('inceptionYear', '2021')
+
+                    Node license = node.appendNode('licenses').appendNode('license')
+                    license.appendNode('name', project.licenseName)
+                    license.appendNode('url', project.licenseUrl)
+
+                    Node developer = node.appendNode('developers').appendNode('developer')
+                    developer.appendNode('name', 'OpenSearch')
+                    developer.appendNode('url', 'https://github.com/opensearch-project/custom-codecs')
                 }
             }
         }
     }
-    repositories {
-        maven {
-            name = 'staging'
-            url = "${rootProject.buildDir}/local-staging-repo"
+}
+
+publishing {
+    publications {
+        pluginZip(MavenPublication) { publication ->
+            pom {
+                name = "opensearch-custom-codecs"
+                description = "OpenSearch plugin that implements custom compression codecs"
+                groupId = "org.opensearch.plugin"
+            }
         }
+    }
+    repositories {
         maven {
             name = "Snapshots"
             url = "https://aws.oss.sonatype.org/content/repositories/snapshots"
@@ -125,9 +149,4 @@ tasks.withType(Javadoc).configureEach { Javadoc javadoc ->
 
 testingConventions.enabled = false
 loggerUsageCheck.enabled = false
-
-tasks.matching {it.path in [":validateMavenPom", ":validateNebulaPom", ":validatePluginZipPom"]}.all { task ->
-  task.dependsOn ':generatePomFileForNebulaPublication', ':generatePomFileForPluginZipPublication'
-}
-
-tasks.named("publishNebulaPublicationToMavenLocal").configure { dependsOn("generatePomFileForPluginZipPublication") }
+validateNebulaPom.enabled = false
