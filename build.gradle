@@ -101,7 +101,7 @@ allprojects {
 
                     Node developer = node.appendNode('developers').appendNode('developer')
                     developer.appendNode('name', 'OpenSearch')
-                    developer.appendNode('url', 'https://github.com/opensearch-project/cusrom-codecs')
+                    developer.appendNode('url', 'https://github.com/opensearch-project/custom-codecs')
                 }
             }
         }
