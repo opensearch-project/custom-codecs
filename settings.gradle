@@ -7,5 +7,4 @@
  */
 
 rootProject.name = "opensearch-custom-codecs"
-//startParameter.excludedTaskNames=["publishPluginZipPublicationToMavenLocal", "publishPluginZipPublicationToStagingRepository"]
 startParameter.excludedTaskNames=["publishPluginZipPublicationToMavenLocal", "publishPluginZipPublicationToStagingRepository"]
