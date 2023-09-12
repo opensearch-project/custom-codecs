@@ -37,6 +37,7 @@ plugins {
 apply plugin: 'opensearch.opensearchplugin'
 apply plugin: 'opensearch.internal-cluster-test'
 apply plugin: 'opensearch.pluginzip'
+apply plugin: 'opensearch.rest-test'
 
 repositories {
   mavenLocal()
@@ -147,6 +148,46 @@ tasks.withType(Javadoc).configureEach { Javadoc javadoc ->
   javadoc.options.addStringOption("-release", java.targetCompatibility.majorVersion)
 }
 
-testingConventions.enabled = false
 loggerUsageCheck.enabled = false
 validateNebulaPom.enabled = false
+
+sourceSets {
+  integTest {
+    java {
+        srcDirs file("src/integrationTest/java")
+    }
+    compileClasspath += sourceSets["main"].output + configurations["testRuntimeClasspath"]
+    runtimeClasspath += output + compileClasspath
+  }
+}
+
+tasks.named("testingConventions").configure {
+    naming.clear()
+    naming {
+        Tests {
+            baseClass "org.apache.lucene.tests.util.LuceneTestCase"
+        }
+        IT {
+            baseClass "org.opensearch.test.OpenSearchIntegTestCase"
+            baseClass "org.opensearch.test.OpenSearchSingleNodeTestCase"
+        }
+    }
+}
+
+integTest {
+    description = "Run tests against a cluster"
+    testClassesDirs = sourceSets.integTest.output.classesDirs
+    classpath = sourceSets.integTest.runtimeClasspath
+
+    dependsOn "bundlePlugin"
+    systemProperty 'tests.security.manager', 'true'
+
+    systemProperty "https", System.getProperty("https")
+    systemProperty "user", System.getProperty("user")
+    systemProperty "password", System.getProperty("password")
+}
+
+testClusters.integTest {
+    testDistribution = "ARCHIVE"
+    plugin(project.tasks.bundlePlugin.archiveFile)
+}
