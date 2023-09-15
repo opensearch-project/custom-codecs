@@ -39,6 +39,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import javax.net.ssl.SSLEngine;
@@ -131,7 +132,7 @@ public class CreateIndexWithCodecIT extends OpenSearchRestTestCase {
 
     @Override
     protected String getProtocol() {
-        return Strings.isNullOrEmpty(System.getProperty("https")) ? "http" : "https";
+        return Objects.equals(System.getProperty("https"), "true") ? "https" : "http";
     }
     
     /**
