@@ -7,6 +7,7 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 | Andrew Ross      | [andrross](https://github.com/andrross)                   | Amazon      |
 | Andriy Redko     | [reta](https://github.com/reta)                           | Aiven       |
 | Nicholas Knize   | [nknize](https://github.com/nknize)                       | Amazon      |
+| Sarthak Aggarwal | [sarthakaggarwal97](sarthagg@amazon.com)                  | Amazon      |
 
 ## Emeritus
 
