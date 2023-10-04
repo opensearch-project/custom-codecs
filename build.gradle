@@ -87,7 +87,7 @@ allprojects {
         }
         publications {
             // add license information to generated poms
-            all {
+            pluginZip(MavenPublication) { publication ->
                 pom {
                     name = "opensearch-custom-codecs"
                     description = "OpenSearch plugin that implements custom compression codecs"
@@ -190,4 +190,13 @@ integTest {
 testClusters.integTest {
     testDistribution = "ARCHIVE"
     plugin(project.tasks.bundlePlugin.archiveFile)
+}
+
+tasks.withType(PublishToMavenRepository) {
+    def predicate = provider {
+        publication.name == "pluginZip"
+    }
+    onlyIf("Publishing only ZIP distributions") {
+        predicate.get()
+    }
 }
