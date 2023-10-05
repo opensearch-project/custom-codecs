@@ -19,3 +19,6 @@ jobs:
       - name: Run Gradle (check)
         run: |
           ./gradlew check
+      - name: Run Gradle (assemble)
+        run: |
+          ./gradlew assemble
