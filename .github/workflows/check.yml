@@ -27,25 +27,28 @@ jobs:
         run: |
           # https://github.com/opensearch-project/opensearch-build/issues/4191
           chown -R opensearch:opensearch `pwd`
-          su opensearch -c "./gradlew check -Druntime.java=${{ matrix.java }}"
+          su opensearch -c "source /etc/profile.d/java_home.sh && ./gradlew check -Druntime.java=${{ matrix.java }}"
       - name: Run Gradle (assemble)
         run: |
           # https://github.com/opensearch-project/opensearch-build/issues/4191
           chown -R opensearch:opensearch `pwd`
-          su opensearch -c "./gradlew assemble -Druntime.java=${{ matrix.java }}"
+          su opensearch -c "source /etc/profile.d/java_home.sh && ./gradlew assemble -Druntime.java=${{ matrix.java }}"
 
   precommit-windows-macos:
     if: github.repository == 'opensearch-project/custom-codecs'
+    strategy:
+      matrix:
+        java: [ 11, 17, 21 ]
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 11
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v3
         with:
-          java-version: 11
+          java-version: ${{ matrix.java }}
           distribution: temurin
           cache: gradle
       - name: Run Gradle (check)
