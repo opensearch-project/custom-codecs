@@ -9,6 +9,9 @@ jobs:
 
   precommit-linux:
     needs: Get-CI-Image-Tag
+    strategy:
+      matrix:
+        java: [ 11, 17, 21 ]
     if: github.repository == 'opensearch-project/custom-codecs'
     runs-on: ubuntu-latest
     container:
@@ -20,22 +23,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: 11
-          distribution: temurin
-          cache: gradle
       - name: Run Gradle (check)
         run: |
           # https://github.com/opensearch-project/opensearch-build/issues/4191
           chown -R opensearch:opensearch `pwd`
-          su opensearch -c "./gradlew check"
+          su opensearch -c "./gradlew check -Druntime.java=${{ matrix.java }}"
       - name: Run Gradle (assemble)
         run: |
           # https://github.com/opensearch-project/opensearch-build/issues/4191
           chown -R opensearch:opensearch `pwd`
-          su opensearch -c "./gradlew assemble"
+          su opensearch -c "./gradlew assemble -Druntime.java=${{ matrix.java }}"
 
   precommit-windows-macos:
     if: github.repository == 'opensearch-project/custom-codecs'
