@@ -27,12 +27,12 @@ jobs:
         run: |
           # https://github.com/opensearch-project/opensearch-build/issues/4191
           chown -R opensearch:opensearch `pwd`
-          su opensearch -c "source /etc/profile.d/java_home.sh && ./gradlew check -Druntime.java=${{ matrix.java }}"
+          su opensearch -c "source /etc/profile.d/java_home.sh && ./gradlew check -Druntime.java=${{ matrix.java }} -Dorg.gradle.java.home=/opt/java/openjdk-${{ matrix.java }}"
       - name: Run Gradle (assemble)
         run: |
           # https://github.com/opensearch-project/opensearch-build/issues/4191
           chown -R opensearch:opensearch `pwd`
-          su opensearch -c "source /etc/profile.d/java_home.sh && ./gradlew assemble -Druntime.java=${{ matrix.java }}"
+          su opensearch -c "source /etc/profile.d/java_home.sh && ./gradlew assemble -Druntime.java=${{ matrix.java }} -Dorg.gradle.java.home=/opt/java/openjdk-${{ matrix.java }}"
 
   precommit-windows-macos:
     if: github.repository == 'opensearch-project/custom-codecs'
