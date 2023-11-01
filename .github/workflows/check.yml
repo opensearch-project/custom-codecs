@@ -28,12 +28,14 @@ jobs:
           cache: gradle
       - name: Run Gradle (check)
         run: |
-          chown -R 1000:1000 `pwd`
-          su `id -un 1000` -c "./gradlew check"
+          # https://github.com/opensearch-project/opensearch-build/issues/4191
+          chown -R opensearch:opensearch `pwd`
+          su opensearch -c "./gradlew check"
       - name: Run Gradle (assemble)
         run: |
-          chown -R 1000:1000 `pwd`
-          su `id -un 1000` -c "./gradlew assemble"
+          # https://github.com/opensearch-project/opensearch-build/issues/4191
+          chown -R opensearch:opensearch `pwd`
+          su opensearch -c "./gradlew assemble"
 
   precommit-windows-macos:
     if: github.repository == 'opensearch-project/custom-codecs'
