@@ -2,18 +2,51 @@ name: Gradle Check
 on: [pull_request]
 
 jobs:
-  precommit:
-    if: github.repository == 'opensearch-project/custom-codecs'
-    runs-on: ${{ matrix.os }}
+  Get-CI-Image-Tag:
+    uses: opensearch-project/opensearch-build/.github/workflows/get-ci-image-tag.yml@main
+    with:
+      product: opensearch
+
+  precommit-linux:
+    needs: Get-CI-Image-Tag
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        java: [ 11, 17 ]
+    if: github.repository == 'opensearch-project/custom-codecs'
+    runs-on: ubuntu-latest
+    container:
+      # using the same image which is used by opensearch-build team to build the OpenSearch Distribution
+      # this image tag is subject to change as more dependencies and updates will arrive over time
+      image: ${{ needs.Get-CI-Image-Tag.outputs.ci-image-version-linux }}
+      # need to switch to root so that github actions can install runner binary on container without permission issues.
+      options: --user root
+
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 11
+      - name: Run Gradle (check)
+        run: |
+          # https://github.com/opensearch-project/opensearch-build/issues/4191
+          chown -R opensearch:opensearch `pwd`
+          su opensearch -c "source /etc/profile.d/java_home.sh && ./gradlew check -Dorg.gradle.java.home=/opt/java/openjdk-${{ matrix.java }}"
+      - name: Run Gradle (assemble)
+        run: |
+          # https://github.com/opensearch-project/opensearch-build/issues/4191
+          chown -R opensearch:opensearch `pwd`
+          su opensearch -c "source /etc/profile.d/java_home.sh && ./gradlew assemble -Dorg.gradle.java.home=/opt/java/openjdk-${{ matrix.java }}"
+
+  precommit-windows-macos:
+    if: github.repository == 'opensearch-project/custom-codecs'
+    strategy:
+      matrix:
+        java: [ 11, 17 ]
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v3
         with:
-          java-version: 11
+          java-version: ${{ matrix.java }}
           distribution: temurin
           cache: gradle
       - name: Run Gradle (check)
