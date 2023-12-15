@@ -27,9 +27,9 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
     /** A key that we use to map to a mode */
     public static final String MODE_KEY = Lucene95CustomStoredFieldsFormat.class.getSimpleName() + ".mode";
 
-    private static final int ZSTD_BLOCK_LENGTH = 10 * 48 * 1024;
-    private static final int ZSTD_MAX_DOCS_PER_BLOCK = 4096;
-    private static final int ZSTD_BLOCK_SHIFT = 10;
+    protected static final int ZSTD_BLOCK_LENGTH = 10 * 48 * 1024;
+    protected static final int ZSTD_MAX_DOCS_PER_BLOCK = 4096;
+    protected static final int ZSTD_BLOCK_SHIFT = 10;
 
     private final CompressionMode zstdCompressionMode;
     private final CompressionMode zstdNoDictCompressionMode;
@@ -122,7 +122,7 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
         }
     }
 
-    Lucene95CustomCodec.Mode getMode() {
+    public Lucene95CustomCodec.Mode getMode() {
         return mode;
     }
 
@@ -132,4 +132,9 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
     public int getCompressionLevel() {
         return compressionLevel;
     }
+
+    public CompressionMode getCompressionMode() {
+        return mode == Lucene95CustomCodec.Mode.ZSTD_NO_DICT ? zstdNoDictCompressionMode : zstdCompressionMode;
+    }
+
 }
