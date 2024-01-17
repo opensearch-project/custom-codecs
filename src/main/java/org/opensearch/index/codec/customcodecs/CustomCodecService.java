@@ -47,11 +47,11 @@ public class CustomCodecService extends CodecService {
         int compressionLevel = indexSettings.getValue(INDEX_CODEC_COMPRESSION_LEVEL_SETTING);
         final MapBuilder<String, Codec> codecs = MapBuilder.<String, Codec>newMapBuilder();
         if (mapperService == null) {
-            codecs.put(ZSTD_CODEC, new ZstdCodec(compressionLevel));
-            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDictCodec(compressionLevel));
+            codecs.put(ZSTD_CODEC, new Zstd99Codec(compressionLevel));
+            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict99Codec(compressionLevel));
         } else {
-            codecs.put(ZSTD_CODEC, new ZstdCodec(mapperService, logger, compressionLevel));
-            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDictCodec(mapperService, logger, compressionLevel));
+            codecs.put(ZSTD_CODEC, new Zstd99Codec(mapperService, logger, compressionLevel));
+            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict99Codec(mapperService, logger, compressionLevel));
         }
         this.codecs = codecs.immutableMap();
     }

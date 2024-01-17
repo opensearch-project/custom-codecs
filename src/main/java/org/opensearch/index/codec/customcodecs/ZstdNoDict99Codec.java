@@ -10,42 +10,43 @@ package org.opensearch.index.codec.customcodecs;
 
 import org.apache.logging.log4j.Logger;
 import org.opensearch.common.settings.Setting;
+import org.opensearch.index.codec.CodecAliases;
 import org.opensearch.index.codec.CodecSettings;
 import org.opensearch.index.engine.EngineConfig;
 import org.opensearch.index.mapper.MapperService;
 
+import java.util.Set;
+
 /**
- * ZstdDeprecatedCodec provides ZSTD compressor using the <a href="https://github.com/luben/zstd-jni">zstd-jni</a> library.
- * Added to support backward compatibility for indices created with Lucene95CustomCodec as codec name.
+ * ZstdNoDictCodec provides ZSTD compressor without a dictionary support.
  */
-@Deprecated(since = "2.10")
-public class ZstdDeprecatedCodec extends Lucene95CustomCodec implements CodecSettings {
+public class ZstdNoDict99Codec extends Lucene99CustomCodec implements CodecSettings, CodecAliases {
 
     /**
-     * Creates a new ZstdDefaultCodec instance with the default compression level.
+     * Creates a new ZstdNoDictCodec instance with the default compression level.
      */
-    public ZstdDeprecatedCodec() {
+    public ZstdNoDict99Codec() {
         this(DEFAULT_COMPRESSION_LEVEL);
     }
 
     /**
-     * Creates a new ZstdDefaultCodec instance.
+     * Creates a new ZstdNoDictCodec instance.
      *
      * @param compressionLevel The compression level.
      */
-    public ZstdDeprecatedCodec(int compressionLevel) {
-        super(Mode.ZSTD_DEPRECATED, compressionLevel);
+    public ZstdNoDict99Codec(int compressionLevel) {
+        super(Mode.ZSTD_NO_DICT, compressionLevel);
     }
 
     /**
-     * Creates a new ZstdDefaultCodec instance.
+     * Creates a new ZstdNoDictCodec instance.
      *
      * @param mapperService The mapper service.
      * @param logger The logger.
      * @param compressionLevel The compression level.
      */
-    public ZstdDeprecatedCodec(MapperService mapperService, Logger logger, int compressionLevel) {
-        super(Mode.ZSTD_DEPRECATED, compressionLevel, mapperService, logger);
+    public ZstdNoDict99Codec(MapperService mapperService, Logger logger, int compressionLevel) {
+        super(Mode.ZSTD_NO_DICT, compressionLevel, mapperService, logger);
     }
 
     /** The name for this codec. */
@@ -57,5 +58,10 @@ public class ZstdDeprecatedCodec extends Lucene95CustomCodec implements CodecSet
     @Override
     public boolean supports(Setting<?> setting) {
         return setting.equals(EngineConfig.INDEX_CODEC_COMPRESSION_LEVEL_SETTING);
+    }
+
+    @Override
+    public Set<String> aliases() {
+        return Mode.ZSTD_NO_DICT.getAliases();
     }
 }
