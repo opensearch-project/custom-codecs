@@ -6,11 +6,12 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs;
 
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;
 import org.apache.lucene.backward_codecs.lucene95.Lucene95Codec;
+import org.opensearch.index.codec.customcodecs.Lucene99CustomStoredFieldsFormat;
 
 import java.util.Collections;
 import java.util.Set;
