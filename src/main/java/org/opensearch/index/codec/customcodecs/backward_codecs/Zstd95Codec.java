@@ -6,7 +6,7 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs;
 
 import org.opensearch.common.settings.Setting;
 import org.opensearch.index.codec.CodecAliases;
@@ -16,16 +16,17 @@ import org.opensearch.index.engine.EngineConfig;
 import java.util.Set;
 
 /**
- * ZstdNoDictCodec provides ZSTD compressor without a dictionary support.
+ * ZstdCodec provides ZSTD compressor using the <a href="https://github.com/luben/zstd-jni">zstd-jni</a> library.
  */
-public class ZstdNoDict95Codec extends Lucene95CustomCodec implements CodecSettings, CodecAliases {
+public class Zstd95Codec extends Lucene95CustomCodec implements CodecSettings, CodecAliases {
 
     /**
-     * Creates a new ZstdNoDictCodec instance with the default compression level.
+     * Creates a new ZstdCodec instance with the default compression level.
      */
-    public ZstdNoDict95Codec() {
-        super(Mode.ZSTD_NO_DICT);
+    public Zstd95Codec() {
+        super(Mode.ZSTD);
     }
+
 
     /** The name for this codec. */
     @Override
@@ -40,6 +41,6 @@ public class ZstdNoDict95Codec extends Lucene95CustomCodec implements CodecSetti
 
     @Override
     public Set<String> aliases() {
-        return Mode.ZSTD_NO_DICT.getAliases();
+        return Mode.ZSTD.getAliases();
     }
 }

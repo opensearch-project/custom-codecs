@@ -17,6 +17,7 @@ import org.apache.lucene.index.FieldInfos;
 import org.apache.lucene.index.SegmentInfo;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.IOContext;
+import org.opensearch.index.codec.customcodecs.backward_codecs.Lucene95CustomCodec;
 
 import java.io.IOException;
 import java.util.Objects;
