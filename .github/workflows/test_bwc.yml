@@ -1,0 +1,60 @@
+name: Test Custom Codecs BWC
+on:
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  Get-CI-Image-Tag:
+    uses: opensearch-project/opensearch-build/.github/workflows/get-ci-image-tag.yml@main
+    with:
+      product: opensearch
+
+  Build-custom-codecs-linux:
+    needs: Get-CI-Image-Tag
+    strategy:
+      matrix:
+        java: [11,17,21]
+      fail-fast: false
+
+    name: Test Custom Codecs BWC
+    runs-on: ubuntu-latest
+    container:
+      # using the same image which is used by opensearch-build team to build the OpenSearch Distribution
+      # this image tag is subject to change as more dependencies and updates will arrive over time
+      image: ${{ needs.Get-CI-Image-Tag.outputs.ci-image-version-linux }}
+      # need to switch to root so that github actions can install runner binary on container without permission issues.
+      options: --user root
+
+    steps:
+      - name: Setup Java ${{ matrix.java }}
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ matrix.java }}
+
+      # custom-codecs
+      - name: Checkout Custom codecs
+        uses: actions/checkout@v3
+
+      - name: Assemble custom-codecs
+        run: |
+          plugin_version=`./gradlew properties -q | grep "opensearch_build:" | awk '{print $2}'`
+          chown -R 1000:1000 `pwd`
+          echo plugin_version $plugin_version
+          su `id -un 1000` -c "./gradlew assemble"
+          echo "Creating ./src/test/resources/org/opensearch/customcodecs/bwc/custom-codecs/custom-codecs/$plugin_version ..."
+          su `id -un 1000` -c "mkdir -p ./src/test/resources/org/opensearch/customcodecs/bwc/custom-codecs/$plugin_version"
+          echo "Copying ./build/distributions/*.zip to ./src/test/resources/org/opensearch/customcodecs/bwc/custom-codecs/$plugin_version ..."
+          ls ./build/distributions/
+          su `id -un 1000` -c "cp ./build/distributions/*.zip ./src/test/resources/org/opensearch/customcodecs/bwc/custom-codecs/$plugin_version"
+          echo "Copied ./build/distributions/*.zip to ./src/test/resources/org/opensearch/customcodecs/bwc/custom-codecs/$plugin_version ..."
+          ls ./src/test/resources/org/opensearch/customcodecs/bwc/custom-codecs/$plugin_version
+      - name: Run Custom Codecs Backwards Compatibility Tests
+        run: |
+          echo "Running backwards compatibility tests ..."
+          chown -R 1000:1000 `pwd`
+          su `id -un 1000` -c "./gradlew bwcTestSuite -Dtests.security.manager=false --debug"
