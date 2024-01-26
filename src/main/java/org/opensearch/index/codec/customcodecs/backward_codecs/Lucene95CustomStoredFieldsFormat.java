@@ -6,7 +6,7 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs;
 
 import org.apache.lucene.codecs.StoredFieldsFormat;
 import org.apache.lucene.codecs.StoredFieldsReader;
@@ -17,6 +17,8 @@ import org.apache.lucene.index.FieldInfos;
 import org.apache.lucene.index.SegmentInfo;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.IOContext;
+import org.opensearch.index.codec.customcodecs.ZstdCompressionMode;
+import org.opensearch.index.codec.customcodecs.ZstdNoDictCompressionMode;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -60,17 +62,17 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
     public Lucene95CustomStoredFieldsFormat(Lucene95CustomCodec.Mode mode, int compressionLevel) {
         this.mode = Objects.requireNonNull(mode);
         this.compressionLevel = compressionLevel;
-        zstdCompressionMode = new ZstdCompressionMode(compressionLevel);
-        zstdNoDictCompressionMode = new ZstdNoDictCompressionMode(compressionLevel);
+        zstdCompressionMode = new ZstdCompressionMode(compressionLevel){};
+        zstdNoDictCompressionMode = new ZstdNoDictCompressionMode(compressionLevel){};
     }
 
     /**
-      * Returns a {@link StoredFieldsReader} to load stored fields.
-      * @param directory The index directory.
-      * @param si The SegmentInfo that stores segment information.
-      * @param fn The fieldInfos.
-      * @param context The IOContext that holds additional details on the merge/search context.
-    */
+     * Returns a {@link StoredFieldsReader} to load stored fields.
+     * @param directory The index directory.
+     * @param si The SegmentInfo that stores segment information.
+     * @param fn The fieldInfos.
+     * @param context The IOContext that holds additional details on the merge/search context.
+     */
     @Override
     public StoredFieldsReader fieldsReader(Directory directory, SegmentInfo si, FieldInfos fn, IOContext context) throws IOException {
         String value = si.getAttribute(MODE_KEY);
@@ -82,17 +84,17 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
     }
 
     /**
-      * Returns a {@link StoredFieldsReader} to write stored fields.
-      * @param directory The index directory.
-      * @param si The SegmentInfo that stores segment information.
-      * @param context The IOContext that holds additional details on the merge/search context.
-    */
+     * Returns a {@link StoredFieldsReader} to write stored fields.
+     * @param directory The index directory.
+     * @param si The SegmentInfo that stores segment information.
+     * @param context The IOContext that holds additional details on the merge/search context.
+     */
     @Override
     public StoredFieldsWriter fieldsWriter(Directory directory, SegmentInfo si, IOContext context) throws IOException {
         String previous = si.putAttribute(MODE_KEY, mode.name());
         if (previous != null && previous.equals(mode.name()) == false) {
             throw new IllegalStateException(
-                "found existing value for " + MODE_KEY + " for segment: " + si.name + " old = " + previous + ", new = " + mode.name()
+                    "found existing value for " + MODE_KEY + " for segment: " + si.name + " old = " + previous + ", new = " + mode.name()
             );
         }
         return impl(mode).fieldsWriter(directory, si, context);
@@ -103,19 +105,19 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
             case ZSTD:
             case ZSTD_DEPRECATED:
                 return new Lucene90CompressingStoredFieldsFormat(
-                    "CustomStoredFieldsZstd",
-                    zstdCompressionMode,
-                    ZSTD_BLOCK_LENGTH,
-                    ZSTD_MAX_DOCS_PER_BLOCK,
-                    ZSTD_BLOCK_SHIFT
+                        "CustomStoredFieldsZstd",
+                        zstdCompressionMode,
+                        ZSTD_BLOCK_LENGTH,
+                        ZSTD_MAX_DOCS_PER_BLOCK,
+                        ZSTD_BLOCK_SHIFT
                 );
             case ZSTD_NO_DICT:
                 return new Lucene90CompressingStoredFieldsFormat(
-                    "CustomStoredFieldsZstdNoDict",
-                    zstdNoDictCompressionMode,
-                    ZSTD_BLOCK_LENGTH,
-                    ZSTD_MAX_DOCS_PER_BLOCK,
-                    ZSTD_BLOCK_SHIFT
+                        "CustomStoredFieldsZstdNoDict",
+                        zstdNoDictCompressionMode,
+                        ZSTD_BLOCK_LENGTH,
+                        ZSTD_MAX_DOCS_PER_BLOCK,
+                        ZSTD_BLOCK_SHIFT
                 );
             default:
                 throw new AssertionError();
