@@ -1,0 +1,51 @@
+name: 'Create a backwards compatible ready build'
+description: 'Checkouts the official version of a the custom-codecs plugin and builds it so it can be used for BWC tests'
+
+inputs:
+  plugin-branch:
+    description: 'The branch of the plugin that should be built, e.g "2.2", "1.x"'
+    required: true
+
+outputs:
+  built-version:
+    description: 'The version of OpenSearch that was associated with this branch'
+    value: ${{ steps.get-opensearch-version.outputs.version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Enable Longpaths if on Windows
+      if: ${{ runner.os == 'Windows' }}
+      run: git config --system core.longpaths true
+      shell: pwsh
+
+    - name: Checkout Branch from Fork
+      if: ${{ inputs.plugin-branch == 'current_branch' }}
+      uses: actions/checkout@v2
+      with:
+        path: ${{ inputs.plugin-branch }}
+
+    - uses: actions/checkout@v3
+      if: ${{ inputs.plugin-branch != 'current_branch' }}
+      with:
+        repository: opensearch-project/custom-codecs
+        ref: ${{ inputs.plugin-branch }}
+        path: ${{ inputs.plugin-branch }}
+
+    - name: Build
+      uses: gradle/gradle-build-action@v2
+      with:
+        cache-disabled: true
+        arguments: assemble
+        build-root-directory: ${{ inputs.plugin-branch }}
+
+    - id: get-opensearch-version
+      uses: peternied/get-opensearch-version@v1
+      with:
+        working-directory: ${{ inputs.plugin-branch }}
+
+    - name: Copy current distro into the expected folder
+      run: |
+        mkdir -p ./bwc-test/src/test/resources/${{ steps.get-opensearch-version.outputs.version }}
+        cp ${{ inputs.plugin-branch }}/build/distributions/opensearch-custom-codecs-${{ steps.get-opensearch-version.outputs.version }}-SNAPSHOT.zip ./bwc-test/src/test/resources/${{ steps.get-opensearch-version.outputs.version }}
+      shell: bash
