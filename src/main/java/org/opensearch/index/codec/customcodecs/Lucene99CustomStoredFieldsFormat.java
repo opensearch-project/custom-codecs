@@ -26,7 +26,6 @@ import java.util.Objects;
 public class Lucene99CustomStoredFieldsFormat extends StoredFieldsFormat {
 
     /** A key that we use to map to a mode */
-    public static final String LUCENE95_MODE_KEY = "Lucene95CustomStoredFieldsFormat.mode";
     public static final String MODE_KEY = Lucene99CustomStoredFieldsFormat.class.getSimpleName() + ".mode";
 
     protected static final int ZSTD_BLOCK_LENGTH = 10 * 48 * 1024;
@@ -75,11 +74,7 @@ public class Lucene99CustomStoredFieldsFormat extends StoredFieldsFormat {
     */
     @Override
     public StoredFieldsReader fieldsReader(Directory directory, SegmentInfo si, FieldInfos fn, IOContext context) throws IOException {
-        if (si.getAttribute(LUCENE95_MODE_KEY) != null) {
-            String value = si.getAttribute(LUCENE95_MODE_KEY);
-            Lucene95CustomCodec.Mode mode = Lucene95CustomCodec.Mode.valueOf(value);
-            return impl(mode).fieldsReader(directory, si, fn, context);
-        } else if (si.getAttribute(MODE_KEY) !=null){
+        if (si.getAttribute(MODE_KEY) !=null){
             String value = si.getAttribute(MODE_KEY);
             Lucene99CustomCodec.Mode mode = Lucene99CustomCodec.Mode.valueOf(value);
             return impl(mode).fieldsReader(directory, si, fn, context);
@@ -116,17 +111,6 @@ public class Lucene99CustomStoredFieldsFormat extends StoredFieldsFormat {
         }
     }
 
-    StoredFieldsFormat impl(Lucene95CustomCodec.Mode mode) {
-        switch (mode) {
-            case ZSTD:
-            case ZSTD_DEPRECATED:
-                return getCustomCompressingStoredFieldsFormat("CustomStoredFieldsZstd", this.zstdCompressionMode);
-            case ZSTD_NO_DICT:
-                return getCustomCompressingStoredFieldsFormat("CustomStoredFieldsZstdNoDict", this.zstdNoDictCompressionMode);
-            default:
-                throw new AssertionError();
-        }
-    }
 
     private StoredFieldsFormat getCustomCompressingStoredFieldsFormat(String formatName, CompressionMode compressionMode) {
         return new Lucene90CompressingStoredFieldsFormat(
