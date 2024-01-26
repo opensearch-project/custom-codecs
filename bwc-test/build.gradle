@@ -44,10 +44,11 @@ ext {
 
 buildscript {
     ext {
-        opensearch_version = System.getProperty("opensearch.version", "3.0.0-SNAPSHOT")
+        opensearch_version = System.getProperty("opensearch.version", "2.12.0-SNAPSHOT")
         opensearch_group = "org.opensearch"
         common_utils_version = System.getProperty("common_utils.version", '2.9.0.0-SNAPSHOT')
-        jackson_version = System.getProperty("jackson_version", "2.15.2")
+        jackson_version = System.getProperty("jackson_version", "2.16.1")
+        http_client_version = System.getProperty("http_client_version", "4.5.14")
     }
     repositories {
         mavenLocal()
@@ -75,6 +76,7 @@ dependencies {
     testImplementation "org.opensearch:common-utils:${common_utils_version}"
     testImplementation "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"
     testImplementation "com.fasterxml.jackson.core:jackson-annotations:${jackson_version}"
+    testImplementation "org.apache.httpcomponents:httpclient:${http_client_version}"
 
 }
 
@@ -82,8 +84,8 @@ loggerUsageCheck.enabled = false
 testingConventions.enabled = false
 validateNebulaPom.enabled = false
 
-String previousVersion = System.getProperty("bwc.version.previous", "2.11.0.0")
-String nextVersion = System.getProperty("bwc.version.next", "3.0.0.0")
+String previousVersion = System.getProperty("bwc.version.previous", "2.11.1.0")
+String nextVersion = System.getProperty("bwc.version.next", "2.12.0.0")
 
 String bwcVersion = previousVersion
 String baseName = "customCodecsBwcCluster"
