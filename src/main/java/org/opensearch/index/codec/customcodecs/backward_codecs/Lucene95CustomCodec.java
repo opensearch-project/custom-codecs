@@ -11,7 +11,6 @@ package org.opensearch.index.codec.customcodecs.backward_codecs;
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;
 import org.apache.lucene.backward_codecs.lucene95.Lucene95Codec;
-import org.opensearch.index.codec.customcodecs.Lucene99CustomStoredFieldsFormat;
 
 import java.util.Collections;
 import java.util.Set;
@@ -79,7 +78,7 @@ public abstract class Lucene95CustomCodec extends FilterCodec {
 
     public Lucene95CustomCodec(Mode mode) {
         super(mode.getCodec(), new Lucene95Codec());
-        this.storedFieldsFormat = new Lucene99CustomStoredFieldsFormat();
+        this.storedFieldsFormat = new Lucene95CustomStoredFieldsFormat();
     }
 
     @Override
