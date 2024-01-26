@@ -15,21 +15,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.hc.client5.http.auth.AuthScope;
-import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
-import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
-import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManager;
-import org.apache.hc.client5.http.impl.nio.PoolingAsyncClientConnectionManagerBuilder;
-import org.apache.hc.client5.http.ssl.ClientTlsStrategyBuilder;
-import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
-import org.apache.hc.core5.function.Factory;
-import org.apache.hc.core5.http.HttpHost;
-import org.apache.hc.core5.http.nio.ssl.TlsStrategy;
-import org.apache.hc.core5.reactor.ssl.TlsDetails;
-import org.apache.hc.core5.ssl.SSLContextBuilder;
+import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.TrustAllStrategy;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 
 import org.junit.AfterClass;
 import org.junit.Assume;
@@ -44,9 +40,6 @@ import org.opensearch.common.util.io.IOUtils;
 import org.opensearch.core.common.Strings;
 import org.opensearch.customcodecs.bwc.helper.RestHelper;
 import org.opensearch.test.rest.OpenSearchRestTestCase;
-
-import static org.opensearch.client.RestClientBuilder.DEFAULT_MAX_CONN_PER_ROUTE;
-import static org.opensearch.client.RestClientBuilder.DEFAULT_MAX_CONN_TOTAL;
 
 public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
     private ClusterType CLUSTER_TYPE;
@@ -91,40 +84,23 @@ public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
                 throw new RuntimeException("password is missing");
             }
 
-            final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-            final AuthScope anyScope = new AuthScope(null, -1);
-            credentialsProvider.setCredentials(anyScope, new UsernamePasswordCredentials(username, password.toCharArray()));
+            final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
 
             try {
-                final TlsStrategy tlsStrategy = ClientTlsStrategyBuilder
-                        .create()
-                        .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-                        .setSslContext(SSLContextBuilder.create().loadTrustMaterial(null, (chains, authType) -> true).build())
-                        // See https://issues.apache.org/jira/browse/HTTPCLIENT-2219
-                        .setTlsDetailsFactory(new Factory<SSLEngine, TlsDetails>() {
-                            @Override
-                            public TlsDetails create(final SSLEngine sslEngine) {
-                                return new TlsDetails(sslEngine.getSession(), sslEngine.getApplicationProtocol());
-                            }
-                        })
+                final SSLContext sslContext = new SSLContextBuilder()
+                        .loadTrustMaterial(null, TrustAllStrategy.INSTANCE)
                         .build();
 
                 builder.setHttpClientConfigCallback(httpClientBuilder -> {
-                    final PoolingAsyncClientConnectionManager connectionManager = PoolingAsyncClientConnectionManagerBuilder
-                            .create()
-                            .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE)
-                            .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL)
-                            .setTlsStrategy(tlsStrategy)
-                            .build();
-
                     return httpClientBuilder
                             .setDefaultCredentialsProvider(credentialsProvider)
-                            .setConnectionManager(connectionManager);
+                            .setSSLContext(sslContext)
+                            .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE);
                 });
             } catch (final NoSuchAlgorithmException | KeyManagementException | KeyStoreException ex) {
                 throw new IOException(ex);
             }
-
         }
     }
 
@@ -255,7 +231,6 @@ public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
 
     @AfterClass
     public static void cleanUp() throws IOException {
-        OpenSearchRestTestCase.closeClients();
         IOUtils.close(testUserRestClient);
     }
 
