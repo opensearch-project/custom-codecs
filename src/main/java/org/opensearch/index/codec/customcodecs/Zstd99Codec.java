@@ -20,12 +20,12 @@ import java.util.Set;
 /**
  * ZstdCodec provides ZSTD compressor using the <a href="https://github.com/luben/zstd-jni">zstd-jni</a> library.
  */
-public class ZstdCodec extends Lucene95CustomCodec implements CodecSettings, CodecAliases {
+public class Zstd99Codec extends Lucene99CustomCodec implements CodecSettings, CodecAliases {
 
     /**
      * Creates a new ZstdCodec instance with the default compression level.
      */
-    public ZstdCodec() {
+    public Zstd99Codec() {
         this(DEFAULT_COMPRESSION_LEVEL);
     }
 
@@ -34,7 +34,7 @@ public class ZstdCodec extends Lucene95CustomCodec implements CodecSettings, Cod
      *
      * @param compressionLevel The compression level.
      */
-    public ZstdCodec(int compressionLevel) {
+    public Zstd99Codec(int compressionLevel) {
         super(Mode.ZSTD, compressionLevel);
     }
 
@@ -45,7 +45,7 @@ public class ZstdCodec extends Lucene95CustomCodec implements CodecSettings, Cod
      * @param logger The logger.
      * @param compressionLevel The compression level.
      */
-    public ZstdCodec(MapperService mapperService, Logger logger, int compressionLevel) {
+    public Zstd99Codec(MapperService mapperService, Logger logger, int compressionLevel) {
         super(Mode.ZSTD, compressionLevel, mapperService, logger);
     }
 

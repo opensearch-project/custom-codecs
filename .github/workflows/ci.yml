@@ -1,0 +1,58 @@
+name: Backward Compatibility Checks
+
+on:
+  push:
+    branches:
+      - main
+      - 2.x
+  pull_request:
+
+env:
+  GRADLE_OPTS: -Dhttp.keepAlive=true
+  CI_ENVIRONMENT: normal
+
+jobs:
+
+  backward-compatibility-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin # Temurin is a distribution of adoptium
+          java-version: 17
+
+      - name: Checkout custom-codecs Repo
+        uses: actions/checkout@v4
+
+      - name: Build BWC tests
+        uses: gradle/gradle-build-action@v2
+        with:
+          cache-disabled: true
+          arguments: |
+            -p bwc-test build -x test -x integTest
+
+  backward-compatibility:
+    strategy:
+      fail-fast: false
+      matrix:
+        jdk: [11, 17]
+        platform: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+    - uses: actions/setup-java@v4
+      with:
+        distribution: temurin # Temurin is a distribution of adoptium
+        java-version: ${{ matrix.jdk }}
+
+    - name: Checkout custom-codecs Repo
+      uses: actions/checkout@v4
+
+    - id: build-previous
+      uses: ./.github/actions/run-bwc-suite
+      with:
+        plugin-previous-branch: "2.x"
+        plugin-next-branch: "current_branch"
+        report-artifact-name: bwc-${{ matrix.platform }}-jdk${{ matrix.jdk }}
+        username: admin
+        password: admin

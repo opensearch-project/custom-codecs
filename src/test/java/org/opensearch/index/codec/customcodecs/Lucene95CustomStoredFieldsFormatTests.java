@@ -8,6 +8,8 @@
 
 package org.opensearch.index.codec.customcodecs;
 
+import org.opensearch.index.codec.customcodecs.backward_codecs.Lucene95CustomCodec;
+import org.opensearch.index.codec.customcodecs.backward_codecs.Lucene95CustomStoredFieldsFormat;
 import org.opensearch.test.OpenSearchTestCase;
 
 public class Lucene95CustomStoredFieldsFormatTests extends OpenSearchTestCase {
@@ -19,7 +21,7 @@ public class Lucene95CustomStoredFieldsFormatTests extends OpenSearchTestCase {
 
     public void testZstdNoDictLucene95CustomCodecMode() {
         Lucene95CustomStoredFieldsFormat lucene95CustomStoredFieldsFormat = new Lucene95CustomStoredFieldsFormat(
-            Lucene95CustomCodec.Mode.ZSTD_NO_DICT
+                Lucene95CustomCodec.Mode.ZSTD_NO_DICT
         );
         assertEquals(Lucene95CustomCodec.Mode.ZSTD_NO_DICT, lucene95CustomStoredFieldsFormat.getMode());
     }
@@ -27,8 +29,8 @@ public class Lucene95CustomStoredFieldsFormatTests extends OpenSearchTestCase {
     public void testZstdModeWithCompressionLevel() {
         int randomCompressionLevel = randomIntBetween(1, 6);
         Lucene95CustomStoredFieldsFormat lucene95CustomStoredFieldsFormat = new Lucene95CustomStoredFieldsFormat(
-            Lucene95CustomCodec.Mode.ZSTD,
-            randomCompressionLevel
+                Lucene95CustomCodec.Mode.ZSTD,
+                randomCompressionLevel
         );
         assertEquals(Lucene95CustomCodec.Mode.ZSTD, lucene95CustomStoredFieldsFormat.getMode());
         assertEquals(randomCompressionLevel, lucene95CustomStoredFieldsFormat.getCompressionLevel());
@@ -37,8 +39,8 @@ public class Lucene95CustomStoredFieldsFormatTests extends OpenSearchTestCase {
     public void testZstdNoDictLucene95CustomCodecModeWithCompressionLevel() {
         int randomCompressionLevel = randomIntBetween(1, 6);
         Lucene95CustomStoredFieldsFormat lucene95CustomStoredFieldsFormat = new Lucene95CustomStoredFieldsFormat(
-            Lucene95CustomCodec.Mode.ZSTD_NO_DICT,
-            randomCompressionLevel
+                Lucene95CustomCodec.Mode.ZSTD_NO_DICT,
+                randomCompressionLevel
         );
         assertEquals(Lucene95CustomCodec.Mode.ZSTD_NO_DICT, lucene95CustomStoredFieldsFormat.getMode());
         assertEquals(randomCompressionLevel, lucene95CustomStoredFieldsFormat.getCompressionLevel());
