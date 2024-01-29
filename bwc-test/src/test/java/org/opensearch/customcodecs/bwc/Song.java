@@ -9,14 +9,14 @@
  */
 package org.opensearch.customcodecs.bwc;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.opensearch.common.Randomness;
+import org.opensearch.core.xcontent.MediaTypeRegistry;
+import org.opensearch.core.xcontent.XContentBuilder;
 
 public class Song {
 
@@ -102,8 +102,11 @@ public class Song {
         return Map.of(FIELD_ARTIST, artist, FIELD_TITLE, title, FIELD_LYRICS, lyrics, FIELD_STARS, stars, FIELD_GENRE, genre);
     }
 
-    public String asJson() throws JsonProcessingException {
-        return new ObjectMapper().writeValueAsString(this.asMap());
+    public String asJson() throws IOException {
+        try (final XContentBuilder contentBuilder = MediaTypeRegistry.JSON.contentBuilder()) {
+            contentBuilder.map(asMap());
+            return contentBuilder.toString();
+        }
     }
 
     public static Song randomSong() {
