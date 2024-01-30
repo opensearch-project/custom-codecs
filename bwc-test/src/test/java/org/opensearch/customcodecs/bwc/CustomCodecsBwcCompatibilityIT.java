@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Objects;
 import javax.net.ssl.SSLContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -38,6 +37,8 @@ import org.opensearch.common.Randomness;
 import org.opensearch.common.settings.Settings;
 import org.opensearch.common.util.io.IOUtils;
 import org.opensearch.core.common.Strings;
+import org.opensearch.core.xcontent.MediaTypeRegistry;
+import org.opensearch.core.xcontent.XContentBuilder;
 import org.opensearch.customcodecs.bwc.helper.RestHelper;
 import org.opensearch.test.rest.OpenSearchRestTestCase;
 
@@ -161,7 +162,6 @@ public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
     private void ingestData(String index) throws IOException {
         assertTrue(indexExists(index));
         StringBuilder bulkRequestBody = new StringBuilder();
-        ObjectMapper objectMapper = new ObjectMapper();
         int numberOfRequests = Randomness.get().nextInt(10);
         while (numberOfRequests-- > 0) {
             for (int i = 0; i < Randomness.get().nextInt(100); i++) {
@@ -171,8 +171,13 @@ public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
                         put("_index", index);
                     }
                 });
-                bulkRequestBody.append(objectMapper.writeValueAsString(indexRequest) + "\n");
-                bulkRequestBody.append(objectMapper.writeValueAsString(Song.randomSong().asJson()) + "\n");
+                
+                try (final XContentBuilder contentBuilder = MediaTypeRegistry.JSON.contentBuilder()) {
+                    contentBuilder.map(indexRequest);
+                    bulkRequestBody.append(contentBuilder.toString() + "\n");
+                }
+
+                bulkRequestBody.append(Song.randomSong().asJson() + "\n");
             }
             List<Response> responses = RestHelper.requestAgainstAllNodes(
                     testUserRestClient,
