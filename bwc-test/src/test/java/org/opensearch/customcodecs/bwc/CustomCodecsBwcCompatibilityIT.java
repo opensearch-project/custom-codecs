@@ -7,16 +7,6 @@
  */
 package org.opensearch.customcodecs.bwc;
 
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import javax.net.ssl.SSLEngine;
-
 import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
@@ -29,10 +19,6 @@ import org.apache.hc.core5.http.HttpHost;
 import org.apache.hc.core5.http.nio.ssl.TlsStrategy;
 import org.apache.hc.core5.reactor.ssl.TlsDetails;
 import org.apache.hc.core5.ssl.SSLContextBuilder;
-
-import org.junit.AfterClass;
-import org.junit.Assume;
-import org.junit.Before;
 import org.opensearch.client.Response;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.RestClientBuilder;
@@ -45,6 +31,20 @@ import org.opensearch.core.xcontent.MediaTypeRegistry;
 import org.opensearch.core.xcontent.XContentBuilder;
 import org.opensearch.customcodecs.bwc.helper.RestHelper;
 import org.opensearch.test.rest.OpenSearchRestTestCase;
+import org.junit.AfterClass;
+import org.junit.Assume;
+import org.junit.Before;
+
+import javax.net.ssl.SSLEngine;
+
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import static org.opensearch.client.RestClientBuilder.DEFAULT_MAX_CONN_PER_ROUTE;
 import static org.opensearch.client.RestClientBuilder.DEFAULT_MAX_CONN_TOTAL;
@@ -62,13 +62,9 @@ public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
         logger.info("Running Test for Cluster Type: {}", CLUSTER_TYPE);
         CLUSTER_NAME = System.getProperty("tests.clustername");
         if (testUserRestClient == null) {
-            testUserRestClient = buildClient(
-                    super.restClientSettings(),
-                    super.getClusterHosts().toArray(new HttpHost[0])
-            );
+            testUserRestClient = buildClient(super.restClientSettings(), super.getClusterHosts().toArray(new HttpHost[0]));
         }
     }
-
 
     @Override
     protected RestClient buildClient(Settings settings, HttpHost[] hosts) throws IOException {
@@ -97,30 +93,26 @@ public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
             credentialsProvider.setCredentials(anyScope, new UsernamePasswordCredentials(username, password.toCharArray()));
 
             try {
-                final TlsStrategy tlsStrategy = ClientTlsStrategyBuilder
-                        .create()
-                        .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-                        .setSslContext(SSLContextBuilder.create().loadTrustMaterial(null, (chains, authType) -> true).build())
-                        // See https://issues.apache.org/jira/browse/HTTPCLIENT-2219
-                        .setTlsDetailsFactory(new Factory<SSLEngine, TlsDetails>() {
-                            @Override
-                            public TlsDetails create(final SSLEngine sslEngine) {
-                                return new TlsDetails(sslEngine.getSession(), sslEngine.getApplicationProtocol());
-                            }
-                        })
-                        .build();
+                final TlsStrategy tlsStrategy = ClientTlsStrategyBuilder.create()
+                    .setHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                    .setSslContext(SSLContextBuilder.create().loadTrustMaterial(null, (chains, authType) -> true).build())
+                    // See https://issues.apache.org/jira/browse/HTTPCLIENT-2219
+                    .setTlsDetailsFactory(new Factory<SSLEngine, TlsDetails>() {
+                        @Override
+                        public TlsDetails create(final SSLEngine sslEngine) {
+                            return new TlsDetails(sslEngine.getSession(), sslEngine.getApplicationProtocol());
+                        }
+                    })
+                    .build();
 
                 builder.setHttpClientConfigCallback(httpClientBuilder -> {
-                    final PoolingAsyncClientConnectionManager connectionManager = PoolingAsyncClientConnectionManagerBuilder
-                            .create()
-                            .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE)
-                            .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL)
-                            .setTlsStrategy(tlsStrategy)
-                            .build();
+                    final PoolingAsyncClientConnectionManager connectionManager = PoolingAsyncClientConnectionManagerBuilder.create()
+                        .setMaxConnPerRoute(DEFAULT_MAX_CONN_PER_ROUTE)
+                        .setMaxConnTotal(DEFAULT_MAX_CONN_TOTAL)
+                        .setTlsStrategy(tlsStrategy)
+                        .build();
 
-                    return httpClientBuilder
-                            .setDefaultCredentialsProvider(credentialsProvider)
-                            .setConnectionManager(connectionManager);
+                    return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider).setConnectionManager(connectionManager);
                 });
             } catch (final NoSuchAlgorithmException | KeyManagementException | KeyStoreException ex) {
                 throw new IOException(ex);
@@ -149,18 +141,16 @@ public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
         return true;
     }
 
-
     @Override
     protected final Settings restClientSettings() {
         return Settings.builder()
-                .put(super.restClientSettings())
-                // increase the timeout here to 90 seconds to handle long waits for a green
-                // cluster health. the waits for green need to be longer than a minute to
-                // account for delayed shards
-                .put(OpenSearchRestTestCase.CLIENT_SOCKET_TIMEOUT, "90s")
-                .build();
+            .put(super.restClientSettings())
+            // increase the timeout here to 90 seconds to handle long waits for a green
+            // cluster health. the waits for green need to be longer than a minute to
+            // account for delayed shards
+            .put(OpenSearchRestTestCase.CLIENT_SOCKET_TIMEOUT, "90s")
+            .build();
     }
-
 
     /**
      * Tests backward compatibility by created a test user and role with DLS, FLS and masked field settings. Ingests
@@ -175,7 +165,6 @@ public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
         ingestData(index);
         searchMatchAll(index);
     }
-
 
     /**
      * Ingests data into the test index
@@ -195,7 +184,7 @@ public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
                         put("_index", index);
                     }
                 });
-                
+
                 try (final XContentBuilder contentBuilder = MediaTypeRegistry.JSON.contentBuilder()) {
                     contentBuilder.map(indexRequest);
                     bulkRequestBody.append(contentBuilder.toString() + "\n");
@@ -204,10 +193,10 @@ public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
                 bulkRequestBody.append(Song.randomSong().asJson() + "\n");
             }
             List<Response> responses = RestHelper.requestAgainstAllNodes(
-                    testUserRestClient,
-                    "POST",
-                    "_bulk?refresh=wait_for",
-                    RestHelper.toHttpEntity(bulkRequestBody.toString())
+                testUserRestClient,
+                "POST",
+                "_bulk?refresh=wait_for",
+                RestHelper.toHttpEntity(bulkRequestBody.toString())
             );
             responses.forEach(r -> assertEquals(200, r.getStatusLine().getStatusCode()));
         }
@@ -223,10 +212,10 @@ public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
         int numberOfRequests = Randomness.get().nextInt(10);
         while (numberOfRequests-- > 0) {
             List<Response> responses = RestHelper.requestAgainstAllNodes(
-                    testUserRestClient,
-                    "POST",
-                    index + "/_search",
-                    RestHelper.toHttpEntity(matchAllQuery)
+                testUserRestClient,
+                "POST",
+                index + "/_search",
+                RestHelper.toHttpEntity(matchAllQuery)
             );
             responses.forEach(r -> assertEquals(200, r.getStatusLine().getStatusCode()));
         }
@@ -247,13 +236,13 @@ public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
 
         // creating index
         createIndex(
-                index,
-                Settings.builder()
-                        .put(IndexMetadata.SETTING_NUMBER_OF_SHARDS, 1)
-                        .put(IndexMetadata.SETTING_NUMBER_OF_REPLICAS, 0)
-                        .put("index.codec", randomFrom("zstd", "zstd_no_dict"))
-                        .put("index.codec.compression_level", randomIntBetween(1, 6))
-                        .build()
+            index,
+            Settings.builder()
+                .put(IndexMetadata.SETTING_NUMBER_OF_SHARDS, 1)
+                .put(IndexMetadata.SETTING_NUMBER_OF_REPLICAS, 0)
+                .put("index.codec", randomFrom("zstd", "zstd_no_dict"))
+                .put("index.codec.compression_level", randomIntBetween(1, 6))
+                .build()
         );
         ensureGreen(index);
     }

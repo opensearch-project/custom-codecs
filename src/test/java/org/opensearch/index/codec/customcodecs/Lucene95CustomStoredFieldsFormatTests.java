@@ -21,7 +21,7 @@ public class Lucene95CustomStoredFieldsFormatTests extends OpenSearchTestCase {
 
     public void testZstdNoDictLucene95CustomCodecMode() {
         Lucene95CustomStoredFieldsFormat lucene95CustomStoredFieldsFormat = new Lucene95CustomStoredFieldsFormat(
-                Lucene95CustomCodec.Mode.ZSTD_NO_DICT
+            Lucene95CustomCodec.Mode.ZSTD_NO_DICT
         );
         assertEquals(Lucene95CustomCodec.Mode.ZSTD_NO_DICT, lucene95CustomStoredFieldsFormat.getMode());
     }
@@ -29,8 +29,8 @@ public class Lucene95CustomStoredFieldsFormatTests extends OpenSearchTestCase {
     public void testZstdModeWithCompressionLevel() {
         int randomCompressionLevel = randomIntBetween(1, 6);
         Lucene95CustomStoredFieldsFormat lucene95CustomStoredFieldsFormat = new Lucene95CustomStoredFieldsFormat(
-                Lucene95CustomCodec.Mode.ZSTD,
-                randomCompressionLevel
+            Lucene95CustomCodec.Mode.ZSTD,
+            randomCompressionLevel
         );
         assertEquals(Lucene95CustomCodec.Mode.ZSTD, lucene95CustomStoredFieldsFormat.getMode());
         assertEquals(randomCompressionLevel, lucene95CustomStoredFieldsFormat.getCompressionLevel());
@@ -39,20 +39,22 @@ public class Lucene95CustomStoredFieldsFormatTests extends OpenSearchTestCase {
     public void testZstdNoDictLucene95CustomCodecModeWithCompressionLevel() {
         int randomCompressionLevel = randomIntBetween(1, 6);
         Lucene95CustomStoredFieldsFormat lucene95CustomStoredFieldsFormat = new Lucene95CustomStoredFieldsFormat(
-                Lucene95CustomCodec.Mode.ZSTD_NO_DICT,
-                randomCompressionLevel
+            Lucene95CustomCodec.Mode.ZSTD_NO_DICT,
+            randomCompressionLevel
         );
         assertEquals(Lucene95CustomCodec.Mode.ZSTD_NO_DICT, lucene95CustomStoredFieldsFormat.getMode());
         assertEquals(randomCompressionLevel, lucene95CustomStoredFieldsFormat.getCompressionLevel());
     }
 
-    public void testCompressionModes(){
+    public void testCompressionModes() {
         Lucene95CustomStoredFieldsFormat lucene95CustomStoredFieldsFormat = new Lucene95CustomStoredFieldsFormat();
         assertTrue(lucene95CustomStoredFieldsFormat.getCompressionMode() instanceof ZstdCompressionMode);
     }
 
-    public void testZstdNoDictCompressionModes(){
-        Lucene95CustomStoredFieldsFormat lucene95CustomStoredFieldsFormat = new Lucene95CustomStoredFieldsFormat(Lucene95CustomCodec.Mode.ZSTD_NO_DICT);
+    public void testZstdNoDictCompressionModes() {
+        Lucene95CustomStoredFieldsFormat lucene95CustomStoredFieldsFormat = new Lucene95CustomStoredFieldsFormat(
+            Lucene95CustomCodec.Mode.ZSTD_NO_DICT
+        );
         assertTrue(lucene95CustomStoredFieldsFormat.getCompressionMode() instanceof ZstdNoDictCompressionMode);
     }
 

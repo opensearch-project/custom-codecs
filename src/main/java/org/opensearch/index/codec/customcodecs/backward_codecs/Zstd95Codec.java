@@ -27,7 +27,6 @@ public class Zstd95Codec extends Lucene95CustomCodec implements CodecSettings, C
         super(Mode.ZSTD);
     }
 
-
     /** The name for this codec. */
     @Override
     public String toString() {

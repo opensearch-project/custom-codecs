@@ -8,22 +8,21 @@
 
 package org.opensearch.customcodecs.bwc.helper;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 import org.apache.hc.core5.http.message.BasicHeader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import org.opensearch.client.Request;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.Response;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.WarningsHandler;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.apache.hc.core5.http.ContentType.APPLICATION_JSON;
 
@@ -44,7 +43,7 @@ public class RestHelper {
     }
 
     public static Response makeRequest(RestClient client, String method, String endpoint, HttpEntity entity, List<Header> headers)
-            throws IOException {
+        throws IOException {
         log.info("Making request " + method + " " + endpoint + ", with headers " + headers);
 
         Request request = new Request(method, endpoint);
@@ -66,16 +65,16 @@ public class RestHelper {
     }
 
     public static List<Response> requestAgainstAllNodes(RestClient client, String method, String endpoint, HttpEntity entity)
-            throws IOException {
+        throws IOException {
         return requestAgainstAllNodes(client, method, endpoint, entity, null);
     }
 
     public static List<Response> requestAgainstAllNodes(
-            RestClient client,
-            String method,
-            String endpoint,
-            HttpEntity entity,
-            List<Header> headers
+        RestClient client,
+        String method,
+        String endpoint,
+        HttpEntity entity,
+        List<Header> headers
     ) throws IOException {
         int nodeCount = client.getNodes().size();
         List<Response> responses = new ArrayList<>();
