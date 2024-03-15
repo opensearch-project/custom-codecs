@@ -77,7 +77,7 @@ allprojects {
     version += "-SNAPSHOT"
   }
 
-  'java' {
+  java {
       targetCompatibility = JavaVersion.VERSION_11
       sourceCompatibility = JavaVersion.VERSION_11
   }
@@ -230,8 +230,4 @@ task updateVersion {
         // String tokenization to support -SNAPSHOT
         ant.replaceregexp(file:'build.gradle', match: '"opensearch.version", "\\d.*"', replace: '"opensearch.version", "' + newVersion.tokenize('-')[0] + '-SNAPSHOT"', flags:'g', byline:true)
     }
-}
-
-configurations.all {
-    resolutionStrategy.force 'com.fasterxml.jackson.core:jackson-core:2.17.0'
 }
