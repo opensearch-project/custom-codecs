@@ -44,13 +44,15 @@ public class Lucene99CustomStoredFieldsFormatTests extends OpenSearchTestCase {
         assertEquals(randomCompressionLevel, lucene99CustomStoredFieldsFormat.getCompressionLevel());
     }
 
-    public void testCompressionModes(){
+    public void testCompressionModes() {
         Lucene99CustomStoredFieldsFormat lucene99CustomStoredFieldsFormat = new Lucene99CustomStoredFieldsFormat();
         assertTrue(lucene99CustomStoredFieldsFormat.getCompressionMode() instanceof ZstdCompressionMode);
     }
 
-    public void testZstdNoDictCompressionModes(){
-        Lucene99CustomStoredFieldsFormat lucene99CustomStoredFieldsFormat = new Lucene99CustomStoredFieldsFormat(Lucene99CustomCodec.Mode.ZSTD_NO_DICT);
+    public void testZstdNoDictCompressionModes() {
+        Lucene99CustomStoredFieldsFormat lucene99CustomStoredFieldsFormat = new Lucene99CustomStoredFieldsFormat(
+            Lucene99CustomCodec.Mode.ZSTD_NO_DICT
+        );
         assertTrue(lucene99CustomStoredFieldsFormat.getCompressionMode() instanceof ZstdNoDictCompressionMode);
     }
 
