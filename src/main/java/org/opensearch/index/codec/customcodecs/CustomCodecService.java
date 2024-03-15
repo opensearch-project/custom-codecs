@@ -21,26 +21,28 @@ import java.util.stream.Stream;
 
 import static org.opensearch.index.engine.EngineConfig.INDEX_CODEC_COMPRESSION_LEVEL_SETTING;
 
-/**
- * CustomCodecService provides ZSTD and ZSTD_NO_DICT compression codecs.
- */
+/** CustomCodecService provides ZSTD, ZSTD_NO_DICT, QAT_DEFLATE, and QAT_LZ4 compression codecs. */
 public class CustomCodecService extends CodecService {
     private final Map<String, Codec> codecs;
-    /**
-     * ZStandard codec
-     */
+
+    /** ZStandard codec */
     public static final String ZSTD_CODEC = "zstd";
-    /**
-     * ZStandard without dictionary codec
-     */
+
+    /** ZStandard without dictionary codec */
     public static final String ZSTD_NO_DICT_CODEC = "zstd_no_dict";
+
+    /** Hardware accelerated (Intel QAT) compression codec for DEFLATE. */
+    public static final String QAT_DEFLATE_CODEC = "qat_deflate";
+
+    /** Hardware accelerated (Intel QAT) compression codec for LZ4. */
+    public static final String QAT_LZ4_CODEC = "qat_lz4";
 
     /**
      * Creates a new CustomCodecService.
      *
      * @param mapperService The mapper service.
      * @param indexSettings The index settings.
-     * @param logger        The logger.
+     * @param logger The logger.
      */
     public CustomCodecService(MapperService mapperService, IndexSettings indexSettings, Logger logger) {
         super(mapperService, indexSettings, logger);
@@ -49,9 +51,21 @@ public class CustomCodecService extends CodecService {
         if (mapperService == null) {
             codecs.put(ZSTD_CODEC, new Zstd99Codec(compressionLevel));
             codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict99Codec(compressionLevel));
+            codecs.put(QAT_DEFLATE_CODEC, new QatDeflate99Codec(compressionLevel, () -> {
+                return indexSettings.getValue(CustomCodecPlugin.INDEX_CODEC_QAT_MODE_SETTING);
+            }));
+            codecs.put(QAT_LZ4_CODEC, new QatLz499Codec(compressionLevel, () -> {
+                return indexSettings.getValue(CustomCodecPlugin.INDEX_CODEC_QAT_MODE_SETTING);
+            }));
         } else {
             codecs.put(ZSTD_CODEC, new Zstd99Codec(mapperService, logger, compressionLevel));
             codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict99Codec(mapperService, logger, compressionLevel));
+            codecs.put(QAT_DEFLATE_CODEC, new QatDeflate99Codec(mapperService, logger, compressionLevel, () -> {
+                return indexSettings.getValue(CustomCodecPlugin.INDEX_CODEC_QAT_MODE_SETTING);
+            }));
+            codecs.put(QAT_LZ4_CODEC, new QatLz499Codec(mapperService, logger, compressionLevel, () -> {
+                return indexSettings.getValue(CustomCodecPlugin.INDEX_CODEC_QAT_MODE_SETTING);
+            }));
         }
         this.codecs = codecs.immutableMap();
     }
