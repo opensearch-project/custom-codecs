@@ -12,72 +12,75 @@ import org.apache.lucene.codecs.compressing.Decompressor;
 
 import java.io.IOException;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assume.assumeThat;
+
 /** Test QAT LZ4 */
 public class QatLz4CompressorTests extends AbstractCompressorTests {
 
     @Override
     Compressor compressor() {
-        if (!QatZipperFactory.isQatAvailable()) return null;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         return new QatLz4CompressionMode().newCompressor();
     }
 
     @Override
     Decompressor decompressor() {
-        if (!QatZipperFactory.isQatAvailable()) return null;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         return new QatLz4CompressionMode().newDecompressor();
     }
 
     @Override
     public void testEmpty() throws IOException {
-        if (!QatZipperFactory.isQatAvailable()) return;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         super.testEmpty();
     }
 
     @Override
     public void testShortLiterals() throws IOException {
-        if (!QatZipperFactory.isQatAvailable()) return;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         super.testShortLiterals();
     }
 
     @Override
     public void testRandom() throws IOException {
-        if (!QatZipperFactory.isQatAvailable()) return;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         super.testRandom();
     }
 
     @Override
     public void testLineDocs() throws IOException {
-        if (!QatZipperFactory.isQatAvailable()) return;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         super.testLineDocs();
     }
 
     @Override
     public void testRepetitionsL() throws IOException {
-        if (!QatZipperFactory.isQatAvailable()) return;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         super.testRepetitionsL();
     }
 
     @Override
     public void testRepetitionsI() throws IOException {
-        if (!QatZipperFactory.isQatAvailable()) return;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         super.testRepetitionsI();
     }
 
     @Override
     public void testRepetitionsS() throws IOException {
-        if (!QatZipperFactory.isQatAvailable()) return;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         super.testRepetitionsS();
     }
 
     @Override
     public void testMixed() throws IOException {
-        if (!QatZipperFactory.isQatAvailable()) return;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         super.testMixed();
     }
 
     @Override
     protected void doTest(byte[] bytes) throws IOException {
-        if (!QatZipperFactory.isQatAvailable()) return;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         super.doTest(bytes);
     }
 }

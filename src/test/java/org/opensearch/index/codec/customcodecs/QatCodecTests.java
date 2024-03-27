@@ -62,6 +62,8 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.opensearch.index.engine.EngineConfig.INDEX_CODEC_COMPRESSION_LEVEL_SETTING;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assume.assumeThat;
 
 @SuppressCodecs("*") // we test against default codec so never get a random one here!
 public class QatCodecTests extends OpenSearchTestCase {
@@ -74,7 +76,7 @@ public class QatCodecTests extends OpenSearchTestCase {
     }
 
     public void testQatDeflate() throws Exception {
-        if (!QatZipperFactory.isQatAvailable()) return;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         Codec codec = createCodecService(false).codec("qat_deflate");
         assertStoredFieldsCompressionEquals(Lucene99QatCodec.Mode.QAT_DEFLATE, codec);
         Lucene99QatStoredFieldsFormat storedFieldsFormat = (Lucene99QatStoredFieldsFormat) codec.storedFieldsFormat();
@@ -82,7 +84,7 @@ public class QatCodecTests extends OpenSearchTestCase {
     }
 
     public void testQatLz4() throws Exception {
-        if (!QatZipperFactory.isQatAvailable()) return;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         Codec codec = createCodecService(false).codec("qat_lz4");
         assertStoredFieldsCompressionEquals(Lucene99QatCodec.Mode.QAT_LZ4, codec);
         Lucene99QatStoredFieldsFormat storedFieldsFormat = (Lucene99QatStoredFieldsFormat) codec.storedFieldsFormat();
@@ -90,7 +92,7 @@ public class QatCodecTests extends OpenSearchTestCase {
     }
 
     public void testQatDeflateWithCompressionLevel() throws Exception {
-        if (!QatZipperFactory.isQatAvailable()) return;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         int randomCompressionLevel = randomIntBetween(1, 6);
         Codec codec = createCodecService(randomCompressionLevel, "qat_deflate").codec("qat_deflate");
         assertStoredFieldsCompressionEquals(Lucene99QatCodec.Mode.QAT_DEFLATE, codec);
@@ -99,7 +101,7 @@ public class QatCodecTests extends OpenSearchTestCase {
     }
 
     public void testQatLz4WithCompressionLevel() throws Exception {
-        if (!QatZipperFactory.isQatAvailable()) return;
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         int randomCompressionLevel = randomIntBetween(1, 6);
         Codec codec = createCodecService(randomCompressionLevel, "qat_lz4").codec("qat_lz4");
         assertStoredFieldsCompressionEquals(Lucene99QatCodec.Mode.QAT_LZ4, codec);

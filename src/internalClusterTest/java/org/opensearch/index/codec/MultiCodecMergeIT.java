@@ -16,6 +16,7 @@ import org.opensearch.action.admin.indices.settings.put.UpdateSettingsRequest;
 import org.opensearch.cluster.metadata.IndexMetadata;
 import org.opensearch.common.settings.Settings;
 import org.opensearch.index.codec.customcodecs.CustomCodecPlugin;
+import org.opensearch.index.codec.customcodecs.QatZipperFactory;
 import org.opensearch.index.engine.Segment;
 import org.opensearch.plugins.Plugin;
 import org.opensearch.test.OpenSearchIntegTestCase;
@@ -65,6 +66,11 @@ public class MultiCodecMergeIT extends OpenSearchIntegTestCase {
             "lz4",
             "BEST_SPEED"
         );
+
+        if (QatZipperFactory.isQatAvailable()) {
+            codecMap.put("QAT_DEFLATE", "qat_deflate");
+            codecMap.put("QAT_LZ4", "qat_lz4");
+        }
 
         for (Map.Entry<String, String> codec : codecMap.entrySet()) {
             forceMergeMultipleCodecs(codec.getKey(), codec.getValue(), codecMap);
