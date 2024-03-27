@@ -62,12 +62,15 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
     public Lucene95CustomStoredFieldsFormat(Lucene95CustomCodec.Mode mode, int compressionLevel) {
         this.mode = Objects.requireNonNull(mode);
         this.compressionLevel = compressionLevel;
-        zstdCompressionMode = new ZstdCompressionMode(compressionLevel){};
-        zstdNoDictCompressionMode = new ZstdNoDictCompressionMode(compressionLevel){};
+        zstdCompressionMode = new ZstdCompressionMode(compressionLevel) {
+        };
+        zstdNoDictCompressionMode = new ZstdNoDictCompressionMode(compressionLevel) {
+        };
     }
 
     /**
      * Returns a {@link StoredFieldsReader} to load stored fields.
+     *
      * @param directory The index directory.
      * @param si The SegmentInfo that stores segment information.
      * @param fn The fieldInfos.
@@ -85,6 +88,7 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
 
     /**
      * Returns a {@link StoredFieldsReader} to write stored fields.
+     *
      * @param directory The index directory.
      * @param si The SegmentInfo that stores segment information.
      * @param context The IOContext that holds additional details on the merge/search context.
@@ -94,7 +98,7 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
         String previous = si.putAttribute(MODE_KEY, mode.name());
         if (previous != null && previous.equals(mode.name()) == false) {
             throw new IllegalStateException(
-                    "found existing value for " + MODE_KEY + " for segment: " + si.name + " old = " + previous + ", new = " + mode.name()
+                "found existing value for " + MODE_KEY + " for segment: " + si.name + " old = " + previous + ", new = " + mode.name()
             );
         }
         return impl(mode).fieldsWriter(directory, si, context);
@@ -105,22 +109,22 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
             case ZSTD:
             case ZSTD_DEPRECATED:
                 return new Lucene90CompressingStoredFieldsFormat(
-                        "CustomStoredFieldsZstd",
-                        zstdCompressionMode,
-                        ZSTD_BLOCK_LENGTH,
-                        ZSTD_MAX_DOCS_PER_BLOCK,
-                        ZSTD_BLOCK_SHIFT
+                    "CustomStoredFieldsZstd",
+                    zstdCompressionMode,
+                    ZSTD_BLOCK_LENGTH,
+                    ZSTD_MAX_DOCS_PER_BLOCK,
+                    ZSTD_BLOCK_SHIFT
                 );
             case ZSTD_NO_DICT:
                 return new Lucene90CompressingStoredFieldsFormat(
-                        "CustomStoredFieldsZstdNoDict",
-                        zstdNoDictCompressionMode,
-                        ZSTD_BLOCK_LENGTH,
-                        ZSTD_MAX_DOCS_PER_BLOCK,
-                        ZSTD_BLOCK_SHIFT
+                    "CustomStoredFieldsZstdNoDict",
+                    zstdNoDictCompressionMode,
+                    ZSTD_BLOCK_LENGTH,
+                    ZSTD_MAX_DOCS_PER_BLOCK,
+                    ZSTD_BLOCK_SHIFT
                 );
             default:
-                throw new AssertionError();
+                throw new IllegalStateException("Unsupported compression mode: " + mode);
         }
     }
 
@@ -128,9 +132,7 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
         return mode;
     }
 
-    /**
-     * Returns the compression level.
-     */
+    /** Returns the compression level. */
     public int getCompressionLevel() {
         return compressionLevel;
     }
@@ -138,5 +140,4 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
     public CompressionMode getCompressionMode() {
         return mode == Lucene95CustomCodec.Mode.ZSTD_NO_DICT ? zstdNoDictCompressionMode : zstdCompressionMode;
     }
-
 }

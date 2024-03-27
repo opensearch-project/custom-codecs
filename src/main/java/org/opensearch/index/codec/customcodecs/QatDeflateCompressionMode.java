@@ -62,8 +62,7 @@ public class QatDeflateCompressionMode extends CompressionMode {
     private static final class QatCompressor extends Compressor {
 
         private byte[] compressedBuffer;
-
-        private QatZipper qatZipper;
+        private final QatZipper qatZipper;
 
         /** compressor with a given compresion level */
         public QatCompressor(int compressionLevel, QatZipper.Mode mode) {
@@ -118,7 +117,7 @@ public class QatDeflateCompressionMode extends CompressionMode {
     private static final class QatDecompressor extends Decompressor {
 
         private byte[] compressed;
-        private QatZipper qatZipper;
+        private final QatZipper qatZipper;
         final QatZipper.Mode qatMode;
 
         /** default decompressor */

@@ -148,7 +148,7 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
                     QAT_DEFLATE_BLOCK_SHIFT
                 );
             default:
-                throw new AssertionError();
+                throw new IllegalStateException("Unsupported compression mode: " + mode);
         }
     }
 
@@ -172,13 +172,6 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
     }
 
     public CompressionMode getCompressionMode() {
-        switch (mode) {
-            case QAT_DEFLATE:
-                return qatDeflateCompressionMode;
-            case QAT_LZ4:
-                return qatLz4CompressionMode;
-            default:
-                throw new AssertionError();
-        }
+        return mode == Lucene99QatCodec.Mode.QAT_DEFLATE ? qatDeflateCompressionMode : qatLz4CompressionMode;
     }
 }
