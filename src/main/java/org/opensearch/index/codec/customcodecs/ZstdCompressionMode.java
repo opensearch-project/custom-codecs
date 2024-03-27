@@ -48,7 +48,7 @@ public class ZstdCompressionMode extends CompressionMode {
         this.compressionLevel = compressionLevel;
     }
 
-    /** Creates a new compressor instance.*/
+    /** Creates a new compressor instance. */
     @Override
     public Compressor newCompressor() {
         return new ZstdCompressor(compressionLevel);
@@ -188,7 +188,6 @@ public class ZstdCompressionMode extends CompressionMode {
 
                     // Read blocks that intersect with the interval we need
                     while (offsetInBlock < offset + length) {
-                        bytes.bytes = ArrayUtil.grow(bytes.bytes, bytes.length + blockLength);
                         int l = Math.min(blockLength, originalLength - offsetInBlock);
                         doDecompress(in, dctx, bytes, l);
                         offsetInBlock += blockLength;

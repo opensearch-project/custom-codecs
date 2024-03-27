@@ -24,7 +24,7 @@ import com.intel.qat.QatZipper;
  * QatDeflate99Codec provides a DEFLATE compressor using the <a
  * href="https://github.com/intel/qat-java">qat-java</a> library.
  */
-public class QatDeflate99Codec extends Lucene99CustomCodec implements CodecSettings, CodecAliases {
+public class QatDeflate99Codec extends Lucene99QatCodec implements CodecSettings, CodecAliases {
 
     /** Creates a new QatDeflate99Codec instance with the default compression level. */
     public QatDeflate99Codec() {

@@ -34,7 +34,7 @@ public class QatDeflateCompressionMode extends CompressionMode {
     /** default constructor */
     protected QatDeflateCompressionMode() {
         this.compressionLevel = DEFAULT_COMPRESSION_LEVEL;
-        this.supplier = () -> { return Lucene99CustomCodec.DEFAULT_QAT_MODE; };
+        this.supplier = () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; };
     }
 
     /**

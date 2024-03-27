@@ -24,7 +24,7 @@ import com.intel.qat.QatZipper;
  * QatLz499Codec provides an LZ4 compressor using the <a
  * href="https://github.com/intel/qat-java">qat-java</a> library.
  */
-public class QatLz499Codec extends Lucene99CustomCodec implements CodecSettings, CodecAliases {
+public class QatLz499Codec extends Lucene99QatCodec implements CodecSettings, CodecAliases {
 
     /** Creates a new QatLz499Codec instance with the default compression level. */
     public QatLz499Codec() {

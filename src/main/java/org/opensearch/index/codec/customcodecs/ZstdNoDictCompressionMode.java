@@ -43,7 +43,7 @@ public class ZstdNoDictCompressionMode extends CompressionMode {
         this.compressionLevel = compressionLevel;
     }
 
-    /** Creates a new compressor instance.*/
+    /** Creates a new compressor instance. */
     @Override
     public Compressor newCompressor() {
         return new ZstdCompressor(compressionLevel);
@@ -148,7 +148,6 @@ public class ZstdNoDictCompressionMode extends CompressionMode {
 
             // Read blocks that intersect with the interval we need
             while (offsetInBlock < offset + length) {
-                bytes.bytes = ArrayUtil.grow(bytes.bytes, bytes.length + blockLength);
                 final int compressedLength = in.readVInt();
                 if (compressedLength == 0) {
                     return;
@@ -156,13 +155,10 @@ public class ZstdNoDictCompressionMode extends CompressionMode {
                 compressed = ArrayUtil.growNoCopy(compressed, compressedLength);
                 in.readBytes(compressed, 0, compressedLength);
 
-                int l = Math.min(blockLength, originalLength - offsetInBlock);
+                final int l = Math.min(blockLength, originalLength - offsetInBlock);
                 bytes.bytes = ArrayUtil.grow(bytes.bytes, bytes.length + l);
 
-                byte[] output = new byte[l];
-
-                final int uncompressed = (int) Zstd.decompressByteArray(output, 0, l, compressed, 0, compressedLength);
-                System.arraycopy(output, 0, bytes.bytes, bytes.length, uncompressed);
+                final int uncompressed = (int) Zstd.decompressByteArray(bytes.bytes, bytes.length, l, compressed, 0, compressedLength);
 
                 bytes.length += uncompressed;
                 offsetInBlock += blockLength;
