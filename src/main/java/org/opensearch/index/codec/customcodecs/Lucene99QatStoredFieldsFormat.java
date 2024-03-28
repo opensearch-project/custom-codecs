@@ -36,7 +36,7 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
 
     private static final int QAT_LZ4_BLOCK_LENGTH = 10 * 8 * 1024;
     private static final int QAT_LZ4_MAX_DOCS_PER_BLOCK = 4096;
-    private static final int QATLZ4_BLOCK_SHIFT = 10;
+    private static final int QAT_LZ4_BLOCK_SHIFT = 10;
 
     private final CompressionMode qatDeflateCompressionMode;
     private final CompressionMode qatLz4CompressionMode;
@@ -46,13 +46,13 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
 
     /** default constructor */
     public Lucene99QatStoredFieldsFormat() {
-        this(Lucene99QatCodec.Mode.QAT_DEFLATE, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL);
+        this(Lucene99QatCodec.Mode.QAT_LZ4, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL);
     }
 
     /**
      * Creates a new instance.
      *
-     * @param mode The mode represents QAT_DEFLATE or QAT_LZ4
+     * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
      */
     public Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode mode) {
         this(mode, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL);
@@ -61,7 +61,7 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
     /**
      * Creates a new instance.
      *
-     * @param mode The mode represents QAT_DEFLATE or QAT_LZ4
+     * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
      * @param supplier a supplier for QAT acceleration mode.
      */
     public Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode mode, Supplier<QatZipper.Mode> supplier) {
@@ -71,7 +71,7 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
     /**
      * Creates a new instance with the specified mode and compression level.
      *
-     * @param mode The mode represents QAT_DEFLATE or QAT_LZ4
+     * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
      * @param compressionLevel The compression level for the mode.
      */
     public Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode mode, int compressionLevel) {
@@ -81,7 +81,7 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
     /**
      * Creates a new instance with the specified mode and compression level.
      *
-     * @param mode The mode represents QAT_DEFLATE or QAT_LZ4
+     * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
      * @param compressionLevel The compression level for the mode.
      * @param supplier a supplier for QAT acceleration mode.
      */
@@ -131,19 +131,19 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
 
     StoredFieldsFormat impl(Lucene99QatCodec.Mode mode) {
         switch (mode) {
-            case QAT_DEFLATE:
-                return getQatCompressingStoredFieldsFormat(
-                    "QatStoredFieldsDeflate",
-                    this.qatDeflateCompressionMode,
-                    QAT_DEFLATE_BLOCK_LENGTH,
-                    QAT_DEFLATE_MAX_DOCS_PER_BLOCK,
-                    QAT_DEFLATE_BLOCK_SHIFT
-                );
             case QAT_LZ4:
                 return getQatCompressingStoredFieldsFormat(
                     "QatStoredFieldsLz4",
                     this.qatLz4CompressionMode,
                     QAT_LZ4_BLOCK_LENGTH,
+                    QAT_LZ4_MAX_DOCS_PER_BLOCK,
+                    QAT_LZ4_BLOCK_SHIFT
+                );
+            case QAT_DEFLATE:
+                return getQatCompressingStoredFieldsFormat(
+                    "QatStoredFieldsDeflate",
+                    this.qatDeflateCompressionMode,
+                    QAT_DEFLATE_BLOCK_LENGTH,
                     QAT_DEFLATE_MAX_DOCS_PER_BLOCK,
                     QAT_DEFLATE_BLOCK_SHIFT
                 );
@@ -172,6 +172,6 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
     }
 
     public CompressionMode getCompressionMode() {
-        return mode == Lucene99QatCodec.Mode.QAT_DEFLATE ? qatDeflateCompressionMode : qatLz4CompressionMode;
+        return mode == Lucene99QatCodec.Mode.QAT_LZ4 ? qatLz4CompressionMode : qatDeflateCompressionMode;
     }
 }

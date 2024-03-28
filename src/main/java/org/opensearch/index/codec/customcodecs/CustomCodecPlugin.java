@@ -28,8 +28,8 @@ import com.intel.qat.QatZipper;
  * <ul>
  *   <li>ZSTD_CODEC
  *   <li>ZSTD_NO_DICT_CODEC
- *   <li>QAT_DEFLATE
  *   <li>QAT_LZ4
+ *   <li>QAT_DEFLATE
  * </ul>
  *
  * @opensearch.internal
@@ -60,8 +60,8 @@ public final class CustomCodecPlugin extends Plugin implements EnginePlugin {
         String codecName = indexSettings.getValue(EngineConfig.INDEX_CODEC_SETTING);
         if (codecName.equals(CustomCodecService.ZSTD_NO_DICT_CODEC)
             || codecName.equals(CustomCodecService.ZSTD_CODEC)
-            || codecName.equals(CustomCodecService.QAT_DEFLATE_CODEC)
-            || codecName.equals(CustomCodecService.QAT_LZ4_CODEC)) {
+            || codecName.equals(CustomCodecService.QAT_LZ4_CODEC)
+            || codecName.equals(CustomCodecService.QAT_DEFLATE_CODEC)) {
             return Optional.of(new CustomCodecServiceFactory());
         }
         return Optional.empty();

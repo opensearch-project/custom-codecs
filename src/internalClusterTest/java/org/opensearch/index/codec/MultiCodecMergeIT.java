@@ -68,8 +68,8 @@ public class MultiCodecMergeIT extends OpenSearchIntegTestCase {
         );
 
         if (QatZipperFactory.isQatAvailable()) {
-            codecMap.put("QAT_DEFLATE", "qat_deflate");
             codecMap.put("QAT_LZ4", "qat_lz4");
+            codecMap.put("QAT_DEFLATE", "qat_deflate");
         }
 
         for (Map.Entry<String, String> codec : codecMap.entrySet()) {
