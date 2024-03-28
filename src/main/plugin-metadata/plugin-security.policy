@@ -9,3 +9,8 @@
 grant codeBase "${codebase.zstd-jni}" {
   permission java.lang.RuntimePermission "loadLibrary.*";
 };
+
+grant codeBase "${codebase.qat-java}" {
+  permission java.lang.RuntimePermission "loadLibrary.*";
+  permission org.opensearch.secure_sm.ThreadPermission "modifyArbitraryThread";
+};

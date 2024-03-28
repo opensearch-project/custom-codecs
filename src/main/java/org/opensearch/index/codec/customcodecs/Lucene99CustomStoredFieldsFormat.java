@@ -106,7 +106,7 @@ public class Lucene99CustomStoredFieldsFormat extends StoredFieldsFormat {
             case ZSTD_NO_DICT:
                 return getCustomCompressingStoredFieldsFormat("CustomStoredFieldsZstdNoDict", this.zstdNoDictCompressionMode);
             default:
-                throw new AssertionError();
+                throw new IllegalStateException("Unsupported compression mode: " + mode);
         }
     }
 

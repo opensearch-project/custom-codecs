@@ -193,7 +193,7 @@ public abstract class AbstractCompressorTests extends OpenSearchTestCase {
         bos.write(bytes);
     }
 
-    private void doTest(byte[] bytes) throws IOException {
+    protected void doTest(byte[] bytes) throws IOException {
         final int length = bytes.length;
 
         ByteBuffersDataInput in = new ByteBuffersDataInput(List.of(ByteBuffer.wrap(bytes)));
@@ -215,5 +215,4 @@ public abstract class AbstractCompressorTests extends OpenSearchTestCase {
 
         assertArrayEquals(bytes, restored);
     }
-
 }

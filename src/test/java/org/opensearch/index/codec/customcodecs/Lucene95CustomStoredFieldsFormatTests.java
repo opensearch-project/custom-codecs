@@ -57,5 +57,4 @@ public class Lucene95CustomStoredFieldsFormatTests extends OpenSearchTestCase {
         );
         assertTrue(lucene95CustomStoredFieldsFormat.getCompressionMode() instanceof ZstdNoDictCompressionMode);
     }
-
 }

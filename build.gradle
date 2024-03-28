@@ -93,6 +93,7 @@ opensearchplugin {
 
 dependencies {
   api "com.github.luben:zstd-jni:1.5.5-5"
+  api "com.intel.qat:qat-java:1.1.1"
 }
 
 allprojects {
