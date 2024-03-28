@@ -9,14 +9,14 @@
  */
 package org.opensearch.customcodecs.bwc;
 
+import org.opensearch.common.Randomness;
+import org.opensearch.core.xcontent.MediaTypeRegistry;
+import org.opensearch.core.xcontent.XContentBuilder;
+
 import java.io.IOException;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-
-import org.opensearch.common.Randomness;
-import org.opensearch.core.xcontent.MediaTypeRegistry;
-import org.opensearch.core.xcontent.XContentBuilder;
 
 public class Song {
 
@@ -57,12 +57,12 @@ public class Song {
     public static final String QUERY_TITLE_MAGNUM_OPUS = FIELD_TITLE + ":" + TITLE_MAGNUM_OPUS;
 
     public static final Song[] SONGS = {
-            new Song(ARTIST_FIRST, TITLE_MAGNUM_OPUS, LYRICS_1, 1, GENRE_ROCK),
-            new Song(ARTIST_STRING, TITLE_SONG_1_PLUS_1, LYRICS_2, 2, GENRE_BLUES),
-            new Song(ARTIST_TWINS, TITLE_NEXT_SONG, LYRICS_3, 3, GENRE_JAZZ),
-            new Song(ARTIST_NO, TITLE_POISON, LYRICS_4, 4, GENRE_ROCK),
-            new Song(ARTIST_YES, TITLE_AFFIRMATIVE, LYRICS_5, 5, GENRE_BLUES),
-            new Song(ARTIST_UNKNOWN, TITLE_CONFIDENTIAL, LYRICS_6, 6, GENRE_JAZZ)};
+        new Song(ARTIST_FIRST, TITLE_MAGNUM_OPUS, LYRICS_1, 1, GENRE_ROCK),
+        new Song(ARTIST_STRING, TITLE_SONG_1_PLUS_1, LYRICS_2, 2, GENRE_BLUES),
+        new Song(ARTIST_TWINS, TITLE_NEXT_SONG, LYRICS_3, 3, GENRE_JAZZ),
+        new Song(ARTIST_NO, TITLE_POISON, LYRICS_4, 4, GENRE_ROCK),
+        new Song(ARTIST_YES, TITLE_AFFIRMATIVE, LYRICS_5, 5, GENRE_BLUES),
+        new Song(ARTIST_UNKNOWN, TITLE_CONFIDENTIAL, LYRICS_6, 6, GENRE_JAZZ) };
 
     private final String artist;
     private final String title;
@@ -111,11 +111,11 @@ public class Song {
 
     public static Song randomSong() {
         return new Song(
-                UUID.randomUUID().toString(),
-                UUID.randomUUID().toString(),
-                UUID.randomUUID().toString(),
-                Randomness.get().nextInt(5),
-                UUID.randomUUID().toString()
+            UUID.randomUUID().toString(),
+            UUID.randomUUID().toString(),
+            UUID.randomUUID().toString(),
+            Randomness.get().nextInt(5),
+            UUID.randomUUID().toString()
         );
     }
 }
