@@ -19,9 +19,7 @@ import static com.intel.qat.QatZipper.Mode;
 import static com.intel.qat.QatZipper.PollingMode;
 
 /** A factory class to create instances of QatZipper */
-public class QatZipperFactory
-
-{
+public class QatZipperFactory {
 
     /**
      * Creates a new QatZipper with the specified parameters.
