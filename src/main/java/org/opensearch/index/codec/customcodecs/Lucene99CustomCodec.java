@@ -28,7 +28,7 @@ import java.util.Set;
 public abstract class Lucene99CustomCodec extends FilterCodec {
 
     /** Default compression level used for compression */
-    public static final int DEFAULT_COMPRESSION_LEVEL = 3;
+    public static final int DEFAULT_COMPRESSION_LEVEL = 6;
 
     /** Each mode represents a compression algorithm. */
     public enum Mode {

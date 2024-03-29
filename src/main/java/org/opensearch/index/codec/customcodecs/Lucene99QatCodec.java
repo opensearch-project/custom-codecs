@@ -12,6 +12,9 @@ import org.apache.logging.log4j.Logger;
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;
 import org.apache.lucene.codecs.lucene99.Lucene99Codec;
+import org.opensearch.common.settings.Setting;
+import org.opensearch.common.settings.Setting.Property;
+import org.opensearch.common.settings.Settings;
 import org.opensearch.index.codec.PerFieldMappingPostingFormatCodec;
 import org.opensearch.index.mapper.MapperService;
 
@@ -29,10 +32,22 @@ import com.intel.qat.QatZipper;
 public abstract class Lucene99QatCodec extends FilterCodec {
 
     /** Default compression level used for compression */
-    public static final int DEFAULT_COMPRESSION_LEVEL = 3;
+    public static final int DEFAULT_COMPRESSION_LEVEL = 6;
 
-    /** The default QAT mode */
-    public static final QatZipper.Mode DEFAULT_QAT_MODE = QatZipper.Mode.HARDWARE;
+    /** A setting to specifiy the QAT acceleration mode. */
+    public static final Setting<QatZipper.Mode> INDEX_CODEC_QAT_MODE_SETTING = new Setting<>("index.codec.qatmode", "auto", s -> {
+        switch (s) {
+            case "auto":
+                return QatZipper.Mode.AUTO;
+            case "hardware":
+                return QatZipper.Mode.HARDWARE;
+            default:
+                throw new IllegalArgumentException("Unknown value for [index.codec.qatmode] must be one of [auto, hardware] but was: " + s);
+        }
+    }, Property.IndexScope, Property.Dynamic);
+
+    /**  Just a terse way to reference the default execution mode. */
+    public static final QatZipper.Mode DEFAULT_QAT_MODE = INDEX_CODEC_QAT_MODE_SETTING.getDefault(Settings.EMPTY);
 
     /** Each mode represents a compression algorithm. */
     public enum Mode {

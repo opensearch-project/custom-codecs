@@ -9,7 +9,6 @@
 package org.opensearch.index.codec.customcodecs;
 
 import org.opensearch.common.settings.Setting;
-import org.opensearch.common.settings.Setting.Property;
 import org.opensearch.index.IndexSettings;
 import org.opensearch.index.codec.CodecServiceFactory;
 import org.opensearch.index.engine.EngineConfig;
@@ -19,8 +18,6 @@ import org.opensearch.plugins.Plugin;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
-import com.intel.qat.QatZipper;
 
 /**
  * A plugin that implements custom codecs. Supports these codecs:
@@ -35,18 +32,6 @@ import com.intel.qat.QatZipper;
  * @opensearch.internal
  */
 public final class CustomCodecPlugin extends Plugin implements EnginePlugin {
-
-    /** A setting to specifiy the QAT acceleration mode. */
-    public static final Setting<QatZipper.Mode> INDEX_CODEC_QAT_MODE_SETTING = new Setting<>("index.codec.qatmode", "hardware", s -> {
-        switch (s) {
-            case "auto":
-                return QatZipper.Mode.AUTO;
-            case "hardware":
-                return QatZipper.Mode.HARDWARE;
-            default:
-                throw new IllegalArgumentException("Unknown value for [index.codec.qatmode] must be one of [auto, hardware] but was: " + s);
-        }
-    }, Property.IndexScope, Property.Dynamic);
 
     /** Creates a new instance */
     public CustomCodecPlugin() {}
@@ -69,6 +54,6 @@ public final class CustomCodecPlugin extends Plugin implements EnginePlugin {
 
     @Override
     public List<Setting<?>> getSettings() {
-        return Arrays.asList(INDEX_CODEC_QAT_MODE_SETTING);
+        return Arrays.asList(Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING);
     }
 }

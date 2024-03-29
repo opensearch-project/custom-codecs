@@ -147,7 +147,7 @@ public class QatCodecTests extends OpenSearchTestCase {
         if (isMapperServiceNull) {
             return new CustomCodecService(
                 null,
-                IndexSettingsModule.newIndexSettings("_na", nodeSettings, CustomCodecPlugin.INDEX_CODEC_QAT_MODE_SETTING),
+                IndexSettingsModule.newIndexSettings("_na", nodeSettings, Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING),
                 LogManager.getLogger("test")
             );
         }
@@ -167,7 +167,7 @@ public class QatCodecTests extends OpenSearchTestCase {
         IndexSettings indexSettings = IndexSettingsModule.newIndexSettings(
             "_na",
             nodeSettings,
-            CustomCodecPlugin.INDEX_CODEC_QAT_MODE_SETTING
+            Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING
         );
         SimilarityService similarityService = new SimilarityService(indexSettings, null, Collections.emptyMap());
         IndexAnalyzers indexAnalyzers = createTestAnalysis(indexSettings, nodeSettings).indexAnalyzers;

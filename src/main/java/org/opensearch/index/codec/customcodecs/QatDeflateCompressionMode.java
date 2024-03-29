@@ -26,14 +26,13 @@ import com.intel.qat.QatZipper;
 public class QatDeflateCompressionMode extends CompressionMode {
 
     private static final int NUM_SUB_BLOCKS = 10;
-    private static final int DEFAULT_COMPRESSION_LEVEL = 6;
 
     private final int compressionLevel;
     private final Supplier<QatZipper.Mode> supplier;
 
     /** default constructor */
     protected QatDeflateCompressionMode() {
-        this.compressionLevel = DEFAULT_COMPRESSION_LEVEL;
+        this.compressionLevel = Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
         this.supplier = () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; };
     }
 

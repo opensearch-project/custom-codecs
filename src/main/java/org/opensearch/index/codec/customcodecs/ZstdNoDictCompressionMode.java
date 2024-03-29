@@ -25,13 +25,12 @@ import java.io.IOException;
 public class ZstdNoDictCompressionMode extends CompressionMode {
 
     private static final int NUM_SUB_BLOCKS = 10;
-    private static final int DEFAULT_COMPRESSION_LEVEL = 6;
 
     private final int compressionLevel;
 
     /** default constructor */
     protected ZstdNoDictCompressionMode() {
-        this.compressionLevel = DEFAULT_COMPRESSION_LEVEL;
+        this.compressionLevel = Lucene99CustomCodec.DEFAULT_COMPRESSION_LEVEL;
     }
 
     /**
