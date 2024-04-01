@@ -35,7 +35,7 @@ public class Lucene99QatStoredFieldsFormatTests extends OpenSearchTestCase {
             randomCompressionLevel
         );
         assertEquals(Lucene99QatCodec.Mode.QAT_LZ4, lucene99QatStoredFieldsFormat.getMode());
-        assertEquals(randomCompressionLevel, lucene99QatStoredFieldsFormat.getCompressionLevel());
+        assertEquals(randomCompressionLevel, lucene99QatStoredFieldsFormat.getCompressionMode().getCompressionLevel());
     }
 
     public void testDeflateLucene99QatCodecModeWithCompressionLevel() {
@@ -46,18 +46,18 @@ public class Lucene99QatStoredFieldsFormatTests extends OpenSearchTestCase {
             randomCompressionLevel
         );
         assertEquals(Lucene99QatCodec.Mode.QAT_DEFLATE, lucene99QatStoredFieldsFormat.getMode());
-        assertEquals(randomCompressionLevel, lucene99QatStoredFieldsFormat.getCompressionLevel());
+        assertEquals(randomCompressionLevel, lucene99QatStoredFieldsFormat.getCompressionMode().getCompressionLevel());
     }
 
     public void testLz4CompressionModes() {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         Lucene99QatStoredFieldsFormat lucene99QatStoredFieldsFormat = new Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode.QAT_LZ4);
-        assertTrue(lucene99QatStoredFieldsFormat.getCompressionMode() instanceof QatLz4CompressionMode);
+        assertTrue(lucene99QatStoredFieldsFormat.getCompressionMode() instanceof QatCompressionMode);
     }
 
     public void testDeflateCompressionModes() {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         Lucene99QatStoredFieldsFormat lucene99QatStoredFieldsFormat = new Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode.QAT_DEFLATE);
-        assertTrue(lucene99QatStoredFieldsFormat.getCompressionMode() instanceof QatDeflateCompressionMode);
+        assertTrue(lucene99QatStoredFieldsFormat.getCompressionMode() instanceof QatCompressionMode);
     }
 }

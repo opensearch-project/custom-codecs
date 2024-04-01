@@ -22,51 +22,78 @@ import java.util.function.Supplier;
 
 import com.intel.qat.QatZipper;
 
-/** QAT_LZ4 Compression Mode */
-public class QatLz4CompressionMode extends CompressionMode {
+/** QatCompressionMode offers QAT_LZ4 and QAT_DEFLATE compressors. */
+public class QatCompressionMode extends CompressionMode {
 
     private static final int NUM_SUB_BLOCKS = 10;
 
+    private final QatZipper.Algorithm algorithm;
     private final int compressionLevel;
     private final Supplier<QatZipper.Mode> supplier;
 
     /** default constructor */
-    protected QatLz4CompressionMode() {
-        this.compressionLevel = Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
-        this.supplier = () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; };
+    protected QatCompressionMode() {
+        this(Lucene99QatCodec.DEFAULT_COMPRESSION_MODE, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL, () -> {
+            return Lucene99QatCodec.DEFAULT_QAT_MODE;
+        });
     }
 
     /**
      * Creates a new instance.
      *
+     * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
+     */
+    protected QatCompressionMode(Lucene99QatCodec.Mode mode) {
+        this(mode, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL, () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; });
+    }
+
+    /**
+     * Creates a new instance.
+     *
+     * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
+     * @param compressionLevel The compression level to use.
+     */
+    protected QatCompressionMode(Lucene99QatCodec.Mode mode, int compressionLevel) {
+        this(mode, compressionLevel, () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; });
+    }
+
+    /**
+     * Creates a new instance.
+     *
+     * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
      * @param compressionLevel The compression level to use.
      * @param supplier a supplier for QAT acceleration mode.
      */
-    protected QatLz4CompressionMode(int compressionLevel, Supplier<QatZipper.Mode> supplier) {
+    protected QatCompressionMode(Lucene99QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
+        this.algorithm = mode == Lucene99QatCodec.Mode.QAT_LZ4 ? QatZipper.Algorithm.LZ4 : QatZipper.Algorithm.DEFLATE;
         this.compressionLevel = compressionLevel;
         this.supplier = supplier;
     }
 
     @Override
     public Compressor newCompressor() {
-        return new QatCompressor(compressionLevel, supplier.get());
+        return new QatCompressor(algorithm, compressionLevel, supplier.get());
     }
 
     @Override
     public Decompressor newDecompressor() {
-        return new QatDecompressor(supplier.get());
+        return new QatDecompressor(algorithm, supplier.get());
     }
 
-    /** QAT_LZ4 compressor */
+    public int getCompressionLevel() {
+        return compressionLevel;
+    }
+
+    /** The QatCompressor.  */
     private static final class QatCompressor extends Compressor {
 
         private byte[] compressedBuffer;
         private final QatZipper qatZipper;
 
         /** compressor with a given compresion level */
-        public QatCompressor(int compressionLevel, QatZipper.Mode mode) {
+        public QatCompressor(QatZipper.Algorithm algorithm, int compressionLevel, QatZipper.Mode qatMode) {
             compressedBuffer = BytesRef.EMPTY_BYTES;
-            qatZipper = QatZipperFactory.createInstance(QatZipper.Algorithm.LZ4, compressionLevel, mode, QatZipper.PollingMode.PERIODICAL);
+            qatZipper = QatZipperFactory.createInstance(algorithm, compressionLevel, qatMode, QatZipper.PollingMode.PERIODICAL);
         }
 
         private void compress(byte[] bytes, int offset, int length, DataOutput out) throws IOException {
@@ -107,18 +134,20 @@ public class QatLz4CompressionMode extends CompressionMode {
         public void close() throws IOException {}
     }
 
-    /** QAT_LZ4 decompressor */
+    /** QAT_DEFLATE decompressor */
     private static final class QatDecompressor extends Decompressor {
 
         private byte[] compressed;
         private final QatZipper qatZipper;
         private final QatZipper.Mode qatMode;
+        private final QatZipper.Algorithm algorithm;
 
         /** default decompressor */
-        public QatDecompressor(QatZipper.Mode mode) {
+        public QatDecompressor(QatZipper.Algorithm algorithm, QatZipper.Mode qatMode) {
+            this.algorithm = algorithm;
+            this.qatMode = qatMode;
             compressed = BytesRef.EMPTY_BYTES;
-            qatZipper = QatZipperFactory.createInstance(QatZipper.Algorithm.LZ4, mode, QatZipper.PollingMode.PERIODICAL);
-            qatMode = mode;
+            qatZipper = QatZipperFactory.createInstance(algorithm, qatMode, QatZipper.PollingMode.PERIODICAL);
         }
 
         /*resuable decompress function*/
@@ -170,7 +199,7 @@ public class QatLz4CompressionMode extends CompressionMode {
 
         @Override
         public Decompressor clone() {
-            return new QatDecompressor(qatMode);
+            return new QatDecompressor(algorithm, qatMode);
         }
     }
 }

@@ -38,15 +38,12 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
     private static final int QAT_LZ4_MAX_DOCS_PER_BLOCK = 4096;
     private static final int QAT_LZ4_BLOCK_SHIFT = 10;
 
-    private final CompressionMode qatDeflateCompressionMode;
-    private final CompressionMode qatLz4CompressionMode;
-
+    private final QatCompressionMode qatCompressionMode;
     private final Lucene99QatCodec.Mode mode;
-    private final int compressionLevel;
 
     /** default constructor */
     public Lucene99QatStoredFieldsFormat() {
-        this(Lucene99QatCodec.Mode.QAT_LZ4, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL);
+        this(Lucene99QatCodec.DEFAULT_COMPRESSION_MODE, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL);
     }
 
     /**
@@ -56,6 +53,16 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
      */
     public Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode mode) {
         this(mode, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL);
+    }
+
+    /**
+     * Creates a new instance with the specified mode and compression level.
+     *
+     * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
+     * @param compressionLevel The compression level for the mode.
+     */
+    public Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode mode, int compressionLevel) {
+        this(mode, compressionLevel, () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; });
     }
 
     /**
@@ -73,23 +80,11 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
      *
      * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
      * @param compressionLevel The compression level for the mode.
-     */
-    public Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode mode, int compressionLevel) {
-        this(mode, compressionLevel, () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; });
-    }
-
-    /**
-     * Creates a new instance with the specified mode and compression level.
-     *
-     * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
-     * @param compressionLevel The compression level for the mode.
      * @param supplier a supplier for QAT acceleration mode.
      */
     public Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
         this.mode = Objects.requireNonNull(mode);
-        this.compressionLevel = compressionLevel;
-        qatDeflateCompressionMode = new QatDeflateCompressionMode(compressionLevel, supplier);
-        qatLz4CompressionMode = new QatLz4CompressionMode(compressionLevel, supplier);
+        qatCompressionMode = new QatCompressionMode(mode, compressionLevel, supplier);
     }
 
     /**
@@ -129,12 +124,12 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
         return impl(mode).fieldsWriter(directory, si, context);
     }
 
-    StoredFieldsFormat impl(Lucene99QatCodec.Mode mode) {
+    private StoredFieldsFormat impl(Lucene99QatCodec.Mode mode) {
         switch (mode) {
             case QAT_LZ4:
                 return getQatCompressingStoredFieldsFormat(
                     "QatStoredFieldsLz4",
-                    this.qatLz4CompressionMode,
+                    qatCompressionMode,
                     QAT_LZ4_BLOCK_LENGTH,
                     QAT_LZ4_MAX_DOCS_PER_BLOCK,
                     QAT_LZ4_BLOCK_SHIFT
@@ -142,7 +137,7 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
             case QAT_DEFLATE:
                 return getQatCompressingStoredFieldsFormat(
                     "QatStoredFieldsDeflate",
-                    this.qatDeflateCompressionMode,
+                    qatCompressionMode,
                     QAT_DEFLATE_BLOCK_LENGTH,
                     QAT_DEFLATE_MAX_DOCS_PER_BLOCK,
                     QAT_DEFLATE_BLOCK_SHIFT
@@ -162,16 +157,20 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
         return new Lucene90CompressingStoredFieldsFormat(formatName, compressionMode, blockSize, maxDocs, blockShift);
     }
 
+    /**
+     * Gets the mode of compression.
+     *
+     * @return either QAT_LZ4 or QAT_DEFLATE
+     */
     public Lucene99QatCodec.Mode getMode() {
         return mode;
     }
 
-    /** Returns the compression level. */
-    public int getCompressionLevel() {
-        return compressionLevel;
-    }
-
-    public CompressionMode getCompressionMode() {
-        return mode == Lucene99QatCodec.Mode.QAT_LZ4 ? qatLz4CompressionMode : qatDeflateCompressionMode;
+    /**
+     *
+     * @return the CompressionMode instance.
+     */
+    public QatCompressionMode getCompressionMode() {
+        return qatCompressionMode;
     }
 }

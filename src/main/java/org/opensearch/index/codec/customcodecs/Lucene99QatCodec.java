@@ -24,8 +24,7 @@ import java.util.function.Supplier;
 import com.intel.qat.QatZipper;
 
 /**
- * Extends {@link FilterCodec} to reuse the functionality of Lucene Codec. Supports two modes zstd
- * and zstd_no_dict. Uses Lucene99 as the delegate codec
+ * Extends {@link FilterCodec} to reuse the functionality of Lucene Codec.
  *
  * @opensearch.internal
  */
@@ -75,6 +74,9 @@ public abstract class Lucene99QatCodec extends FilterCodec {
             return aliases;
         }
     }
+
+    /** The default compression mode. */
+    public static final Mode DEFAULT_COMPRESSION_MODE = Mode.QAT_LZ4;
 
     private final StoredFieldsFormat storedFieldsFormat;
 
