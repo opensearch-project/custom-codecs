@@ -23,15 +23,14 @@ import java.util.function.Supplier;
 
 import com.intel.qat.QatZipper;
 
+import static org.opensearch.index.engine.EngineConfig.INDEX_CODEC_COMPRESSION_LEVEL_SETTING;
+
 /**
  * Extends {@link FilterCodec} to reuse the functionality of Lucene Codec.
  *
  * @opensearch.internal
  */
 public abstract class Lucene99QatCodec extends FilterCodec {
-
-    /** Default compression level used for compression */
-    public static final int DEFAULT_COMPRESSION_LEVEL = 6;
 
     /** A setting to specifiy the QAT acceleration mode. */
     public static final Setting<QatZipper.Mode> INDEX_CODEC_QAT_MODE_SETTING = new Setting<>("index.codec.qatmode", "auto", s -> {
@@ -45,8 +44,11 @@ public abstract class Lucene99QatCodec extends FilterCodec {
         }
     }, Property.IndexScope, Property.Dynamic);
 
-    /**  Just a terse way to reference the default execution mode. */
+    /**  A terse way to reference the default QAT execution mode. */
     public static final QatZipper.Mode DEFAULT_QAT_MODE = INDEX_CODEC_QAT_MODE_SETTING.getDefault(Settings.EMPTY);
+
+    /** Default compression level used for compression */
+    public static final int DEFAULT_COMPRESSION_LEVEL = INDEX_CODEC_COMPRESSION_LEVEL_SETTING.getDefault(Settings.EMPTY);
 
     /** Each mode represents a compression algorithm. */
     public enum Mode {
