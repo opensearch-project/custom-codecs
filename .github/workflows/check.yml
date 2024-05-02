@@ -39,7 +39,7 @@ jobs:
     strategy:
       matrix:
         java: [ 11, 17, 21 ]
-        os: [windows-latest, macos-latest]
+        os: [windows-latest, macos-13]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
