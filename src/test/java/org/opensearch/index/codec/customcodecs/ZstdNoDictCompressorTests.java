@@ -10,9 +10,7 @@ package org.opensearch.index.codec.customcodecs;
 import org.apache.lucene.codecs.compressing.Compressor;
 import org.apache.lucene.codecs.compressing.Decompressor;
 
-/**
- * Test ZSTD compression (with no dictionary).
- */
+/** Test ZSTD compression (with no dictionary). */
 public class ZstdNoDictCompressorTests extends AbstractCompressorTests {
 
     private final Compressor compressor = new ZstdNoDictCompressionMode().newCompressor();

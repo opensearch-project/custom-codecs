@@ -16,6 +16,7 @@ import org.opensearch.action.admin.indices.settings.put.UpdateSettingsRequest;
 import org.opensearch.cluster.metadata.IndexMetadata;
 import org.opensearch.common.settings.Settings;
 import org.opensearch.index.codec.customcodecs.CustomCodecPlugin;
+import org.opensearch.index.codec.customcodecs.QatZipperFactory;
 import org.opensearch.index.engine.Segment;
 import org.opensearch.plugins.Plugin;
 import org.opensearch.test.OpenSearchIntegTestCase;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -51,25 +53,24 @@ public class MultiCodecMergeIT extends OpenSearchIntegTestCase {
 
     public void testForceMergeMultipleCodecs() throws ExecutionException, InterruptedException {
 
-        Map<String, String> codecMap = Map.of(
-            "best_compression",
-            "BEST_COMPRESSION",
-            "zlib",
-            "BEST_COMPRESSION",
-            "zstd_no_dict",
-            "ZSTD_NO_DICT",
-            "zstd",
-            "ZSTD",
-            "default",
-            "BEST_SPEED",
-            "lz4",
-            "BEST_SPEED"
-        );
+        Map<String, String> codecMap = new HashMap<String, String>() {
+            {
+                put("best_compression", "BEST_COMPRESSION");
+                put("zlib", "BEST_COMPRESSION");
+                put("zstd_no_dict", "ZSTD_NO_DICT");
+                put("zstd", "ZSTD");
+                put("default", "BEST_SPEED");
+                put("lz4", "BEST_SPEED");
+                if (QatZipperFactory.isQatAvailable()) {
+                    put("qat_lz4", "QAT_LZ4");
+                    put("qat_deflate", "QAT_DEFLATE");
+                }
+            }
+        };
 
         for (Map.Entry<String, String> codec : codecMap.entrySet()) {
             forceMergeMultipleCodecs(codec.getKey(), codec.getValue(), codecMap);
         }
-
     }
 
     private void forceMergeMultipleCodecs(String finalCodec, String finalCodecMode, Map<String, String> codecMap) throws ExecutionException,

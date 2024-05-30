@@ -8,8 +8,6 @@
 
 package org.opensearch.index.codec.customcodecs;
 
-import com.github.luben.zstd.Zstd;
-
 import org.apache.lucene.codecs.compressing.CompressionMode;
 import org.apache.lucene.codecs.compressing.Compressor;
 import org.apache.lucene.codecs.compressing.Decompressor;
@@ -20,60 +18,92 @@ import org.apache.lucene.util.ArrayUtil;
 import org.apache.lucene.util.BytesRef;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 
-/** ZSTD Compression Mode (without a dictionary support). */
-public class ZstdNoDictCompressionMode extends CompressionMode {
+import com.intel.qat.QatZipper;
+
+/** QatCompressionMode offers QAT_LZ4 and QAT_DEFLATE compressors. */
+public class QatCompressionMode extends CompressionMode {
 
     private static final int NUM_SUB_BLOCKS = 10;
 
+    private final QatZipper.Algorithm algorithm;
     private final int compressionLevel;
+    private final Supplier<QatZipper.Mode> supplier;
 
     /** default constructor */
-    protected ZstdNoDictCompressionMode() {
-        this.compressionLevel = Lucene99CustomCodec.DEFAULT_COMPRESSION_LEVEL;
+    protected QatCompressionMode() {
+        this(Lucene99QatCodec.DEFAULT_COMPRESSION_MODE, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL, () -> {
+            return Lucene99QatCodec.DEFAULT_QAT_MODE;
+        });
     }
 
     /**
-     * Creates a new instance with the given compression level.
+     * Creates a new instance.
      *
-     * @param compressionLevel The compression level.
+     * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
      */
-    protected ZstdNoDictCompressionMode(int compressionLevel) {
-        this.compressionLevel = compressionLevel;
+    protected QatCompressionMode(Lucene99QatCodec.Mode mode) {
+        this(mode, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL, () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; });
     }
 
-    /** Creates a new compressor instance. */
+    /**
+     * Creates a new instance.
+     *
+     * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
+     * @param compressionLevel The compression level to use.
+     */
+    protected QatCompressionMode(Lucene99QatCodec.Mode mode, int compressionLevel) {
+        this(mode, compressionLevel, () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; });
+    }
+
+    /**
+     * Creates a new instance.
+     *
+     * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
+     * @param compressionLevel The compression level to use.
+     * @param supplier a supplier for QAT acceleration mode.
+     */
+    protected QatCompressionMode(Lucene99QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
+        this.algorithm = mode == Lucene99QatCodec.Mode.QAT_LZ4 ? QatZipper.Algorithm.LZ4 : QatZipper.Algorithm.DEFLATE;
+        this.compressionLevel = compressionLevel;
+        this.supplier = supplier;
+    }
+
     @Override
     public Compressor newCompressor() {
-        return new ZstdCompressor(compressionLevel);
+        return new QatCompressor(algorithm, compressionLevel, supplier.get());
     }
 
-    /** Creates a new decompressor instance. */
     @Override
     public Decompressor newDecompressor() {
-        return new ZstdDecompressor();
+        return new QatDecompressor(algorithm, supplier.get());
     }
 
-    /** zstandard compressor */
-    private static final class ZstdCompressor extends Compressor {
+    public int getCompressionLevel() {
+        return compressionLevel;
+    }
 
-        private final int compressionLevel;
+    /** The QatCompressor.  */
+    private static final class QatCompressor extends Compressor {
+
         private byte[] compressedBuffer;
+        private final QatZipper qatZipper;
 
         /** compressor with a given compresion level */
-        public ZstdCompressor(int compressionLevel) {
-            this.compressionLevel = compressionLevel;
+        public QatCompressor(QatZipper.Algorithm algorithm, int compressionLevel, QatZipper.Mode qatMode) {
             compressedBuffer = BytesRef.EMPTY_BYTES;
+            qatZipper = QatZipperFactory.createInstance(algorithm, compressionLevel, qatMode, QatZipper.PollingMode.PERIODICAL);
         }
 
         private void compress(byte[] bytes, int offset, int length, DataOutput out) throws IOException {
-            assert offset >= 0 : "offset value must be greater than 0";
+            assert offset >= 0 : "Offset value must be greater than 0.";
 
             int blockLength = (length + NUM_SUB_BLOCKS - 1) / NUM_SUB_BLOCKS;
             out.writeVInt(blockLength);
 
             final int end = offset + length;
-            assert end >= 0 : "buffer read size must be greater than 0";
+            assert end >= 0 : "Buffer read size must be greater than 0.";
 
             for (int start = offset; start < end; start += blockLength) {
                 int l = Math.min(blockLength, end - start);
@@ -83,19 +113,10 @@ public class ZstdNoDictCompressionMode extends CompressionMode {
                     return;
                 }
 
-                final int maxCompressedLength = (int) Zstd.compressBound(l);
-                compressedBuffer = ArrayUtil.growNoCopy(compressedBuffer, maxCompressedLength);
+                final int maxCompressedLength = qatZipper.maxCompressedLength(l);
+                compressedBuffer = ArrayUtil.grow(compressedBuffer, maxCompressedLength);
 
-                int compressedSize = (int) Zstd.compressByteArray(
-                    compressedBuffer,
-                    0,
-                    compressedBuffer.length,
-                    bytes,
-                    start,
-                    l,
-                    compressionLevel
-                );
-
+                int compressedSize = qatZipper.compress(bytes, start, l, compressedBuffer, 0, compressedBuffer.length);
                 out.writeVInt(compressedSize);
                 out.writeBytes(compressedBuffer, compressedSize);
             }
@@ -113,19 +134,26 @@ public class ZstdNoDictCompressionMode extends CompressionMode {
         public void close() throws IOException {}
     }
 
-    /** zstandard decompressor */
-    private static final class ZstdDecompressor extends Decompressor {
+    /** QAT_DEFLATE decompressor */
+    private static final class QatDecompressor extends Decompressor {
 
         private byte[] compressed;
+        private final QatZipper qatZipper;
+        private final QatZipper.Mode qatMode;
+        private final QatZipper.Algorithm algorithm;
 
         /** default decompressor */
-        public ZstdDecompressor() {
+        public QatDecompressor(QatZipper.Algorithm algorithm, QatZipper.Mode qatMode) {
+            this.algorithm = algorithm;
+            this.qatMode = qatMode;
             compressed = BytesRef.EMPTY_BYTES;
+            qatZipper = QatZipperFactory.createInstance(algorithm, qatMode, QatZipper.PollingMode.PERIODICAL);
         }
 
+        /*resuable decompress function*/
         @Override
         public void decompress(DataInput in, int originalLength, int offset, int length, BytesRef bytes) throws IOException {
-            assert offset + length <= originalLength : "buffer read size must be within limit";
+            assert offset + length <= originalLength : "Buffer read size must be within limit.";
 
             if (length == 0) {
                 bytes.length = 0;
@@ -151,13 +179,13 @@ public class ZstdNoDictCompressionMode extends CompressionMode {
                 if (compressedLength == 0) {
                     return;
                 }
-                compressed = ArrayUtil.growNoCopy(compressed, compressedLength);
+                compressed = ArrayUtil.grow(compressed, compressedLength);
                 in.readBytes(compressed, 0, compressedLength);
 
-                final int l = Math.min(blockLength, originalLength - offsetInBlock);
+                int l = Math.min(blockLength, originalLength - offsetInBlock);
                 bytes.bytes = ArrayUtil.grow(bytes.bytes, bytes.length + l);
 
-                final int uncompressed = (int) Zstd.decompressByteArray(bytes.bytes, bytes.length, l, compressed, 0, compressedLength);
+                final int uncompressed = qatZipper.decompress(compressed, 0, compressedLength, bytes.bytes, bytes.length, l);
 
                 bytes.length += uncompressed;
                 offsetInBlock += blockLength;
@@ -166,12 +194,12 @@ public class ZstdNoDictCompressionMode extends CompressionMode {
             bytes.offset = offsetInBytesRef;
             bytes.length = length;
 
-            assert bytes.isValid() : "decompression output is corrupted.";
+            assert bytes.isValid() : "Decompression output is corrupted.";
         }
 
         @Override
         public Decompressor clone() {
-            return new ZstdDecompressor();
+            return new QatDecompressor(algorithm, qatMode);
         }
     }
 }

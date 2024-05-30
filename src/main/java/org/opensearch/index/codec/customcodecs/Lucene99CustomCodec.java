@@ -12,10 +12,13 @@ import org.apache.logging.log4j.Logger;
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;
 import org.apache.lucene.codecs.lucene99.Lucene99Codec;
+import org.opensearch.common.settings.Settings;
 import org.opensearch.index.codec.PerFieldMappingPostingFormatCodec;
 import org.opensearch.index.mapper.MapperService;
 
 import java.util.Set;
+
+import static org.opensearch.index.engine.EngineConfig.INDEX_CODEC_COMPRESSION_LEVEL_SETTING;
 
 /**
  *
@@ -28,7 +31,7 @@ import java.util.Set;
 public abstract class Lucene99CustomCodec extends FilterCodec {
 
     /** Default compression level used for compression */
-    public static final int DEFAULT_COMPRESSION_LEVEL = 3;
+    public static final int DEFAULT_COMPRESSION_LEVEL = INDEX_CODEC_COMPRESSION_LEVEL_SETTING.getDefault(Settings.EMPTY);
 
     /** Each mode represents a compression algorithm. */
     public enum Mode {

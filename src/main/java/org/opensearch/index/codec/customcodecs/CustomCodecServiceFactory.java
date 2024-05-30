@@ -12,9 +12,7 @@ import org.opensearch.index.codec.CodecService;
 import org.opensearch.index.codec.CodecServiceConfig;
 import org.opensearch.index.codec.CodecServiceFactory;
 
-/**
- * A factory for creating new {@link CodecService} instance
- */
+/** A factory for creating new {@link CodecService} instance */
 public class CustomCodecServiceFactory implements CodecServiceFactory {
 
     /** Creates a new instance. */
