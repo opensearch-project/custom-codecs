@@ -25,6 +25,7 @@ import org.opensearch.client.RestClientBuilder;
 import org.opensearch.cluster.metadata.IndexMetadata;
 import org.opensearch.common.settings.Settings;
 import org.opensearch.core.common.Strings;
+import org.opensearch.index.codec.customcodecs.QatZipperFactory;
 import org.opensearch.test.rest.OpenSearchRestTestCase;
 
 import javax.net.ssl.SSLEngine;
@@ -37,8 +38,12 @@ import java.util.Objects;
 
 import static org.opensearch.client.RestClientBuilder.DEFAULT_MAX_CONN_PER_ROUTE;
 import static org.opensearch.client.RestClientBuilder.DEFAULT_MAX_CONN_TOTAL;
+import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_DEFLATE_CODEC;
+import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_LZ4_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.ZSTD_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.ZSTD_NO_DICT_CODEC;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assume.assumeThat;
 
 public class CreateIndexWithCodecIT extends OpenSearchRestTestCase {
     public void testCreateIndexWithZstdCodec() throws IOException {
@@ -51,6 +56,29 @@ public class CreateIndexWithCodecIT extends OpenSearchRestTestCase {
                 .put(IndexMetadata.SETTING_NUMBER_OF_SHARDS, 1)
                 .put(IndexMetadata.SETTING_NUMBER_OF_REPLICAS, 0)
                 .put("index.codec", randomFrom(ZSTD_CODEC, ZSTD_NO_DICT_CODEC))
+                .put("index.codec.compression_level", randomIntBetween(1, 6))
+                .build()
+        );
+
+        try {
+            ensureGreen(index);
+        } finally {
+            deleteIndex(index);
+        }
+    }
+
+    public void testCreateIndexWithQatCodec() throws IOException {
+        assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
+
+        final String index = "custom-codecs-test-index";
+
+        // creating index
+        createIndex(
+            index,
+            Settings.builder()
+                .put(IndexMetadata.SETTING_NUMBER_OF_SHARDS, 1)
+                .put(IndexMetadata.SETTING_NUMBER_OF_REPLICAS, 0)
+                .put("index.codec", randomFrom(QAT_DEFLATE_CODEC, QAT_LZ4_CODEC))
                 .put("index.codec.compression_level", randomIntBetween(1, 6))
                 .build()
         );

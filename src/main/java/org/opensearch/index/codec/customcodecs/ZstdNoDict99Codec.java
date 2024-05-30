@@ -17,14 +17,10 @@ import org.opensearch.index.mapper.MapperService;
 
 import java.util.Set;
 
-/**
- * ZstdNoDictCodec provides ZSTD compressor without a dictionary support.
- */
+/** ZstdNoDictCodec provides ZSTD compressor without a dictionary support. */
 public class ZstdNoDict99Codec extends Lucene99CustomCodec implements CodecSettings, CodecAliases {
 
-    /**
-     * Creates a new ZstdNoDictCodec instance with the default compression level.
-     */
+    /** Creates a new ZstdNoDictCodec instance with the default compression level. */
     public ZstdNoDict99Codec() {
         this(DEFAULT_COMPRESSION_LEVEL);
     }

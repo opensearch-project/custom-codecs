@@ -30,13 +30,12 @@ public class ZstdCompressionMode extends CompressionMode {
 
     private static final int NUM_SUB_BLOCKS = 10;
     private static final int DICT_SIZE_FACTOR = 6;
-    private static final int DEFAULT_COMPRESSION_LEVEL = 6;
 
     private final int compressionLevel;
 
     /** default constructor */
     protected ZstdCompressionMode() {
-        this.compressionLevel = DEFAULT_COMPRESSION_LEVEL;
+        this.compressionLevel = Lucene99CustomCodec.DEFAULT_COMPRESSION_LEVEL;
     }
 
     /**
@@ -48,7 +47,7 @@ public class ZstdCompressionMode extends CompressionMode {
         this.compressionLevel = compressionLevel;
     }
 
-    /** Creates a new compressor instance.*/
+    /** Creates a new compressor instance. */
     @Override
     public Compressor newCompressor() {
         return new ZstdCompressor(compressionLevel);

@@ -6,7 +6,5 @@
  * compatible open source license.
  */
 
-/**
- * A plugin that implements compression codecs with native implementation.
- */
+/** A plugin that implements compression codecs with native implementation. */
 package org.opensearch.index.codec.customcodecs;
