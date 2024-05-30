@@ -18,13 +18,12 @@ import org.opensearch.index.mapper.MapperService;
 import java.util.Set;
 
 /**
- * ZstdCodec provides ZSTD compressor using the <a href="https://github.com/luben/zstd-jni">zstd-jni</a> library.
+ * ZstdCodec provides ZSTD compressor using the <a
+ * href="https://github.com/luben/zstd-jni">zstd-jni</a> library.
  */
 public class Zstd99Codec extends Lucene99CustomCodec implements CodecSettings, CodecAliases {
 
-    /**
-     * Creates a new ZstdCodec instance with the default compression level.
-     */
+    /** Creates a new ZstdCodec instance with the default compression level. */
     public Zstd99Codec() {
         this(DEFAULT_COMPRESSION_LEVEL);
     }

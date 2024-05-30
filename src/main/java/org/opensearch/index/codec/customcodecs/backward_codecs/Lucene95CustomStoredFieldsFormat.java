@@ -68,6 +68,7 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
 
     /**
      * Returns a {@link StoredFieldsReader} to load stored fields.
+     *
      * @param directory The index directory.
      * @param si The SegmentInfo that stores segment information.
      * @param fn The fieldInfos.
@@ -85,6 +86,7 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
 
     /**
      * Returns a {@link StoredFieldsReader} to write stored fields.
+     *
      * @param directory The index directory.
      * @param si The SegmentInfo that stores segment information.
      * @param context The IOContext that holds additional details on the merge/search context.
@@ -120,7 +122,7 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
                         ZSTD_BLOCK_SHIFT
                 );
             default:
-                throw new AssertionError();
+                throw new IllegalStateException("Unsupported compression mode: " + mode);
         }
     }
 
@@ -128,9 +130,7 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
         return mode;
     }
 
-    /**
-     * Returns the compression level.
-     */
+    /** Returns the compression level. */
     public int getCompressionLevel() {
         return compressionLevel;
     }
@@ -138,5 +138,4 @@ public class Lucene95CustomStoredFieldsFormat extends StoredFieldsFormat {
     public CompressionMode getCompressionMode() {
         return mode == Lucene95CustomCodec.Mode.ZSTD_NO_DICT ? zstdNoDictCompressionMode : zstdCompressionMode;
     }
-
 }

@@ -3,3 +3,5 @@ org.opensearch.index.codec.customcodecs.backward_codecs.ZstdNoDict95Codec
 org.opensearch.index.codec.customcodecs.backward_codecs.Zstd95DeprecatedCodec
 org.opensearch.index.codec.customcodecs.Zstd99Codec
 org.opensearch.index.codec.customcodecs.ZstdNoDict99Codec
+org.opensearch.index.codec.customcodecs.QatDeflate99Codec
+org.opensearch.index.codec.customcodecs.QatLz499Codec
