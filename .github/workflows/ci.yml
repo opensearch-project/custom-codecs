@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin # Temurin is a distribution of adoptium
-          java-version: 17
+          java-version: 21
 
       - name: Checkout custom-codecs Repo
         uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        jdk: [11, 17]
+        jdk: [21]
         platform: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.platform }}
 
