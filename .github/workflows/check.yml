@@ -11,7 +11,7 @@ jobs:
     needs: Get-CI-Image-Tag
     strategy:
       matrix:
-        java: [ 11, 17, 21 ]
+        java: [ 21 ]
     if: github.repository == 'opensearch-project/custom-codecs'
     runs-on: ubuntu-latest
     container:
@@ -38,7 +38,7 @@ jobs:
     if: github.repository == 'opensearch-project/custom-codecs'
     strategy:
       matrix:
-        java: [ 11, 17, 21 ]
+        java: [ 21 ]
         os: [windows-latest, macos-13]
     runs-on: ${{ matrix.os }}
     steps:
