@@ -86,6 +86,9 @@ public class QatLz499Codec extends Lucene99QatCodec implements CodecSettings, Co
 
     @Override
     public Set<String> aliases() {
+        if (!QatZipperFactory.isQatAvailable()) {
+            return Set.of();
+        }
         return Mode.QAT_LZ4.getAliases();
     }
 }
