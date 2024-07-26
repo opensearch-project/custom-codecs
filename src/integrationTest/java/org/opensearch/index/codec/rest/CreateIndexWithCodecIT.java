@@ -17,11 +17,13 @@ import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 
+import org.opensearch.client.ResponseException;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.RestClientBuilder;
 import org.opensearch.cluster.metadata.IndexMetadata;
 import org.opensearch.common.settings.Settings;
 import org.opensearch.core.common.Strings;
+import org.opensearch.index.codec.customcodecs.Lucene99QatCodec;
 import org.opensearch.index.codec.customcodecs.QatZipperFactory;
 import org.opensearch.test.rest.OpenSearchRestTestCase;
 
@@ -62,6 +64,49 @@ public class CreateIndexWithCodecIT extends OpenSearchRestTestCase {
         } finally {
             deleteIndex(index);
         }
+    }
+
+    public void testCreateIndexWithQatCodecWithQatHardwareUnavailable() throws IOException {
+
+        assumeThat("Qat library is not available", QatZipperFactory.isQatAvailable(), is(false));
+        final String index = "custom-codecs-test-index";
+
+        // creating index
+        final ResponseException e = expectThrows(
+            ResponseException.class,
+            () -> createIndex(
+                index,
+                Settings.builder()
+                    .put(IndexMetadata.SETTING_NUMBER_OF_SHARDS, 1)
+                    .put(IndexMetadata.SETTING_NUMBER_OF_REPLICAS, 0)
+                    .put("index.codec", randomFrom(QAT_DEFLATE_CODEC, QAT_LZ4_CODEC))
+                    .put("index.codec.compression_level", randomIntBetween(1, 6))
+                    .build()
+            )
+        );
+        assertTrue(e.getResponse().toString().contains("400 Bad Request"));
+    }
+
+    public void testCreateIndexWithQatSPICodecWithQatHardwareUnavailable() throws IOException {
+
+        assumeThat("Qat library is not available", QatZipperFactory.isQatAvailable(), is(false));
+        final String index = "custom-codecs-test-index";
+
+        // creating index
+        final ResponseException e = expectThrows(
+            ResponseException.class,
+            () -> createIndex(
+                index,
+                Settings.builder()
+                    .put(IndexMetadata.SETTING_NUMBER_OF_SHARDS, 1)
+                    .put(IndexMetadata.SETTING_NUMBER_OF_REPLICAS, 0)
+                    .put("index.codec", randomFrom(Lucene99QatCodec.Mode.QAT_LZ4.getCodec(), Lucene99QatCodec.Mode.QAT_DEFLATE.getCodec()))
+                    .put("index.codec.compression_level", randomIntBetween(1, 6))
+                    .build()
+            )
+        );
+        assertTrue(e.getResponse().toString().contains("400 Bad Request"));
+
     }
 
     public void testCreateIndexWithQatCodec() throws IOException {
