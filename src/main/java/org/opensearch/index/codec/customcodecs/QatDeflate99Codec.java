@@ -86,6 +86,9 @@ public class QatDeflate99Codec extends Lucene99QatCodec implements CodecSettings
 
     @Override
     public Set<String> aliases() {
+        if (!QatZipperFactory.isQatAvailable()) {
+            return Set.of();
+        }
         return Mode.QAT_DEFLATE.getAliases();
     }
 }
