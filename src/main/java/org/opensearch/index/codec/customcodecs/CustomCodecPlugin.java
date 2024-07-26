@@ -48,6 +48,13 @@ public final class CustomCodecPlugin extends Plugin implements EnginePlugin {
             || codecName.equals(CustomCodecService.QAT_LZ4_CODEC)
             || codecName.equals(CustomCodecService.QAT_DEFLATE_CODEC)) {
             return Optional.of(new CustomCodecServiceFactory());
+        } else {
+            if (!QatZipperFactory.isQatAvailable()
+                && (codecName.equals(Lucene99QatCodec.Mode.QAT_LZ4.getCodec())
+                    || codecName.equals(Lucene99QatCodec.Mode.QAT_DEFLATE.getCodec()))) {
+                throw new IllegalArgumentException("QAT codecs are not supported. Please create indices with a different codec.");
+            }
+
         }
         return Optional.empty();
     }
