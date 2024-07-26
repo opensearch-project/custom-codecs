@@ -172,12 +172,25 @@ public class QatZipperFactory {
      * @return true if QAT hardware is available, false otherwise.
      */
     public static boolean isQatAvailable() {
-        try {
-            QatZipper qzip = QatZipperFactory.createInstance();
-            qzip.end();
-            return true;
-        } catch (UnsatisfiedLinkError | ExceptionInInitializerError | NoClassDefFoundError e) {
-            return false;
+        return QatAvailableHolder.IS_QAT_AVAILABLE;
+    }
+
+    /**
+     * Nested class to defer static initialization until {@link #isQatAvailable()} is invoked
+     */
+    private static class QatAvailableHolder {
+        static final boolean IS_QAT_AVAILABLE;
+
+        static {
+            boolean isQatAvailable;
+            try {
+                final QatZipper qzip = QatZipperFactory.createInstance();
+                qzip.end();
+                isQatAvailable = true;
+            } catch (UnsatisfiedLinkError | ExceptionInInitializerError | NoClassDefFoundError e) {
+                isQatAvailable = false;
+            }
+            IS_QAT_AVAILABLE = isQatAvailable;
         }
     }
 }
