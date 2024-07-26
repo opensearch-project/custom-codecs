@@ -51,21 +51,25 @@ public class CustomCodecService extends CodecService {
         if (mapperService == null) {
             codecs.put(ZSTD_CODEC, new Zstd99Codec(compressionLevel));
             codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict99Codec(compressionLevel));
-            codecs.put(QAT_LZ4_CODEC, new QatLz499Codec(compressionLevel, () -> {
-                return indexSettings.getValue(Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING);
-            }));
-            codecs.put(QAT_DEFLATE_CODEC, new QatDeflate99Codec(compressionLevel, () -> {
-                return indexSettings.getValue(Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING);
-            }));
+            if (QatZipperFactory.isQatAvailable()) {
+                codecs.put(QAT_LZ4_CODEC, new QatLz499Codec(compressionLevel, () -> {
+                    return indexSettings.getValue(Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING);
+                }));
+                codecs.put(QAT_DEFLATE_CODEC, new QatDeflate99Codec(compressionLevel, () -> {
+                    return indexSettings.getValue(Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING);
+                }));
+            }
         } else {
             codecs.put(ZSTD_CODEC, new Zstd99Codec(mapperService, logger, compressionLevel));
             codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict99Codec(mapperService, logger, compressionLevel));
-            codecs.put(QAT_LZ4_CODEC, new QatLz499Codec(mapperService, logger, compressionLevel, () -> {
-                return indexSettings.getValue(Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING);
-            }));
-            codecs.put(QAT_DEFLATE_CODEC, new QatDeflate99Codec(mapperService, logger, compressionLevel, () -> {
-                return indexSettings.getValue(Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING);
-            }));
+            if (QatZipperFactory.isQatAvailable()) {
+                codecs.put(QAT_LZ4_CODEC, new QatLz499Codec(mapperService, logger, compressionLevel, () -> {
+                    return indexSettings.getValue(Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING);
+                }));
+                codecs.put(QAT_DEFLATE_CODEC, new QatDeflate99Codec(mapperService, logger, compressionLevel, () -> {
+                    return indexSettings.getValue(Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING);
+                }));
+            }
         }
         this.codecs = codecs.immutableMap();
     }
