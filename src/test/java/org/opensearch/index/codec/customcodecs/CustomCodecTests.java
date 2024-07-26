@@ -65,6 +65,8 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
 
+import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_DEFLATE_CODEC;
+import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_LZ4_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.ZSTD_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.ZSTD_NO_DICT_CODEC;
 import static org.opensearch.index.engine.EngineConfig.INDEX_CODEC_COMPRESSION_LEVEL_SETTING;
@@ -174,6 +176,30 @@ public class CustomCodecTests extends OpenSearchTestCase {
         assertStoredFieldsCompressionEquals(Lucene99CustomCodec.Mode.ZSTD_NO_DICT, codec);
         Lucene99CustomStoredFieldsFormat storedFieldsFormat = (Lucene99CustomStoredFieldsFormat) codec.storedFieldsFormat();
         assertEquals(Lucene99CustomCodec.DEFAULT_COMPRESSION_LEVEL, storedFieldsFormat.getCompressionLevel());
+    }
+
+    public void testQatCodecsNotAvailable() throws IOException {
+        if (!QatZipperFactory.isQatAvailable()) {
+            assertThrows(IllegalArgumentException.class, () -> createCodecService(false).codec("qat_lz4"));
+            assertThrows(IllegalArgumentException.class, () -> createCodecService(false).codec("qat_deflate"));
+
+            QatLz499Codec qatLz499Codec = new QatLz499Codec();
+            assertTrue(qatLz499Codec.aliases().isEmpty());
+
+            QatDeflate99Codec qatDeflate99Codec = new QatDeflate99Codec();
+            assertTrue(qatDeflate99Codec.aliases().isEmpty());
+        }
+    }
+
+    public void testCodecServiceFactoryQatUnavailable() throws IOException {
+        if (!QatZipperFactory.isQatAvailable()) {
+            Settings nodeSettings = Settings.builder()
+                .put(Environment.PATH_HOME_SETTING.getKey(), createTempDir())
+                .put("index.codec", randomFrom(QAT_DEFLATE_CODEC, QAT_LZ4_CODEC))
+                .build();
+            IndexSettings indexSettings = IndexSettingsModule.newIndexSettings("_na", nodeSettings);
+            assertThrows(IllegalArgumentException.class, () -> plugin.getCustomCodecServiceFactory(indexSettings));
+        }
     }
 
     // write some docs with it, inspect .si to see this was the used compression
