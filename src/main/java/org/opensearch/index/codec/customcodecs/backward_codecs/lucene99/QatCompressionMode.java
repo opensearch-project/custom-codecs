@@ -6,7 +6,7 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs.lucene99;
 
 import org.apache.lucene.codecs.compressing.CompressionMode;
 import org.apache.lucene.codecs.compressing.Compressor;
@@ -16,14 +16,12 @@ import org.apache.lucene.store.DataInput;
 import org.apache.lucene.store.DataOutput;
 import org.apache.lucene.util.ArrayUtil;
 import org.apache.lucene.util.BytesRef;
+import org.opensearch.index.codec.customcodecs.QatZipperFactory;
 
 import java.io.IOException;
 import java.util.function.Supplier;
 
 import com.intel.qat.QatZipper;
-
-import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
-import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_QAT_MODE;
 
 /** QatCompressionMode offers QAT_LZ4 and QAT_DEFLATE compressors. */
 public class QatCompressionMode extends CompressionMode {
@@ -36,7 +34,9 @@ public class QatCompressionMode extends CompressionMode {
 
     /** default constructor */
     protected QatCompressionMode() {
-        this(Lucene912QatCodec.DEFAULT_COMPRESSION_MODE, DEFAULT_COMPRESSION_LEVEL, () -> { return DEFAULT_QAT_MODE; });
+        this(Lucene99QatCodec.DEFAULT_COMPRESSION_MODE, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL, () -> {
+            return Lucene99QatCodec.DEFAULT_QAT_MODE;
+        });
     }
 
     /**
@@ -44,8 +44,8 @@ public class QatCompressionMode extends CompressionMode {
      *
      * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
      */
-    protected QatCompressionMode(Lucene912QatCodec.Mode mode) {
-        this(mode, DEFAULT_COMPRESSION_LEVEL, () -> { return DEFAULT_QAT_MODE; });
+    protected QatCompressionMode(Lucene99QatCodec.Mode mode) {
+        this(mode, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL, () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; });
     }
 
     /**
@@ -54,8 +54,8 @@ public class QatCompressionMode extends CompressionMode {
      * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
      * @param compressionLevel The compression level to use.
      */
-    protected QatCompressionMode(Lucene912QatCodec.Mode mode, int compressionLevel) {
-        this(mode, compressionLevel, () -> { return DEFAULT_QAT_MODE; });
+    protected QatCompressionMode(Lucene99QatCodec.Mode mode, int compressionLevel) {
+        this(mode, compressionLevel, () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; });
     }
 
     /**
@@ -65,8 +65,8 @@ public class QatCompressionMode extends CompressionMode {
      * @param compressionLevel The compression level to use.
      * @param supplier a supplier for QAT acceleration mode.
      */
-    protected QatCompressionMode(Lucene912QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
-        this.algorithm = mode == Lucene912QatCodec.Mode.QAT_LZ4 ? QatZipper.Algorithm.LZ4 : QatZipper.Algorithm.DEFLATE;
+    protected QatCompressionMode(Lucene99QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
+        this.algorithm = mode == Lucene99QatCodec.Mode.QAT_LZ4 ? QatZipper.Algorithm.LZ4 : QatZipper.Algorithm.DEFLATE;
         this.compressionLevel = compressionLevel;
         this.supplier = supplier;
     }
