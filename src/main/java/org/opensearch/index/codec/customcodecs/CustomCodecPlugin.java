@@ -11,6 +11,7 @@ package org.opensearch.index.codec.customcodecs;
 import org.opensearch.common.settings.Setting;
 import org.opensearch.index.IndexSettings;
 import org.opensearch.index.codec.CodecServiceFactory;
+import org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec;
 import org.opensearch.index.engine.EngineConfig;
 import org.opensearch.plugins.EnginePlugin;
 import org.opensearch.plugins.Plugin;
@@ -49,12 +50,19 @@ public final class CustomCodecPlugin extends Plugin implements EnginePlugin {
             || codecName.equals(CustomCodecService.QAT_DEFLATE_CODEC)) {
             return Optional.of(new CustomCodecServiceFactory());
         } else {
-            if (!QatZipperFactory.isQatAvailable()
-                && (codecName.equals(Lucene99QatCodec.Mode.QAT_LZ4.getCodec())
-                    || codecName.equals(Lucene99QatCodec.Mode.QAT_DEFLATE.getCodec()))) {
-                throw new IllegalArgumentException("QAT codecs are not supported. Please create indices with a different codec.");
+            if (codecName.equals(Lucene99QatCodec.Mode.QAT_LZ4.getCodec())
+                || codecName.equals(Lucene99QatCodec.Mode.QAT_DEFLATE.getCodec())) {
+                if (!QatZipperFactory.isQatAvailable()) {
+                    throw new IllegalArgumentException("QAT codecs are not supported. Please create indices with a different codec.");
+                }
             }
 
+            if (codecName.equals(Lucene912QatCodec.Mode.QAT_LZ4.getCodec())
+                || codecName.equals(Lucene912QatCodec.Mode.QAT_DEFLATE.getCodec())) {
+                if (!QatZipperFactory.isQatAvailable()) {
+                    throw new IllegalArgumentException("QAT codecs are not supported. Please create indices with a different codec.");
+                }
+            }
         }
         return Optional.empty();
     }

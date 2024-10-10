@@ -6,14 +6,12 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs.lucene99;
 
-import org.apache.logging.log4j.Logger;
 import org.opensearch.common.settings.Setting;
 import org.opensearch.index.codec.CodecAliases;
 import org.opensearch.index.codec.CodecSettings;
 import org.opensearch.index.engine.EngineConfig;
-import org.opensearch.index.mapper.MapperService;
 
 import java.util.Set;
 
@@ -32,17 +30,6 @@ public class ZstdNoDict99Codec extends Lucene99CustomCodec implements CodecSetti
      */
     public ZstdNoDict99Codec(int compressionLevel) {
         super(Mode.ZSTD_NO_DICT, compressionLevel);
-    }
-
-    /**
-     * Creates a new ZstdNoDictCodec instance.
-     *
-     * @param mapperService The mapper service.
-     * @param logger The logger.
-     * @param compressionLevel The compression level.
-     */
-    public ZstdNoDict99Codec(MapperService mapperService, Logger logger, int compressionLevel) {
-        super(Mode.ZSTD_NO_DICT, compressionLevel, mapperService, logger);
     }
 
     /** The name for this codec. */

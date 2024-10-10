@@ -21,13 +21,13 @@ public class QatDeflateCompressorTests extends AbstractCompressorTests {
     @Override
     Compressor compressor() {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
-        return new QatCompressionMode(Lucene99QatCodec.Mode.QAT_DEFLATE).newCompressor();
+        return new QatCompressionMode(Lucene912QatCodec.Mode.QAT_DEFLATE).newCompressor();
     }
 
     @Override
     Decompressor decompressor() {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
-        return new QatCompressionMode(Lucene99QatCodec.Mode.QAT_DEFLATE).newDecompressor();
+        return new QatCompressionMode(Lucene912QatCodec.Mode.QAT_DEFLATE).newDecompressor();
     }
 
     @Override

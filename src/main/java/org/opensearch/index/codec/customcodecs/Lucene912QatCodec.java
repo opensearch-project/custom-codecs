@@ -11,10 +11,7 @@ package org.opensearch.index.codec.customcodecs;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;
-import org.apache.lucene.codecs.lucene99.Lucene99Codec;
-import org.opensearch.common.settings.Setting;
-import org.opensearch.common.settings.Setting.Property;
-import org.opensearch.common.settings.Settings;
+import org.apache.lucene.codecs.lucene912.Lucene912Codec;
 import org.opensearch.index.codec.PerFieldMappingPostingFormatCodec;
 import org.opensearch.index.mapper.MapperService;
 
@@ -23,40 +20,21 @@ import java.util.function.Supplier;
 
 import com.intel.qat.QatZipper;
 
-import static org.opensearch.index.engine.EngineConfig.INDEX_CODEC_COMPRESSION_LEVEL_SETTING;
+import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
 
 /**
  * Extends {@link FilterCodec} to reuse the functionality of Lucene Codec.
  *
  * @opensearch.internal
  */
-public abstract class Lucene99QatCodec extends FilterCodec {
-
-    /** A setting to specifiy the QAT acceleration mode. */
-    public static final Setting<QatZipper.Mode> INDEX_CODEC_QAT_MODE_SETTING = new Setting<>("index.codec.qatmode", "auto", s -> {
-        switch (s) {
-            case "auto":
-                return QatZipper.Mode.AUTO;
-            case "hardware":
-                return QatZipper.Mode.HARDWARE;
-            default:
-                throw new IllegalArgumentException("Unknown value for [index.codec.qatmode] must be one of [auto, hardware] but was: " + s);
-        }
-    }, Property.IndexScope, Property.Dynamic);
-
-    /**  A terse way to reference the default QAT execution mode. */
-    public static final QatZipper.Mode DEFAULT_QAT_MODE = INDEX_CODEC_QAT_MODE_SETTING.getDefault(Settings.EMPTY);
-
-    /** Default compression level used for compression */
-    public static final int DEFAULT_COMPRESSION_LEVEL = INDEX_CODEC_COMPRESSION_LEVEL_SETTING.getDefault(Settings.EMPTY);
-
+public abstract class Lucene912QatCodec extends FilterCodec {
     /** Each mode represents a compression algorithm. */
     public enum Mode {
         /** QAT lz4 mode. */
-        QAT_LZ4("QATLZ499", Set.of("qat_lz4")),
+        QAT_LZ4("QATLZ4912", Set.of("qat_lz4")),
 
         /** QAT deflate mode. */
-        QAT_DEFLATE("QATDEFLATE99", Set.of("qat_deflate"));
+        QAT_DEFLATE("QATDEFLATE912", Set.of("qat_deflate"));
 
         private final String codec;
         private final Set<String> aliases;
@@ -87,7 +65,7 @@ public abstract class Lucene99QatCodec extends FilterCodec {
      *
      * @param mode The compression codec (QAT_LZ4 or QAT_DEFLATE).
      */
-    public Lucene99QatCodec(Mode mode) {
+    public Lucene912QatCodec(Mode mode) {
         this(mode, DEFAULT_COMPRESSION_LEVEL);
     }
 
@@ -99,9 +77,9 @@ public abstract class Lucene99QatCodec extends FilterCodec {
      * @param mode The compression codec (QAT_LZ4 or QAT_DEFLATE).
      * @param compressionLevel The compression level.
      */
-    public Lucene99QatCodec(Mode mode, int compressionLevel) {
-        super(mode.getCodec(), new Lucene99Codec());
-        this.storedFieldsFormat = new Lucene99QatStoredFieldsFormat(mode, compressionLevel);
+    public Lucene912QatCodec(Mode mode, int compressionLevel) {
+        super(mode.getCodec(), new Lucene912Codec());
+        this.storedFieldsFormat = new Lucene912QatStoredFieldsFormat(mode, compressionLevel);
     }
 
     /**
@@ -113,9 +91,9 @@ public abstract class Lucene99QatCodec extends FilterCodec {
      * @param compressionLevel The compression level.
      * @param supplier supplier for QAT mode.
      */
-    public Lucene99QatCodec(Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
-        super(mode.getCodec(), new Lucene99Codec());
-        this.storedFieldsFormat = new Lucene99QatStoredFieldsFormat(mode, compressionLevel, supplier);
+    public Lucene912QatCodec(Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
+        super(mode.getCodec(), new Lucene912Codec());
+        this.storedFieldsFormat = new Lucene912QatStoredFieldsFormat(mode, compressionLevel, supplier);
     }
 
     /**
@@ -128,9 +106,9 @@ public abstract class Lucene99QatCodec extends FilterCodec {
      * @param mapperService The mapper service.
      * @param logger The logger.
      */
-    public Lucene99QatCodec(Mode mode, int compressionLevel, MapperService mapperService, Logger logger) {
-        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene99Codec.Mode.BEST_SPEED, mapperService, logger));
-        this.storedFieldsFormat = new Lucene99QatStoredFieldsFormat(mode, compressionLevel);
+    public Lucene912QatCodec(Mode mode, int compressionLevel, MapperService mapperService, Logger logger) {
+        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene912Codec.Mode.BEST_SPEED, mapperService, logger));
+        this.storedFieldsFormat = new Lucene912QatStoredFieldsFormat(mode, compressionLevel);
     }
 
     /**
@@ -144,15 +122,15 @@ public abstract class Lucene99QatCodec extends FilterCodec {
      * @param logger The logger.
      * @param supplier supplier for QAT mode.
      */
-    public Lucene99QatCodec(
+    public Lucene912QatCodec(
         Mode mode,
         int compressionLevel,
         MapperService mapperService,
         Logger logger,
         Supplier<QatZipper.Mode> supplier
     ) {
-        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene99Codec.Mode.BEST_SPEED, mapperService, logger));
-        this.storedFieldsFormat = new Lucene99QatStoredFieldsFormat(mode, compressionLevel, supplier);
+        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene912Codec.Mode.BEST_SPEED, mapperService, logger));
+        this.storedFieldsFormat = new Lucene912QatStoredFieldsFormat(mode, compressionLevel, supplier);
     }
 
     @Override

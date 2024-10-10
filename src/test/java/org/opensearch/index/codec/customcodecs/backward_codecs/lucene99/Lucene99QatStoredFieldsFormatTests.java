@@ -6,8 +6,9 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs.lucene99;
 
+import org.opensearch.index.codec.customcodecs.QatZipperFactory;
 import org.opensearch.test.OpenSearchTestCase;
 
 import static org.hamcrest.Matchers.is;
