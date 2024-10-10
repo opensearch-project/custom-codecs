@@ -11,14 +11,13 @@ package org.opensearch.index.codec.customcodecs;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;
-import org.apache.lucene.codecs.lucene99.Lucene99Codec;
-import org.opensearch.common.settings.Settings;
+import org.apache.lucene.codecs.lucene912.Lucene912Codec;
 import org.opensearch.index.codec.PerFieldMappingPostingFormatCodec;
 import org.opensearch.index.mapper.MapperService;
 
 import java.util.Set;
 
-import static org.opensearch.index.engine.EngineConfig.INDEX_CODEC_COMPRESSION_LEVEL_SETTING;
+import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99CustomCodec.DEFAULT_COMPRESSION_LEVEL;
 
 /**
  *
@@ -28,21 +27,18 @@ import static org.opensearch.index.engine.EngineConfig.INDEX_CODEC_COMPRESSION_L
  *
  * @opensearch.internal
  */
-public abstract class Lucene99CustomCodec extends FilterCodec {
-
-    /** Default compression level used for compression */
-    public static final int DEFAULT_COMPRESSION_LEVEL = INDEX_CODEC_COMPRESSION_LEVEL_SETTING.getDefault(Settings.EMPTY);
+public abstract class Lucene912CustomCodec extends FilterCodec {
 
     /** Each mode represents a compression algorithm. */
     public enum Mode {
         /**
          * ZStandard mode with dictionary
          */
-        ZSTD("ZSTD99", Set.of("zstd")),
+        ZSTD("ZSTD912", Set.of("zstd")),
         /**
          * ZStandard mode without dictionary
          */
-        ZSTD_NO_DICT("ZSTDNODICT99", Set.of("zstd_no_dict"));
+        ZSTD_NO_DICT("ZSTDNODICT912", Set.of("zstd_no_dict"));
 
         private final String codec;
         private final Set<String> aliases;
@@ -74,7 +70,7 @@ public abstract class Lucene99CustomCodec extends FilterCodec {
      *
      * @param mode The compression codec (ZSTD or ZSTDNODICT).
      */
-    public Lucene99CustomCodec(Mode mode) {
+    public Lucene912CustomCodec(Mode mode) {
         this(mode, DEFAULT_COMPRESSION_LEVEL);
     }
 
@@ -86,9 +82,9 @@ public abstract class Lucene99CustomCodec extends FilterCodec {
      * @param mode The compression codec (ZSTD or ZSTDNODICT).
      * @param compressionLevel The compression level.
      */
-    public Lucene99CustomCodec(Mode mode, int compressionLevel) {
-        super(mode.getCodec(), new Lucene99Codec());
-        this.storedFieldsFormat = new Lucene99CustomStoredFieldsFormat(mode, compressionLevel);
+    public Lucene912CustomCodec(Mode mode, int compressionLevel) {
+        super(mode.getCodec(), new Lucene912Codec());
+        this.storedFieldsFormat = new Lucene912CustomStoredFieldsFormat(mode, compressionLevel);
     }
 
     /**
@@ -101,9 +97,9 @@ public abstract class Lucene99CustomCodec extends FilterCodec {
      * @param mapperService The mapper service.
      * @param logger The logger.
      */
-    public Lucene99CustomCodec(Mode mode, int compressionLevel, MapperService mapperService, Logger logger) {
-        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene99Codec.Mode.BEST_SPEED, mapperService, logger));
-        this.storedFieldsFormat = new Lucene99CustomStoredFieldsFormat(mode, compressionLevel);
+    public Lucene912CustomCodec(Mode mode, int compressionLevel, MapperService mapperService, Logger logger) {
+        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene912Codec.Mode.BEST_SPEED, mapperService, logger));
+        this.storedFieldsFormat = new Lucene912CustomStoredFieldsFormat(mode, compressionLevel);
     }
 
     @Override
