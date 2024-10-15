@@ -50,18 +50,10 @@ public final class CustomCodecPlugin extends Plugin implements EnginePlugin {
             || codecName.equals(CustomCodecService.QAT_DEFLATE_CODEC)) {
             return Optional.of(new CustomCodecServiceFactory());
         } else {
-            if (codecName.equals(Lucene99QatCodec.Mode.QAT_LZ4.getCodec())
-                || codecName.equals(Lucene99QatCodec.Mode.QAT_DEFLATE.getCodec())) {
-                if (!QatZipperFactory.isQatAvailable()) {
-                    throw new IllegalArgumentException("QAT codecs are not supported. Please create indices with a different codec.");
-                }
-            }
-
-            if (codecName.equals(Lucene912QatCodec.Mode.QAT_LZ4.getCodec())
-                || codecName.equals(Lucene912QatCodec.Mode.QAT_DEFLATE.getCodec())) {
-                if (!QatZipperFactory.isQatAvailable()) {
-                    throw new IllegalArgumentException("QAT codecs are not supported. Please create indices with a different codec.");
-                }
+            if (!QatZipperFactory.isQatAvailable() && isQatCodec(codecName)) {
+                throw new IllegalArgumentException(
+                    "QAT codecs are not supported (QAT is not available). Please create indices with a different codec."
+                );
             }
         }
         return Optional.empty();
@@ -70,5 +62,12 @@ public final class CustomCodecPlugin extends Plugin implements EnginePlugin {
     @Override
     public List<Setting<?>> getSettings() {
         return Arrays.asList(Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING);
+    }
+
+    private static boolean isQatCodec(String codecName) {
+        return codecName.equals(Lucene99QatCodec.Mode.QAT_LZ4.getCodec())
+            || codecName.equals(Lucene99QatCodec.Mode.QAT_DEFLATE.getCodec())
+            || codecName.equals(Lucene912QatCodec.Mode.QAT_LZ4.getCodec())
+            || codecName.equals(Lucene912QatCodec.Mode.QAT_DEFLATE.getCodec());
     }
 }
