@@ -40,7 +40,7 @@ public class ZstdNoDictCompressionMode extends CompressionMode {
      *
      * @param compressionLevel The compression level.
      */
-    public ZstdNoDictCompressionMode(int compressionLevel) {
+    protected ZstdNoDictCompressionMode(int compressionLevel) {
         this.compressionLevel = compressionLevel;
     }
 
