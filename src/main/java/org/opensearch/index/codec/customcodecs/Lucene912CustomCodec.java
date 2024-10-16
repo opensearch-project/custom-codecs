@@ -23,7 +23,7 @@ import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.L
  *
  * Extends {@link FilterCodec} to reuse the functionality of Lucene Codec.
  * Supports two modes zstd and zstd_no_dict.
- * Uses Lucene99 as the delegate codec
+ * Uses Lucene912 as the delegate codec
  *
  * @opensearch.internal
  */
