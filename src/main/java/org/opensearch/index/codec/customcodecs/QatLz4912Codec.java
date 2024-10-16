@@ -20,57 +20,59 @@ import java.util.function.Supplier;
 
 import com.intel.qat.QatZipper;
 
+import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
+
 /**
- * QatDeflate99Codec provides a DEFLATE compressor using the <a
+ * QatLz4912Codec provides an LZ4 compressor using the <a
  * href="https://github.com/intel/qat-java">qat-java</a> library.
  */
-public class QatDeflate99Codec extends Lucene99QatCodec implements CodecSettings, CodecAliases {
+public class QatLz4912Codec extends Lucene912QatCodec implements CodecSettings, CodecAliases {
 
-    /** Creates a new QatDeflate99Codec instance with the default compression level. */
-    public QatDeflate99Codec() {
+    /** Creates a new QatLz4912Codec instance with the default compression level. */
+    public QatLz4912Codec() {
         this(DEFAULT_COMPRESSION_LEVEL);
     }
 
     /**
-     * Creates a new QatDeflate99Codec instance.
+     * Creates a new QatLz4912Codec instance.
      *
      * @param compressionLevel The compression level.
      */
-    public QatDeflate99Codec(int compressionLevel) {
-        super(Mode.QAT_DEFLATE, compressionLevel);
+    public QatLz4912Codec(int compressionLevel) {
+        super(Mode.QAT_LZ4, compressionLevel);
     }
 
     /**
-     * Creates a new QatDeflate99Codec instance with the default compression level.
+     * Creates a new QatLz4912Codec instance with the default compression level.
      *
      * @param compressionLevel The compression level.
      * @param supplier supplier for QAT acceleration mode.
      */
-    public QatDeflate99Codec(int compressionLevel, Supplier<QatZipper.Mode> supplier) {
-        super(Mode.QAT_DEFLATE, compressionLevel, supplier);
+    public QatLz4912Codec(int compressionLevel, Supplier<QatZipper.Mode> supplier) {
+        super(Mode.QAT_LZ4, compressionLevel, supplier);
     }
 
     /**
-     * Creates a new QatDeflate99Codec instance.
+     * Creates a new QatLz4912Codec instance.
      *
      * @param mapperService The mapper service.
      * @param logger The logger.
      * @param compressionLevel The compression level.
      */
-    public QatDeflate99Codec(MapperService mapperService, Logger logger, int compressionLevel) {
-        super(Mode.QAT_DEFLATE, compressionLevel, mapperService, logger);
+    public QatLz4912Codec(MapperService mapperService, Logger logger, int compressionLevel) {
+        super(Mode.QAT_LZ4, compressionLevel, mapperService, logger);
     }
 
     /**
-     * Creates a new QatDeflate99Codec instance.
+     * Creates a new QatLz4912Codec instance.
      *
      * @param mapperService The mapper service.
      * @param logger The logger.
      * @param compressionLevel The compression level.
      * @param supplier supplier for QAT acceleration mode.
      */
-    public QatDeflate99Codec(MapperService mapperService, Logger logger, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
-        super(Mode.QAT_DEFLATE, compressionLevel, mapperService, logger, supplier);
+    public QatLz4912Codec(MapperService mapperService, Logger logger, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
+        super(Mode.QAT_LZ4, compressionLevel, mapperService, logger, supplier);
     }
 
     /** The name for this codec. */
@@ -89,6 +91,6 @@ public class QatDeflate99Codec extends Lucene99QatCodec implements CodecSettings
         if (!QatZipperFactory.isQatAvailable()) {
             return Set.of();
         }
-        return Mode.QAT_DEFLATE.getAliases();
+        return Mode.QAT_LZ4.getAliases();
     }
 }

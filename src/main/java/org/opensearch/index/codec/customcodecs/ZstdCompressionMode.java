@@ -25,6 +25,8 @@ import org.apache.lucene.util.BytesRef;
 
 import java.io.IOException;
 
+import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99CustomCodec.DEFAULT_COMPRESSION_LEVEL;
+
 /** Zstandard Compression Mode */
 public class ZstdCompressionMode extends CompressionMode {
 
@@ -35,7 +37,7 @@ public class ZstdCompressionMode extends CompressionMode {
 
     /** default constructor */
     protected ZstdCompressionMode() {
-        this.compressionLevel = Lucene99CustomCodec.DEFAULT_COMPRESSION_LEVEL;
+        this.compressionLevel = DEFAULT_COMPRESSION_LEVEL;
     }
 
     /**
