@@ -23,18 +23,18 @@ import com.intel.qat.QatZipper;
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
 
 /**
- * QatDeflate99Codec provides a DEFLATE compressor using the <a
+ * QatDeflate912Codec provides a DEFLATE compressor using the <a
  * href="https://github.com/intel/qat-java">qat-java</a> library.
  */
 public class QatDeflate912Codec extends Lucene912QatCodec implements CodecSettings, CodecAliases {
 
-    /** Creates a new QatDeflate99Codec instance with the default compression level. */
+    /** Creates a new QatDeflate912Codec instance with the default compression level. */
     public QatDeflate912Codec() {
         this(DEFAULT_COMPRESSION_LEVEL);
     }
 
     /**
-     * Creates a new QatDeflate99Codec instance.
+     * Creates a new QatDeflate912Codec instance.
      *
      * @param compressionLevel The compression level.
      */
@@ -43,7 +43,7 @@ public class QatDeflate912Codec extends Lucene912QatCodec implements CodecSettin
     }
 
     /**
-     * Creates a new QatDeflate99Codec instance with the default compression level.
+     * Creates a new QatDeflate912Codec instance with the default compression level.
      *
      * @param compressionLevel The compression level.
      * @param supplier supplier for QAT acceleration mode.
@@ -53,7 +53,7 @@ public class QatDeflate912Codec extends Lucene912QatCodec implements CodecSettin
     }
 
     /**
-     * Creates a new QatDeflate99Codec instance.
+     * Creates a new QatDeflate912Codec instance.
      *
      * @param mapperService The mapper service.
      * @param logger The logger.
@@ -64,7 +64,7 @@ public class QatDeflate912Codec extends Lucene912QatCodec implements CodecSettin
     }
 
     /**
-     * Creates a new QatDeflate99Codec instance.
+     * Creates a new QatDeflate912Codec instance.
      *
      * @param mapperService The mapper service.
      * @param logger The logger.

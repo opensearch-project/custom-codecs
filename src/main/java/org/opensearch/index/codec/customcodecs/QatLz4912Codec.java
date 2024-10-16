@@ -23,18 +23,18 @@ import com.intel.qat.QatZipper;
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
 
 /**
- * QatLz499Codec provides an LZ4 compressor using the <a
+ * QatLz4912Codec provides an LZ4 compressor using the <a
  * href="https://github.com/intel/qat-java">qat-java</a> library.
  */
 public class QatLz4912Codec extends Lucene912QatCodec implements CodecSettings, CodecAliases {
 
-    /** Creates a new QatLz499Codec instance with the default compression level. */
+    /** Creates a new QatLz4912Codec instance with the default compression level. */
     public QatLz4912Codec() {
         this(DEFAULT_COMPRESSION_LEVEL);
     }
 
     /**
-     * Creates a new QatLz499Codec instance.
+     * Creates a new QatLz4912Codec instance.
      *
      * @param compressionLevel The compression level.
      */
@@ -43,7 +43,7 @@ public class QatLz4912Codec extends Lucene912QatCodec implements CodecSettings, 
     }
 
     /**
-     * Creates a new QatLz499Codec instance with the default compression level.
+     * Creates a new QatLz4912Codec instance with the default compression level.
      *
      * @param compressionLevel The compression level.
      * @param supplier supplier for QAT acceleration mode.
@@ -53,7 +53,7 @@ public class QatLz4912Codec extends Lucene912QatCodec implements CodecSettings, 
     }
 
     /**
-     * Creates a new QatLz499Codec instance.
+     * Creates a new QatLz4912Codec instance.
      *
      * @param mapperService The mapper service.
      * @param logger The logger.
@@ -64,7 +64,7 @@ public class QatLz4912Codec extends Lucene912QatCodec implements CodecSettings, 
     }
 
     /**
-     * Creates a new QatLz499Codec instance.
+     * Creates a new QatLz4912Codec instance.
      *
      * @param mapperService The mapper service.
      * @param logger The logger.
