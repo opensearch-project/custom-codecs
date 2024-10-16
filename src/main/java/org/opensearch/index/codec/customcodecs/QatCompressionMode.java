@@ -36,37 +36,37 @@ public class QatCompressionMode extends CompressionMode {
 
     /** default constructor */
     protected QatCompressionMode() {
-        this(Lucene912QatCodec.DEFAULT_COMPRESSION_MODE, DEFAULT_COMPRESSION_LEVEL, () -> { return DEFAULT_QAT_MODE; });
+        this(QatZipper.Algorithm.LZ4, DEFAULT_COMPRESSION_LEVEL, () -> { return DEFAULT_QAT_MODE; });
     }
 
     /**
      * Creates a new instance.
      *
-     * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
+     * @param algorithm The compression algorithm (LZ4 or DEFLATE)
      */
-    protected QatCompressionMode(Lucene912QatCodec.Mode mode) {
-        this(mode, DEFAULT_COMPRESSION_LEVEL, () -> { return DEFAULT_QAT_MODE; });
+    protected QatCompressionMode(QatZipper.Algorithm algorithm) {
+        this(algorithm, DEFAULT_COMPRESSION_LEVEL, () -> { return DEFAULT_QAT_MODE; });
     }
 
     /**
      * Creates a new instance.
      *
-     * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
+     * @param algorithm The compression algorithm (LZ4 or DEFLATE)
      * @param compressionLevel The compression level to use.
      */
-    protected QatCompressionMode(Lucene912QatCodec.Mode mode, int compressionLevel) {
-        this(mode, compressionLevel, () -> { return DEFAULT_QAT_MODE; });
+    protected QatCompressionMode(QatZipper.Algorithm algorithm, int compressionLevel) {
+        this(algorithm, compressionLevel, () -> { return DEFAULT_QAT_MODE; });
     }
 
     /**
      * Creates a new instance.
      *
-     * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
+     * @param algorithm The compression algorithm (LZ4 or DEFLATE)
      * @param compressionLevel The compression level to use.
      * @param supplier a supplier for QAT acceleration mode.
      */
-    protected QatCompressionMode(Lucene912QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
-        this.algorithm = mode == Lucene912QatCodec.Mode.QAT_LZ4 ? QatZipper.Algorithm.LZ4 : QatZipper.Algorithm.DEFLATE;
+    protected QatCompressionMode(QatZipper.Algorithm algorithm, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
+        this.algorithm = algorithm;
         this.compressionLevel = compressionLevel;
         this.supplier = supplier;
     }

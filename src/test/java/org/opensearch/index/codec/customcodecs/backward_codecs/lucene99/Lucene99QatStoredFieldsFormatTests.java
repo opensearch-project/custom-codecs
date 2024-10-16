@@ -8,6 +8,7 @@
 
 package org.opensearch.index.codec.customcodecs.backward_codecs.lucene99;
 
+import org.opensearch.index.codec.customcodecs.QatCompressionMode;
 import org.opensearch.index.codec.customcodecs.QatZipperFactory;
 import org.opensearch.test.OpenSearchTestCase;
 

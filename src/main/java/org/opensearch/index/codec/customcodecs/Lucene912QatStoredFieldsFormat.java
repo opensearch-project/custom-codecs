@@ -87,7 +87,7 @@ public class Lucene912QatStoredFieldsFormat extends StoredFieldsFormat {
      */
     public Lucene912QatStoredFieldsFormat(Lucene912QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
         this.mode = Objects.requireNonNull(mode);
-        qatCompressionMode = new QatCompressionMode(mode, compressionLevel, supplier);
+        qatCompressionMode = new QatCompressionMode(getAlgorithm(mode), compressionLevel, supplier);
     }
 
     /**
@@ -175,5 +175,14 @@ public class Lucene912QatStoredFieldsFormat extends StoredFieldsFormat {
      */
     public QatCompressionMode getCompressionMode() {
         return qatCompressionMode;
+    }
+
+    /**
+     * Returns {@link QatZipper.Algorithm} instance that corresponds codec's {@link Lucene912QatCodec.Mode mode}
+     * @param mode codec's {@link Lucene912QatCodec.Mode mode}
+     * @return the {@link QatZipper.Algorithm} instance that corresponds codec's {@link Lucene912QatCodec.Mode mode}
+     */
+    private static QatZipper.Algorithm getAlgorithm(Lucene912QatCodec.Mode mode) {
+        return (mode == Lucene912QatCodec.Mode.QAT_LZ4) ? QatZipper.Algorithm.LZ4 : QatZipper.Algorithm.DEFLATE;
     }
 }
