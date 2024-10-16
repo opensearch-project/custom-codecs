@@ -10,6 +10,8 @@ package org.opensearch.index.codec.customcodecs;
 import org.apache.lucene.codecs.compressing.Compressor;
 import org.apache.lucene.codecs.compressing.Decompressor;
 
+import com.intel.qat.QatZipper;
+
 import java.io.IOException;
 
 import static org.hamcrest.Matchers.is;
@@ -21,13 +23,13 @@ public class QatLz4CompressorTests extends AbstractCompressorTests {
     @Override
     Compressor compressor() {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
-        return new QatCompressionMode(Lucene912QatCodec.Mode.QAT_LZ4).newCompressor();
+        return new QatCompressionMode(QatZipper.Algorithm.LZ4).newCompressor();
     }
 
     @Override
     Decompressor decompressor() {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
-        return new QatCompressionMode(Lucene912QatCodec.Mode.QAT_LZ4).newDecompressor();
+        return new QatCompressionMode(QatZipper.Algorithm.LZ4).newDecompressor();
     }
 
     @Override
