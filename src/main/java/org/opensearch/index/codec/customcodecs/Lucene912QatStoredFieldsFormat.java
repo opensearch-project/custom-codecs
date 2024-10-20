@@ -24,11 +24,14 @@ import java.util.function.Supplier;
 
 import com.intel.qat.QatZipper;
 
+import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
+import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_QAT_MODE;
+
 /** Stored field format used by pluggable codec */
-public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
+public class Lucene912QatStoredFieldsFormat extends StoredFieldsFormat {
 
     /** A key that we use to map to a mode */
-    public static final String MODE_KEY = Lucene99QatStoredFieldsFormat.class.getSimpleName() + ".mode";
+    public static final String MODE_KEY = Lucene912QatStoredFieldsFormat.class.getSimpleName() + ".mode";
 
     private static final int QAT_DEFLATE_BLOCK_LENGTH = 10 * 48 * 1024;
     private static final int QAT_DEFLATE_MAX_DOCS_PER_BLOCK = 4096;
@@ -39,11 +42,11 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
     private static final int QAT_LZ4_BLOCK_SHIFT = 10;
 
     private final QatCompressionMode qatCompressionMode;
-    private final Lucene99QatCodec.Mode mode;
+    private final Lucene912QatCodec.Mode mode;
 
     /** default constructor */
-    public Lucene99QatStoredFieldsFormat() {
-        this(Lucene99QatCodec.DEFAULT_COMPRESSION_MODE, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL);
+    public Lucene912QatStoredFieldsFormat() {
+        this(Lucene912QatCodec.DEFAULT_COMPRESSION_MODE, DEFAULT_COMPRESSION_LEVEL);
     }
 
     /**
@@ -51,8 +54,8 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
      *
      * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
      */
-    public Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode mode) {
-        this(mode, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL);
+    public Lucene912QatStoredFieldsFormat(Lucene912QatCodec.Mode mode) {
+        this(mode, DEFAULT_COMPRESSION_LEVEL);
     }
 
     /**
@@ -61,8 +64,8 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
      * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
      * @param compressionLevel The compression level for the mode.
      */
-    public Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode mode, int compressionLevel) {
-        this(mode, compressionLevel, () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; });
+    public Lucene912QatStoredFieldsFormat(Lucene912QatCodec.Mode mode, int compressionLevel) {
+        this(mode, compressionLevel, () -> { return DEFAULT_QAT_MODE; });
     }
 
     /**
@@ -71,8 +74,8 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
      * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
      * @param supplier a supplier for QAT acceleration mode.
      */
-    public Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode mode, Supplier<QatZipper.Mode> supplier) {
-        this(mode, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL, supplier);
+    public Lucene912QatStoredFieldsFormat(Lucene912QatCodec.Mode mode, Supplier<QatZipper.Mode> supplier) {
+        this(mode, DEFAULT_COMPRESSION_LEVEL, supplier);
     }
 
     /**
@@ -82,9 +85,9 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
      * @param compressionLevel The compression level for the mode.
      * @param supplier a supplier for QAT acceleration mode.
      */
-    public Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
+    public Lucene912QatStoredFieldsFormat(Lucene912QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
         this.mode = Objects.requireNonNull(mode);
-        qatCompressionMode = new QatCompressionMode(mode, compressionLevel, supplier);
+        qatCompressionMode = new QatCompressionMode(getAlgorithm(mode), compressionLevel, supplier);
     }
 
     /**
@@ -99,7 +102,7 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
     public StoredFieldsReader fieldsReader(Directory directory, SegmentInfo si, FieldInfos fn, IOContext context) throws IOException {
         if (si.getAttribute(MODE_KEY) != null) {
             String value = si.getAttribute(MODE_KEY);
-            Lucene99QatCodec.Mode mode = Lucene99QatCodec.Mode.valueOf(value);
+            Lucene912QatCodec.Mode mode = Lucene912QatCodec.Mode.valueOf(value);
             return impl(mode).fieldsReader(directory, si, fn, context);
         } else {
             throw new IllegalStateException("missing value for " + MODE_KEY + " for segment: " + si.name);
@@ -124,7 +127,7 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
         return impl(mode).fieldsWriter(directory, si, context);
     }
 
-    private StoredFieldsFormat impl(Lucene99QatCodec.Mode mode) {
+    private StoredFieldsFormat impl(Lucene912QatCodec.Mode mode) {
         switch (mode) {
             case QAT_LZ4:
                 return getQatCompressingStoredFieldsFormat(
@@ -162,7 +165,7 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
      *
      * @return either QAT_LZ4 or QAT_DEFLATE
      */
-    public Lucene99QatCodec.Mode getMode() {
+    public Lucene912QatCodec.Mode getMode() {
         return mode;
     }
 
@@ -172,5 +175,14 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
      */
     public QatCompressionMode getCompressionMode() {
         return qatCompressionMode;
+    }
+    
+    /**
+     * Returns {@link QatZipper.Algorithm} instance that corresponds codec's {@link Lucene912QatCodec.Mode mode} 
+     * @param mode codec's {@link Lucene912QatCodec.Mode mode}
+     * @return the {@link QatZipper.Algorithm} instance that corresponds codec's {@link Lucene912QatCodec.Mode mode}
+     */
+    private static QatZipper.Algorithm getAlgorithm(Lucene912QatCodec.Mode mode) {
+        return (mode == Lucene912QatCodec.Mode.QAT_LZ4) ? QatZipper.Algorithm.LZ4 : QatZipper.Algorithm.DEFLATE;
     }
 }
