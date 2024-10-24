@@ -6,7 +6,7 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs.lucene99;
 
 import org.apache.lucene.codecs.StoredFieldsFormat;
 import org.apache.lucene.codecs.StoredFieldsReader;
@@ -17,6 +17,7 @@ import org.apache.lucene.index.FieldInfos;
 import org.apache.lucene.index.SegmentInfo;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.IOContext;
+import org.opensearch.index.codec.customcodecs.QatCompressionMode;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -84,7 +85,8 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
      */
     public Lucene99QatStoredFieldsFormat(Lucene99QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
         this.mode = Objects.requireNonNull(mode);
-        qatCompressionMode = new QatCompressionMode(mode, compressionLevel, supplier);
+        qatCompressionMode = new QatCompressionMode(getAlgorithm(mode), compressionLevel, supplier) {
+        };
     }
 
     /**
@@ -172,5 +174,14 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
      */
     public QatCompressionMode getCompressionMode() {
         return qatCompressionMode;
+    }
+
+    /**
+     * Returns {@link QatZipper.Algorithm} instance that corresponds codec's {@link Lucene99QatCodec.Mode mode}
+     * @param mode codec's {@link Lucene99QatCodec.Mode mode}
+     * @return the {@link QatZipper.Algorithm} instance that corresponds codec's {@link Lucene99QatCodec.Mode mode}
+     */
+    private static QatZipper.Algorithm getAlgorithm(Lucene99QatCodec.Mode mode) {
+        return (mode == Lucene99QatCodec.Mode.QAT_LZ4) ? QatZipper.Algorithm.LZ4 : QatZipper.Algorithm.DEFLATE;
     }
 }

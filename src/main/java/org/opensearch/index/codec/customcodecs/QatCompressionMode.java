@@ -22,6 +22,9 @@ import java.util.function.Supplier;
 
 import com.intel.qat.QatZipper;
 
+import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
+import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_QAT_MODE;
+
 /** QatCompressionMode offers QAT_LZ4 and QAT_DEFLATE compressors. */
 public class QatCompressionMode extends CompressionMode {
 
@@ -33,39 +36,37 @@ public class QatCompressionMode extends CompressionMode {
 
     /** default constructor */
     protected QatCompressionMode() {
-        this(Lucene99QatCodec.DEFAULT_COMPRESSION_MODE, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL, () -> {
-            return Lucene99QatCodec.DEFAULT_QAT_MODE;
-        });
+        this(QatZipper.Algorithm.LZ4, DEFAULT_COMPRESSION_LEVEL, () -> { return DEFAULT_QAT_MODE; });
     }
 
     /**
      * Creates a new instance.
      *
-     * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
+     * @param algorithm The compression algorithm (LZ4 or DEFLATE)
      */
-    protected QatCompressionMode(Lucene99QatCodec.Mode mode) {
-        this(mode, Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL, () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; });
+    protected QatCompressionMode(QatZipper.Algorithm algorithm) {
+        this(algorithm, DEFAULT_COMPRESSION_LEVEL, () -> { return DEFAULT_QAT_MODE; });
     }
 
     /**
      * Creates a new instance.
      *
-     * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
+     * @param algorithm The compression algorithm (LZ4 or DEFLATE)
      * @param compressionLevel The compression level to use.
      */
-    protected QatCompressionMode(Lucene99QatCodec.Mode mode, int compressionLevel) {
-        this(mode, compressionLevel, () -> { return Lucene99QatCodec.DEFAULT_QAT_MODE; });
+    protected QatCompressionMode(QatZipper.Algorithm algorithm, int compressionLevel) {
+        this(algorithm, compressionLevel, () -> { return DEFAULT_QAT_MODE; });
     }
 
     /**
      * Creates a new instance.
      *
-     * @param mode The compression mode (QAT_LZ4 or QAT_DEFLATE)
+     * @param algorithm The compression algorithm (LZ4 or DEFLATE)
      * @param compressionLevel The compression level to use.
      * @param supplier a supplier for QAT acceleration mode.
      */
-    protected QatCompressionMode(Lucene99QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
-        this.algorithm = mode == Lucene99QatCodec.Mode.QAT_LZ4 ? QatZipper.Algorithm.LZ4 : QatZipper.Algorithm.DEFLATE;
+    protected QatCompressionMode(QatZipper.Algorithm algorithm, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
+        this.algorithm = algorithm;
         this.compressionLevel = compressionLevel;
         this.supplier = supplier;
     }
