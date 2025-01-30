@@ -175,7 +175,7 @@ public class CustomCodecsBwcCompatibilityIT extends OpenSearchRestTestCase {
     private void ingestData(String index) throws IOException {
         assertTrue(indexExists(index));
         StringBuilder bulkRequestBody = new StringBuilder();
-        int numberOfRequests = Randomness.get().nextInt(10);
+        int numberOfRequests = Randomness.get().nextInt(10) + 1;
         while (numberOfRequests-- > 0) {
             for (int i = 0; i < Randomness.get().nextInt(100); i++) {
                 Map<String, Map<String, String>> indexRequest = new HashMap<>();
