@@ -85,8 +85,10 @@ String bwcFilePath = "src/test/resources/"
 String projectVersion = nextVersion
 
 // Extracts the OpenSearch version from a plugin version string, 2.11.0.0 -> 2.11.0.
-String previousOpenSearch = previousVersion.tokenize('-')[0][0..-3] + "-SNAPSHOT"
-String nextOpenSearch = nextVersion.tokenize('-')[0][0..-3] + "-SNAPSHOT"
+previousToken = previousVersion.tokenize('-')
+nextToken = nextVersion.tokenize('-')
+String previousOpenSearch = previousToken[1] ? previousToken[0][0..-3] + "-" + previousToken[1] + "-SNAPSHOT" : previousToken[0][0..-3] + "-SNAPSHOT"
+String nextOpenSearch = nextToken[1] ? nextToken[0][0..-3] + "-" + nextToken[1] + "-SNAPSHOT" : nextToken[0][0..-3] + "-SNAPSHOT"
 
 2.times {i ->
     testClusters {
