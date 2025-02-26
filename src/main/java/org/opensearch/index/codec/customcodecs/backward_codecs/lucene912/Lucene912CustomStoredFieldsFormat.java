@@ -64,9 +64,9 @@ public class Lucene912CustomStoredFieldsFormat extends StoredFieldsFormat {
     public Lucene912CustomStoredFieldsFormat(Lucene912CustomCodec.Mode mode, int compressionLevel) {
         this.mode = Objects.requireNonNull(mode);
         this.compressionLevel = compressionLevel;
-        zstdCompressionMode = new ZstdCompressionMode(compressionLevel){
+        zstdCompressionMode = new ZstdCompressionMode(compressionLevel) {
         };
-        zstdNoDictCompressionMode = new ZstdNoDictCompressionMode(compressionLevel){
+        zstdNoDictCompressionMode = new ZstdNoDictCompressionMode(compressionLevel) {
         };
     }
 

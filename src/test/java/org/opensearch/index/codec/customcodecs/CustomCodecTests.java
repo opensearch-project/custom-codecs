@@ -33,9 +33,9 @@
 package org.opensearch.index.codec.customcodecs;
 
 import org.apache.logging.log4j.LogManager;
+import org.apache.lucene.backward_codecs.lucene912.Lucene912Codec;
 import org.apache.lucene.codecs.Codec;
 import org.apache.lucene.codecs.lucene90.Lucene90StoredFieldsFormat;
-import org.apache.lucene.backward_codecs.lucene912.Lucene912Codec;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;

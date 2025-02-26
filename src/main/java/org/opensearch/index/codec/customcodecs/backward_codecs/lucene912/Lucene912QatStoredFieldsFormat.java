@@ -17,13 +17,13 @@ import org.apache.lucene.index.FieldInfos;
 import org.apache.lucene.index.SegmentInfo;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.IOContext;
+import org.opensearch.index.codec.customcodecs.QatCompressionMode;
 
 import java.io.IOException;
 import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.intel.qat.QatZipper;
-import org.opensearch.index.codec.customcodecs.QatCompressionMode;
 
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_QAT_MODE;
@@ -88,7 +88,7 @@ public class Lucene912QatStoredFieldsFormat extends StoredFieldsFormat {
      */
     public Lucene912QatStoredFieldsFormat(Lucene912QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
         this.mode = Objects.requireNonNull(mode);
-        qatCompressionMode = new QatCompressionMode(getAlgorithm(mode), compressionLevel, supplier){
+        qatCompressionMode = new QatCompressionMode(getAlgorithm(mode), compressionLevel, supplier) {
         };
     }
 

@@ -23,7 +23,6 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.intel.qat.QatZipper;
-import org.opensearch.index.codec.customcodecs.QatCompressionMode;
 
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_QAT_MODE;
@@ -122,7 +121,7 @@ public class Lucene101QatStoredFieldsFormat extends StoredFieldsFormat {
         String previous = si.putAttribute(MODE_KEY, mode.name());
         if (previous != null && previous.equals(mode.name()) == false) {
             throw new IllegalStateException(
-                    "found existing value for " + MODE_KEY + " for segment: " + si.name + " old = " + previous + ", new = " + mode.name()
+                "found existing value for " + MODE_KEY + " for segment: " + si.name + " old = " + previous + ", new = " + mode.name()
             );
         }
         return impl(mode).fieldsWriter(directory, si, context);
@@ -132,19 +131,19 @@ public class Lucene101QatStoredFieldsFormat extends StoredFieldsFormat {
         switch (mode) {
             case QAT_LZ4:
                 return getQatCompressingStoredFieldsFormat(
-                        "QatStoredFieldsLz4",
-                        qatCompressionMode,
-                        QAT_LZ4_BLOCK_LENGTH,
-                        QAT_LZ4_MAX_DOCS_PER_BLOCK,
-                        QAT_LZ4_BLOCK_SHIFT
+                    "QatStoredFieldsLz4",
+                    qatCompressionMode,
+                    QAT_LZ4_BLOCK_LENGTH,
+                    QAT_LZ4_MAX_DOCS_PER_BLOCK,
+                    QAT_LZ4_BLOCK_SHIFT
                 );
             case QAT_DEFLATE:
                 return getQatCompressingStoredFieldsFormat(
-                        "QatStoredFieldsDeflate",
-                        qatCompressionMode,
-                        QAT_DEFLATE_BLOCK_LENGTH,
-                        QAT_DEFLATE_MAX_DOCS_PER_BLOCK,
-                        QAT_DEFLATE_BLOCK_SHIFT
+                    "QatStoredFieldsDeflate",
+                    qatCompressionMode,
+                    QAT_DEFLATE_BLOCK_LENGTH,
+                    QAT_DEFLATE_MAX_DOCS_PER_BLOCK,
+                    QAT_DEFLATE_BLOCK_SHIFT
                 );
             default:
                 throw new IllegalStateException("Unsupported compression mode: " + mode);
@@ -152,11 +151,11 @@ public class Lucene101QatStoredFieldsFormat extends StoredFieldsFormat {
     }
 
     private StoredFieldsFormat getQatCompressingStoredFieldsFormat(
-            String formatName,
-            CompressionMode compressionMode,
-            int blockSize,
-            int maxDocs,
-            int blockShift
+        String formatName,
+        CompressionMode compressionMode,
+        int blockSize,
+        int maxDocs,
+        int blockShift
     ) {
         return new Lucene90CompressingStoredFieldsFormat(formatName, compressionMode, blockSize, maxDocs, blockShift);
     }

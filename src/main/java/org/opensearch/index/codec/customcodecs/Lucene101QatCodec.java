@@ -123,11 +123,11 @@ public abstract class Lucene101QatCodec extends FilterCodec {
      * @param supplier supplier for QAT mode.
      */
     public Lucene101QatCodec(
-            Mode mode,
-            int compressionLevel,
-            MapperService mapperService,
-            Logger logger,
-            Supplier<QatZipper.Mode> supplier
+        Mode mode,
+        int compressionLevel,
+        MapperService mapperService,
+        Logger logger,
+        Supplier<QatZipper.Mode> supplier
     ) {
         super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene101Codec.Mode.BEST_SPEED, mapperService, logger));
         this.storedFieldsFormat = new Lucene101QatStoredFieldsFormat(mode, compressionLevel, supplier);

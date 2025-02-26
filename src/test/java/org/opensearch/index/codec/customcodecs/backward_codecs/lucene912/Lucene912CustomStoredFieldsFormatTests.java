@@ -10,8 +10,6 @@ package org.opensearch.index.codec.customcodecs.backward_codecs.lucene912;
 
 import org.opensearch.index.codec.customcodecs.ZstdCompressionMode;
 import org.opensearch.index.codec.customcodecs.ZstdNoDictCompressionMode;
-import org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.Lucene912CustomCodec;
-import org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.Lucene912CustomStoredFieldsFormat;
 import org.opensearch.test.OpenSearchTestCase;
 
 public class Lucene912CustomStoredFieldsFormatTests extends OpenSearchTestCase {
