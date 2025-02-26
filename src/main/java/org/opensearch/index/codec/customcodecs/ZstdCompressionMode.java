@@ -117,7 +117,7 @@ public class ZstdCompressionMode extends CompressionMode {
 
         @Override
         public void compress(ByteBuffersDataInput buffersInput, DataOutput out) throws IOException {
-            final int length = (int) buffersInput.size();
+            final int length = (int) buffersInput.length();
             byte[] bytes = new byte[length];
             buffersInput.readBytes(bytes, 0, length);
             compress(bytes, 0, length, out);
