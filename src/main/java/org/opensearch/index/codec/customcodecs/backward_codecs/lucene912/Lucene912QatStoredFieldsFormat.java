@@ -88,7 +88,8 @@ public class Lucene912QatStoredFieldsFormat extends StoredFieldsFormat {
      */
     public Lucene912QatStoredFieldsFormat(Lucene912QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
         this.mode = Objects.requireNonNull(mode);
-        qatCompressionMode = new QatCompressionMode(getAlgorithm(mode), compressionLevel, supplier);
+        qatCompressionMode = new QatCompressionMode(getAlgorithm(mode), compressionLevel, supplier){
+        };
     }
 
     /**
