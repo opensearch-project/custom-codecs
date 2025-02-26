@@ -84,15 +84,9 @@ String baseName = "customCodecsBwcCluster"
 String bwcFilePath = "src/test/resources/"
 String projectVersion = nextVersion
 
-String previousOpenSearch  = extractVersion(previousVersion) + "-SNAPSHOT";
-String nextOpenSearch  = extractVersion(nextVersion) + "-SNAPSHOT";
-
 // Extracts the OpenSearch version from a plugin version string, 2.11.0.0 -> 2.11.0.
-def String extractVersion(versionStr) {
-    def versionMatcher =  versionStr =~ /(.+?)(\.\d+)$/
-    versionMatcher.find()
-    return versionMatcher.group(1)
-}
+String previousOpenSearch = previousVersion.tokenize('-')[0][0..-3] + "-SNAPSHOT"
+String nextOpenSearch = nextVersion.tokenize('-')[0][0..-3] + "-SNAPSHOT"
 
 2.times {i ->
     testClusters {
