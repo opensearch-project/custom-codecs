@@ -6,7 +6,7 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs.lucene912;
 
 import org.apache.lucene.codecs.StoredFieldsFormat;
 import org.apache.lucene.codecs.StoredFieldsReader;
@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.intel.qat.QatZipper;
+import org.opensearch.index.codec.customcodecs.QatCompressionMode;
 
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_QAT_MODE;

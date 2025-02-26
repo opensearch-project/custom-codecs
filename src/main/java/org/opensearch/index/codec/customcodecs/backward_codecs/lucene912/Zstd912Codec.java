@@ -6,7 +6,7 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs.lucene912;
 
 import org.apache.logging.log4j.Logger;
 import org.opensearch.common.settings.Setting;
@@ -19,32 +19,35 @@ import java.util.Set;
 
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99CustomCodec.DEFAULT_COMPRESSION_LEVEL;
 
-/** ZstdNoDictCodec provides ZSTD compressor without a dictionary support. */
-public class ZstdNoDict912Codec extends Lucene912CustomCodec implements CodecSettings, CodecAliases {
+/**
+ * ZstdCodec provides ZSTD compressor using the <a
+ * href="https://github.com/luben/zstd-jni">zstd-jni</a> library.
+ */
+public class Zstd912Codec extends Lucene912CustomCodec implements CodecSettings, CodecAliases {
 
-    /** Creates a new ZstdNoDictCodec instance with the default compression level. */
-    public ZstdNoDict912Codec() {
+    /** Creates a new ZstdCodec instance with the default compression level. */
+    public Zstd912Codec() {
         this(DEFAULT_COMPRESSION_LEVEL);
     }
 
     /**
-     * Creates a new ZstdNoDictCodec instance.
+     * Creates a new ZstdCodec instance.
      *
      * @param compressionLevel The compression level.
      */
-    public ZstdNoDict912Codec(int compressionLevel) {
-        super(Mode.ZSTD_NO_DICT, compressionLevel);
+    public Zstd912Codec(int compressionLevel) {
+        super(Mode.ZSTD, compressionLevel);
     }
 
     /**
-     * Creates a new ZstdNoDictCodec instance.
+     * Creates a new ZstdCodec instance.
      *
      * @param mapperService The mapper service.
      * @param logger The logger.
      * @param compressionLevel The compression level.
      */
-    public ZstdNoDict912Codec(MapperService mapperService, Logger logger, int compressionLevel) {
-        super(Mode.ZSTD_NO_DICT, compressionLevel, mapperService, logger);
+    public Zstd912Codec(MapperService mapperService, Logger logger, int compressionLevel) {
+        super(Mode.ZSTD, compressionLevel, mapperService, logger);
     }
 
     /** The name for this codec. */
@@ -60,6 +63,6 @@ public class ZstdNoDict912Codec extends Lucene912CustomCodec implements CodecSet
 
     @Override
     public Set<String> aliases() {
-        return Mode.ZSTD_NO_DICT.getAliases();
+        return Mode.ZSTD.getAliases();
     }
 }

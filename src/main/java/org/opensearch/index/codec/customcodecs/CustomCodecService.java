@@ -13,6 +13,10 @@ import org.apache.lucene.codecs.Codec;
 import org.opensearch.common.collect.MapBuilder;
 import org.opensearch.index.IndexSettings;
 import org.opensearch.index.codec.CodecService;
+import org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.QatDeflate912Codec;
+import org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.QatLz4912Codec;
+import org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.Zstd912Codec;
+import org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.ZstdNoDict912Codec;
 import org.opensearch.index.mapper.MapperService;
 
 import java.util.Arrays;

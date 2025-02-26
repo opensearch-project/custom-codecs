@@ -26,7 +26,7 @@ import org.opensearch.client.RestClientBuilder;
 import org.opensearch.cluster.metadata.IndexMetadata;
 import org.opensearch.common.settings.Settings;
 import org.opensearch.core.common.Strings;
-import org.opensearch.index.codec.customcodecs.Lucene912QatCodec;
+import org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.Lucene912QatCodec;
 import org.opensearch.index.codec.customcodecs.QatZipperFactory;
 import org.opensearch.test.rest.OpenSearchRestTestCase;
 
