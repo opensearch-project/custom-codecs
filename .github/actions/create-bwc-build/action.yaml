@@ -39,7 +39,6 @@ runs:
         arguments: assemble
         build-root-directory: ${{ inputs.plugin-branch }}
 
-
     - id: get-opensearch-version
       uses: peternied/get-opensearch-version@v1
       with:

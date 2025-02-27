@@ -9,3 +9,7 @@ org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.Zstd912Codec
 org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.ZstdNoDict912Codec
 org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.QatDeflate912Codec
 org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.QatLz4912Codec
+org.opensearch.index.codec.customcodecs.Zstd101Codec
+org.opensearch.index.codec.customcodecs.ZstdNoDict101Codec
+org.opensearch.index.codec.customcodecs.QatDeflate101Codec
+org.opensearch.index.codec.customcodecs.QatLz4101Codec

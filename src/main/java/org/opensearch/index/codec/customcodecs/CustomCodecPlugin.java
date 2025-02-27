@@ -12,6 +12,7 @@ import org.opensearch.common.settings.Setting;
 import org.opensearch.index.IndexSettings;
 import org.opensearch.index.codec.CodecServiceFactory;
 import org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec;
+import org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.Lucene912QatCodec;
 import org.opensearch.index.engine.EngineConfig;
 import org.opensearch.plugins.EnginePlugin;
 import org.opensearch.plugins.Plugin;
@@ -65,7 +66,11 @@ public final class CustomCodecPlugin extends Plugin implements EnginePlugin {
     }
 
     private static boolean isQatCodec(String codecName) {
-        return  codecName.equals(Lucene101QatCodec.Mode.QAT_LZ4.getCodec())
+        return codecName.equals(Lucene99QatCodec.Mode.QAT_LZ4.getCodec())
+            || codecName.equals(Lucene99QatCodec.Mode.QAT_DEFLATE.getCodec())
+            || codecName.equals(Lucene912QatCodec.Mode.QAT_LZ4.getCodec())
+            || codecName.equals(Lucene912QatCodec.Mode.QAT_DEFLATE.getCodec())
+            || codecName.equals(Lucene101QatCodec.Mode.QAT_LZ4.getCodec())
             || codecName.equals(Lucene101QatCodec.Mode.QAT_DEFLATE.getCodec());
     }
 }
