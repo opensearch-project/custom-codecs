@@ -12,9 +12,6 @@ import org.apache.logging.log4j.Logger;
 import org.apache.lucene.backward_codecs.lucene912.Lucene912Codec;
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;
-import org.apache.lucene.codecs.lucene101.Lucene101Codec;
-import org.opensearch.index.codec.PerFieldMappingPostingFormatCodec;
-import org.opensearch.index.mapper.MapperService;
 
 import java.util.Set;
 
@@ -85,21 +82,6 @@ public abstract class Lucene912CustomCodec extends FilterCodec {
      */
     public Lucene912CustomCodec(Mode mode, int compressionLevel) {
         super(mode.getCodec(), new Lucene912Codec());
-        this.storedFieldsFormat = new Lucene912CustomStoredFieldsFormat(mode, compressionLevel);
-    }
-
-    /**
-     * Creates a new compression codec with the given compression level. We use
-     * lowercase letters when registering the codec so that we remain consistent with
-     * the other compression codecs: default, lucene_default, and best_compression.
-     *
-     * @param mode The compression codec (ZSTD or ZSTDNODICT).
-     * @param compressionLevel The compression level.
-     * @param mapperService The mapper service.
-     * @param logger The logger.
-     */
-    public Lucene912CustomCodec(Mode mode, int compressionLevel, MapperService mapperService, Logger logger) {
-        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene101Codec.Mode.BEST_SPEED, mapperService, logger));
         this.storedFieldsFormat = new Lucene912CustomStoredFieldsFormat(mode, compressionLevel);
     }
 
