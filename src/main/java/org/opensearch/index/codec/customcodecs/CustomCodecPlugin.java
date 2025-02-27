@@ -13,7 +13,6 @@ import org.opensearch.index.IndexSettings;
 import org.opensearch.index.codec.CodecServiceFactory;
 import org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.Lucene912QatCodec;
 import org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec;
-import org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.Lucene912QatCodec;
 import org.opensearch.index.engine.EngineConfig;
 import org.opensearch.plugins.EnginePlugin;
 import org.opensearch.plugins.Plugin;
