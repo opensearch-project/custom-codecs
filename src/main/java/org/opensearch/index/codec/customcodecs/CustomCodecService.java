@@ -50,25 +50,25 @@ public class CustomCodecService extends CodecService {
         int compressionLevel = indexSettings.getValue(INDEX_CODEC_COMPRESSION_LEVEL_SETTING);
         final MapBuilder<String, Codec> codecs = MapBuilder.<String, Codec>newMapBuilder();
         if (mapperService == null) {
-            codecs.put(ZSTD_CODEC, new Zstd912Codec(compressionLevel));
-            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict912Codec(compressionLevel));
+            codecs.put(ZSTD_CODEC, new Zstd101Codec(compressionLevel));
+            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict101Codec(compressionLevel));
             if (QatZipperFactory.isQatAvailable()) {
                 codecs.put(
                     QAT_LZ4_CODEC,
-                    new QatLz4912Codec(compressionLevel, () -> { return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING); })
+                    new QatLz4101Codec(compressionLevel, () -> { return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING); })
                 );
-                codecs.put(QAT_DEFLATE_CODEC, new QatDeflate912Codec(compressionLevel, () -> {
+                codecs.put(QAT_DEFLATE_CODEC, new QatDeflate101Codec(compressionLevel, () -> {
                     return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING);
                 }));
             }
         } else {
-            codecs.put(ZSTD_CODEC, new Zstd912Codec(mapperService, logger, compressionLevel));
-            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict912Codec(mapperService, logger, compressionLevel));
+            codecs.put(ZSTD_CODEC, new Zstd101Codec(mapperService, logger, compressionLevel));
+            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict101Codec(mapperService, logger, compressionLevel));
             if (QatZipperFactory.isQatAvailable()) {
-                codecs.put(QAT_LZ4_CODEC, new QatLz4912Codec(mapperService, logger, compressionLevel, () -> {
+                codecs.put(QAT_LZ4_CODEC, new QatLz4101Codec(mapperService, logger, compressionLevel, () -> {
                     return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING);
                 }));
-                codecs.put(QAT_DEFLATE_CODEC, new QatDeflate912Codec(mapperService, logger, compressionLevel, () -> {
+                codecs.put(QAT_DEFLATE_CODEC, new QatDeflate101Codec(mapperService, logger, compressionLevel, () -> {
                     return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING);
                 }));
             }

@@ -44,7 +44,7 @@ ext {
 
 buildscript {
     ext {
-        opensearch_version = System.getProperty("opensearch.version", "3.0.0-SNAPSHOT")
+        opensearch_version = System.getProperty("opensearch.version", "3.0.0-alpha1-SNAPSHOT")
         opensearch_group = "org.opensearch"
     }
     repositories {
@@ -89,9 +89,13 @@ String nextOpenSearch  = extractVersion(nextVersion) + "-SNAPSHOT";
 
 // Extracts the OpenSearch version from a plugin version string, 2.11.0.0 -> 2.11.0.
 def String extractVersion(versionStr) {
-    def versionMatcher =  versionStr =~ /(.+?)(\.\d+)$/
+    def versionMatcher =  versionStr =~ /(.+?)(\.\d+)(-(alpha|beta|rc)\d+)?$/
     versionMatcher.find()
-    return versionMatcher.group(1)
+    if (versionMatcher.group(3) != null) { /* there is a qualifier */
+        return versionMatcher.group(1) + versionMatcher.group(3)
+    } else {
+        return versionMatcher.group(1)
+    }
 }
 
 2.times {i ->

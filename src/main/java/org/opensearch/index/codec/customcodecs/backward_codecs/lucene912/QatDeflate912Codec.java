@@ -6,14 +6,13 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs.lucene912;
 
-import org.apache.logging.log4j.Logger;
 import org.opensearch.common.settings.Setting;
 import org.opensearch.index.codec.CodecAliases;
 import org.opensearch.index.codec.CodecSettings;
+import org.opensearch.index.codec.customcodecs.QatZipperFactory;
 import org.opensearch.index.engine.EngineConfig;
-import org.opensearch.index.mapper.MapperService;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -50,29 +49,6 @@ public class QatDeflate912Codec extends Lucene912QatCodec implements CodecSettin
      */
     public QatDeflate912Codec(int compressionLevel, Supplier<QatZipper.Mode> supplier) {
         super(Mode.QAT_DEFLATE, compressionLevel, supplier);
-    }
-
-    /**
-     * Creates a new QatDeflate912Codec instance.
-     *
-     * @param mapperService The mapper service.
-     * @param logger The logger.
-     * @param compressionLevel The compression level.
-     */
-    public QatDeflate912Codec(MapperService mapperService, Logger logger, int compressionLevel) {
-        super(Mode.QAT_DEFLATE, compressionLevel, mapperService, logger);
-    }
-
-    /**
-     * Creates a new QatDeflate912Codec instance.
-     *
-     * @param mapperService The mapper service.
-     * @param logger The logger.
-     * @param compressionLevel The compression level.
-     * @param supplier supplier for QAT acceleration mode.
-     */
-    public QatDeflate912Codec(MapperService mapperService, Logger logger, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
-        super(Mode.QAT_DEFLATE, compressionLevel, mapperService, logger, supplier);
     }
 
     /** The name for this codec. */

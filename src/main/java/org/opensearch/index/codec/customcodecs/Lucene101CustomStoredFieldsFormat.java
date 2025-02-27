@@ -24,10 +24,10 @@ import java.util.Objects;
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99CustomCodec.DEFAULT_COMPRESSION_LEVEL;
 
 /** Stored field format used by pluggable codec */
-public class Lucene912CustomStoredFieldsFormat extends StoredFieldsFormat {
+public class Lucene101CustomStoredFieldsFormat extends StoredFieldsFormat {
 
     /** A key that we use to map to a mode */
-    public static final String MODE_KEY = Lucene912CustomStoredFieldsFormat.class.getSimpleName() + ".mode";
+    public static final String MODE_KEY = Lucene101CustomStoredFieldsFormat.class.getSimpleName() + ".mode";
 
     protected static final int ZSTD_BLOCK_LENGTH = 10 * 48 * 1024;
     protected static final int ZSTD_MAX_DOCS_PER_BLOCK = 4096;
@@ -36,12 +36,12 @@ public class Lucene912CustomStoredFieldsFormat extends StoredFieldsFormat {
     private final CompressionMode zstdCompressionMode;
     private final CompressionMode zstdNoDictCompressionMode;
 
-    private final Lucene912CustomCodec.Mode mode;
+    private final Lucene101CustomCodec.Mode mode;
     private final int compressionLevel;
 
     /** default constructor */
-    public Lucene912CustomStoredFieldsFormat() {
-        this(Lucene912CustomCodec.Mode.ZSTD, DEFAULT_COMPRESSION_LEVEL);
+    public Lucene101CustomStoredFieldsFormat() {
+        this(Lucene101CustomCodec.Mode.ZSTD, DEFAULT_COMPRESSION_LEVEL);
     }
 
     /**
@@ -49,7 +49,7 @@ public class Lucene912CustomStoredFieldsFormat extends StoredFieldsFormat {
      *
      * @param mode The mode represents ZSTD or ZSTDNODICT
      */
-    public Lucene912CustomStoredFieldsFormat(Lucene912CustomCodec.Mode mode) {
+    public Lucene101CustomStoredFieldsFormat(Lucene101CustomCodec.Mode mode) {
         this(mode, DEFAULT_COMPRESSION_LEVEL);
     }
 
@@ -59,7 +59,7 @@ public class Lucene912CustomStoredFieldsFormat extends StoredFieldsFormat {
      * @param mode The mode represents ZSTD or ZSTDNODICT
      * @param compressionLevel The compression level for the mode.
      */
-    public Lucene912CustomStoredFieldsFormat(Lucene912CustomCodec.Mode mode, int compressionLevel) {
+    public Lucene101CustomStoredFieldsFormat(Lucene101CustomCodec.Mode mode, int compressionLevel) {
         this.mode = Objects.requireNonNull(mode);
         this.compressionLevel = compressionLevel;
         zstdCompressionMode = new ZstdCompressionMode(compressionLevel);
@@ -67,17 +67,17 @@ public class Lucene912CustomStoredFieldsFormat extends StoredFieldsFormat {
     }
 
     /**
-      * Returns a {@link StoredFieldsReader} to load stored fields.
-      * @param directory The index directory.
-      * @param si The SegmentInfo that stores segment information.
-      * @param fn The fieldInfos.
-      * @param context The IOContext that holds additional details on the merge/search context.
-    */
+     * Returns a {@link StoredFieldsReader} to load stored fields.
+     * @param directory The index directory.
+     * @param si The SegmentInfo that stores segment information.
+     * @param fn The fieldInfos.
+     * @param context The IOContext that holds additional details on the merge/search context.
+     */
     @Override
     public StoredFieldsReader fieldsReader(Directory directory, SegmentInfo si, FieldInfos fn, IOContext context) throws IOException {
         if (si.getAttribute(MODE_KEY) != null) {
             String value = si.getAttribute(MODE_KEY);
-            Lucene912CustomCodec.Mode mode = Lucene912CustomCodec.Mode.valueOf(value);
+            Lucene101CustomCodec.Mode mode = Lucene101CustomCodec.Mode.valueOf(value);
             return impl(mode).fieldsReader(directory, si, fn, context);
         } else {
             throw new IllegalStateException("missing value for " + MODE_KEY + " for segment: " + si.name);
@@ -85,11 +85,11 @@ public class Lucene912CustomStoredFieldsFormat extends StoredFieldsFormat {
     }
 
     /**
-      * Returns a {@link StoredFieldsReader} to write stored fields.
-      * @param directory The index directory.
-      * @param si The SegmentInfo that stores segment information.
-      * @param context The IOContext that holds additional details on the merge/search context.
-    */
+     * Returns a {@link StoredFieldsReader} to write stored fields.
+     * @param directory The index directory.
+     * @param si The SegmentInfo that stores segment information.
+     * @param context The IOContext that holds additional details on the merge/search context.
+     */
     @Override
     public StoredFieldsWriter fieldsWriter(Directory directory, SegmentInfo si, IOContext context) throws IOException {
         String previous = si.putAttribute(MODE_KEY, mode.name());
@@ -101,7 +101,7 @@ public class Lucene912CustomStoredFieldsFormat extends StoredFieldsFormat {
         return impl(mode).fieldsWriter(directory, si, context);
     }
 
-    StoredFieldsFormat impl(Lucene912CustomCodec.Mode mode) {
+    StoredFieldsFormat impl(Lucene101CustomCodec.Mode mode) {
         switch (mode) {
             case ZSTD:
                 return getCustomCompressingStoredFieldsFormat("CustomStoredFieldsZstd", this.zstdCompressionMode);
@@ -122,7 +122,7 @@ public class Lucene912CustomStoredFieldsFormat extends StoredFieldsFormat {
         );
     }
 
-    public Lucene912CustomCodec.Mode getMode() {
+    public Lucene101CustomCodec.Mode getMode() {
         return mode;
     }
 
@@ -134,7 +134,7 @@ public class Lucene912CustomStoredFieldsFormat extends StoredFieldsFormat {
     }
 
     public CompressionMode getCompressionMode() {
-        return mode == Lucene912CustomCodec.Mode.ZSTD_NO_DICT ? zstdNoDictCompressionMode : zstdCompressionMode;
+        return mode == Lucene101CustomCodec.Mode.ZSTD_NO_DICT ? zstdNoDictCompressionMode : zstdCompressionMode;
     }
 
 }

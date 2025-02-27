@@ -11,7 +11,7 @@ package org.opensearch.index.codec.customcodecs;
 import org.apache.logging.log4j.Logger;
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;
-import org.apache.lucene.codecs.lucene912.Lucene912Codec;
+import org.apache.lucene.codecs.lucene101.Lucene101Codec;
 import org.opensearch.index.codec.PerFieldMappingPostingFormatCodec;
 import org.opensearch.index.mapper.MapperService;
 
@@ -27,14 +27,14 @@ import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.L
  *
  * @opensearch.internal
  */
-public abstract class Lucene912QatCodec extends FilterCodec {
+public abstract class Lucene101QatCodec extends FilterCodec {
     /** Each mode represents a compression algorithm. */
     public enum Mode {
         /** QAT lz4 mode. */
-        QAT_LZ4("QATLZ4912", Set.of("qat_lz4")),
+        QAT_LZ4("QATLZ4101", Set.of("qat_lz4")),
 
         /** QAT deflate mode. */
-        QAT_DEFLATE("QATDEFLATE912", Set.of("qat_deflate"));
+        QAT_DEFLATE("QATDEFLATE101", Set.of("qat_deflate"));
 
         private final String codec;
         private final Set<String> aliases;
@@ -65,7 +65,7 @@ public abstract class Lucene912QatCodec extends FilterCodec {
      *
      * @param mode The compression codec (QAT_LZ4 or QAT_DEFLATE).
      */
-    public Lucene912QatCodec(Mode mode) {
+    public Lucene101QatCodec(Mode mode) {
         this(mode, DEFAULT_COMPRESSION_LEVEL);
     }
 
@@ -77,9 +77,9 @@ public abstract class Lucene912QatCodec extends FilterCodec {
      * @param mode The compression codec (QAT_LZ4 or QAT_DEFLATE).
      * @param compressionLevel The compression level.
      */
-    public Lucene912QatCodec(Mode mode, int compressionLevel) {
-        super(mode.getCodec(), new Lucene912Codec());
-        this.storedFieldsFormat = new Lucene912QatStoredFieldsFormat(mode, compressionLevel);
+    public Lucene101QatCodec(Mode mode, int compressionLevel) {
+        super(mode.getCodec(), new Lucene101Codec());
+        this.storedFieldsFormat = new Lucene101QatStoredFieldsFormat(mode, compressionLevel);
     }
 
     /**
@@ -91,9 +91,9 @@ public abstract class Lucene912QatCodec extends FilterCodec {
      * @param compressionLevel The compression level.
      * @param supplier supplier for QAT mode.
      */
-    public Lucene912QatCodec(Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
-        super(mode.getCodec(), new Lucene912Codec());
-        this.storedFieldsFormat = new Lucene912QatStoredFieldsFormat(mode, compressionLevel, supplier);
+    public Lucene101QatCodec(Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
+        super(mode.getCodec(), new Lucene101Codec());
+        this.storedFieldsFormat = new Lucene101QatStoredFieldsFormat(mode, compressionLevel, supplier);
     }
 
     /**
@@ -106,9 +106,9 @@ public abstract class Lucene912QatCodec extends FilterCodec {
      * @param mapperService The mapper service.
      * @param logger The logger.
      */
-    public Lucene912QatCodec(Mode mode, int compressionLevel, MapperService mapperService, Logger logger) {
-        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene912Codec.Mode.BEST_SPEED, mapperService, logger));
-        this.storedFieldsFormat = new Lucene912QatStoredFieldsFormat(mode, compressionLevel);
+    public Lucene101QatCodec(Mode mode, int compressionLevel, MapperService mapperService, Logger logger) {
+        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene101Codec.Mode.BEST_SPEED, mapperService, logger));
+        this.storedFieldsFormat = new Lucene101QatStoredFieldsFormat(mode, compressionLevel);
     }
 
     /**
@@ -122,15 +122,15 @@ public abstract class Lucene912QatCodec extends FilterCodec {
      * @param logger The logger.
      * @param supplier supplier for QAT mode.
      */
-    public Lucene912QatCodec(
+    public Lucene101QatCodec(
         Mode mode,
         int compressionLevel,
         MapperService mapperService,
         Logger logger,
         Supplier<QatZipper.Mode> supplier
     ) {
-        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene912Codec.Mode.BEST_SPEED, mapperService, logger));
-        this.storedFieldsFormat = new Lucene912QatStoredFieldsFormat(mode, compressionLevel, supplier);
+        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene101Codec.Mode.BEST_SPEED, mapperService, logger));
+        this.storedFieldsFormat = new Lucene101QatStoredFieldsFormat(mode, compressionLevel, supplier);
     }
 
     @Override
