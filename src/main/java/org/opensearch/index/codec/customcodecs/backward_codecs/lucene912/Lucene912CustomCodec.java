@@ -8,7 +8,6 @@
 
 package org.opensearch.index.codec.customcodecs.backward_codecs.lucene912;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.lucene.backward_codecs.lucene912.Lucene912Codec;
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;

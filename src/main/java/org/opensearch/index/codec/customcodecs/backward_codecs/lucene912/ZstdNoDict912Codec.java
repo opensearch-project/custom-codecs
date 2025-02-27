@@ -8,12 +8,10 @@
 
 package org.opensearch.index.codec.customcodecs.backward_codecs.lucene912;
 
-import org.apache.logging.log4j.Logger;
 import org.opensearch.common.settings.Setting;
 import org.opensearch.index.codec.CodecAliases;
 import org.opensearch.index.codec.CodecSettings;
 import org.opensearch.index.engine.EngineConfig;
-import org.opensearch.index.mapper.MapperService;
 
 import java.util.Set;
 
@@ -34,17 +32,6 @@ public class ZstdNoDict912Codec extends Lucene912CustomCodec implements CodecSet
      */
     public ZstdNoDict912Codec(int compressionLevel) {
         super(Mode.ZSTD_NO_DICT, compressionLevel);
-    }
-
-    /**
-     * Creates a new ZstdNoDictCodec instance.
-     *
-     * @param mapperService The mapper service.
-     * @param logger The logger.
-     * @param compressionLevel The compression level.
-     */
-    public ZstdNoDict912Codec(MapperService mapperService, Logger logger, int compressionLevel) {
-        super(Mode.ZSTD_NO_DICT, compressionLevel, mapperService, logger);
     }
 
     /** The name for this codec. */

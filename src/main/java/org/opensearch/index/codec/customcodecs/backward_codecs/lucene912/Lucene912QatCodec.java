@@ -8,7 +8,6 @@
 
 package org.opensearch.index.codec.customcodecs.backward_codecs.lucene912;
 
-import org.apache.logging.log4j.Logger;
 import org.apache.lucene.backward_codecs.lucene912.Lucene912Codec;
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;
@@ -93,7 +92,6 @@ public abstract class Lucene912QatCodec extends FilterCodec {
         super(mode.getCodec(), new Lucene912Codec());
         this.storedFieldsFormat = new Lucene912QatStoredFieldsFormat(mode, compressionLevel, supplier);
     }
-
 
     @Override
     public StoredFieldsFormat storedFieldsFormat() {

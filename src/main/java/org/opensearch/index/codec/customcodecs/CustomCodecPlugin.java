@@ -11,6 +11,7 @@ package org.opensearch.index.codec.customcodecs;
 import org.opensearch.common.settings.Setting;
 import org.opensearch.index.IndexSettings;
 import org.opensearch.index.codec.CodecServiceFactory;
+import org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.Lucene912QatCodec;
 import org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec;
 import org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.Lucene912QatCodec;
 import org.opensearch.index.engine.EngineConfig;

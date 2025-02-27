@@ -8,13 +8,11 @@
 
 package org.opensearch.index.codec.customcodecs.backward_codecs.lucene912;
 
-import org.apache.logging.log4j.Logger;
 import org.opensearch.common.settings.Setting;
 import org.opensearch.index.codec.CodecAliases;
 import org.opensearch.index.codec.CodecSettings;
 import org.opensearch.index.codec.customcodecs.QatZipperFactory;
 import org.opensearch.index.engine.EngineConfig;
-import org.opensearch.index.mapper.MapperService;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -51,29 +49,6 @@ public class QatLz4912Codec extends Lucene912QatCodec implements CodecSettings, 
      */
     public QatLz4912Codec(int compressionLevel, Supplier<QatZipper.Mode> supplier) {
         super(Mode.QAT_LZ4, compressionLevel, supplier);
-    }
-
-    /**
-     * Creates a new QatLz4912Codec instance.
-     *
-     * @param mapperService The mapper service.
-     * @param logger The logger.
-     * @param compressionLevel The compression level.
-     */
-    public QatLz4912Codec(MapperService mapperService, Logger logger, int compressionLevel) {
-        super(Mode.QAT_LZ4, compressionLevel, mapperService, logger);
-    }
-
-    /**
-     * Creates a new QatLz4912Codec instance.
-     *
-     * @param mapperService The mapper service.
-     * @param logger The logger.
-     * @param compressionLevel The compression level.
-     * @param supplier supplier for QAT acceleration mode.
-     */
-    public QatLz4912Codec(MapperService mapperService, Logger logger, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
-        super(Mode.QAT_LZ4, compressionLevel, mapperService, logger, supplier);
     }
 
     /** The name for this codec. */

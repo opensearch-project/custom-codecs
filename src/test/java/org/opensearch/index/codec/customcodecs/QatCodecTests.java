@@ -49,7 +49,6 @@ import org.opensearch.index.codec.CodecService;
 import org.opensearch.index.codec.CodecServiceConfig;
 import org.opensearch.index.codec.CodecServiceFactory;
 import org.opensearch.index.codec.CodecSettings;
-
 import org.opensearch.index.mapper.MapperService;
 import org.opensearch.index.similarity.SimilarityService;
 import org.opensearch.indices.mapper.MapperRegistry;
