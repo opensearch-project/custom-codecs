@@ -77,7 +77,7 @@ testingConventions.enabled = false
 validateNebulaPom.enabled = false
 
 String previousVersion = System.getProperty("bwc.version.previous", "2.18.1.0")
-String nextVersion = System.getProperty("bwc.version.next", "2.19.0.0")
+String nextVersion = System.getProperty("bwc.version.next", "2.19.2.0")
 
 String bwcVersion = previousVersion
 String baseName = "customCodecsBwcCluster"
