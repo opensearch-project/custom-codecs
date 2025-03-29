@@ -31,9 +31,9 @@
 buildscript {
   ext {
     opensearch_group = "org.opensearch"
-    opensearch_version = System.getProperty("opensearch.version", "3.0.0-alpha1-SNAPSHOT")
+    opensearch_version = System.getProperty("opensearch.version", "3.0.0-beta1-SNAPSHOT")
     isSnapshot = "true" == System.getProperty("build.snapshot", "true")
-    buildVersionQualifier = System.getProperty("build.version_qualifier", "alpha1")
+    buildVersionQualifier = System.getProperty("build.version_qualifier", "beta1")
   }
 
   repositories {
@@ -92,7 +92,7 @@ opensearchplugin {
 }
 
 dependencies {
-  api "com.github.luben:zstd-jni:1.5.5-5"
+  api "com.github.luben:zstd-jni:1.5.6-1"
   api "com.intel.qat:qat-java:1.1.1"
 }
 
