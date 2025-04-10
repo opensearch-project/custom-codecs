@@ -6,6 +6,10 @@
  * compatible open source license.
  */
 
+grant {
+  permission java.net.NetPermission "accessUnixDomainSocket";
+}
+
 grant codeBase "${codebase.zstd-jni}" {
   permission java.lang.RuntimePermission "loadLibrary.*";
 };
