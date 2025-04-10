@@ -95,14 +95,13 @@ configurations {
   agent
 }
 
-
 dependencies {
   api "com.github.luben:zstd-jni:1.5.6-1"
   api "com.intel.qat:qat-java:1.1.1"
 
   agent "org.opensearch:opensearch-agent-bootstrap:${opensearch_version}"
   agent "org.opensearch:opensearch-agent:${opensearch_version}"
-  agent "net.bytebuddy:byte-buddy:1.17.5"
+  agent "net.bytebuddy:byte-buddy:${versions.bytebuddy}"
 }
 
 allprojects {
@@ -205,24 +204,17 @@ tasks.named("testingConventions").configure {
     }
 }
 
-internalClusterTest {
-  dependsOn "prepareAgent"
-  jvmArgs += ["-javaagent:" + project.layout.buildDirectory.file("agent/opensearch-agent-${opensearch_version}.jar").get()]
-}
-
 integTest {
     description = "Run tests against a cluster"
     testClassesDirs = sourceSets.integTest.output.classesDirs
     classpath = sourceSets.integTest.runtimeClasspath
 
-    dependsOn "bundlePlugin", "prepareAgent"
+    dependsOn "bundlePlugin"
     systemProperty 'tests.security.manager', 'true'
 
     systemProperty "https", System.getProperty("https")
     systemProperty "user", System.getProperty("user")
     systemProperty "password", System.getProperty("password")
-
-    jvmArgs += ["-javaagent:" + project.layout.buildDirectory.file("agent/opensearch-agent-${opensearch_version}.jar").get()]
 }
 
 testClusters.integTest {
@@ -254,7 +246,7 @@ task prepareAgent(type: Copy) {
   into "$buildDir/agent"
 }
 
-tasks.test {
+tasks.withType(Test) {
   dependsOn prepareAgent
   jvmArgs += ["-javaagent:" + project.layout.buildDirectory.file("agent/opensearch-agent-${opensearch_version}.jar").get()]
 }
