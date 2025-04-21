@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_DEFLATE_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_LZ4_CODEC;
+import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_ZSTD_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.ZSTD_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.ZSTD_NO_DICT_CODEC;
 import static org.opensearch.test.hamcrest.OpenSearchAssertions.assertAcked;
@@ -97,7 +98,7 @@ public class CodecCompressionLevelIT extends OpenSearchIntegTestCase {
             Settings.builder()
                 .put(IndexMetadata.SETTING_NUMBER_OF_SHARDS, 1)
                 .put(IndexMetadata.SETTING_NUMBER_OF_REPLICAS, 0)
-                .put("index.codec", randomFrom(QAT_DEFLATE_CODEC, QAT_LZ4_CODEC))
+                .put("index.codec", randomFrom(QAT_DEFLATE_CODEC, QAT_LZ4_CODEC, QAT_ZSTD_CODEC))
                 .put("index.codec.compression_level", randomIntBetween(1, 6))
                 .build()
         );
@@ -169,7 +170,7 @@ public class CodecCompressionLevelIT extends OpenSearchIntegTestCase {
             Settings.builder()
                 .put(IndexMetadata.SETTING_NUMBER_OF_SHARDS, 1)
                 .put(IndexMetadata.SETTING_NUMBER_OF_REPLICAS, 0)
-                .put("index.codec", randomFrom(QAT_DEFLATE_CODEC, QAT_LZ4_CODEC))
+                .put("index.codec", randomFrom(QAT_DEFLATE_CODEC, QAT_LZ4_CODEC, QAT_ZSTD_CODEC))
                 .put("index.codec.compression_level", randomIntBetween(1, 6))
                 .build()
         );
@@ -306,7 +307,7 @@ public class CodecCompressionLevelIT extends OpenSearchIntegTestCase {
                 .updateSettings(
                     new UpdateSettingsRequest(index).settings(
                         Settings.builder()
-                            .put("index.codec", randomFrom(QAT_DEFLATE_CODEC, QAT_LZ4_CODEC))
+                            .put("index.codec", randomFrom(QAT_DEFLATE_CODEC, QAT_LZ4_CODEC, QAT_ZSTD_CODEC))
                             .put("index.codec.compression_level", randomIntBetween(1, 6))
                     )
                 )

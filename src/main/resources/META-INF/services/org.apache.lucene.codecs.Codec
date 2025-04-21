@@ -5,11 +5,14 @@ org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Zstd99Codec
 org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.ZstdNoDict99Codec
 org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.QatDeflate99Codec
 org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.QatLz499Codec
+org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.QatZstd99Codec
 org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.Zstd912Codec
 org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.ZstdNoDict912Codec
 org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.QatDeflate912Codec
 org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.QatLz4912Codec
+org.opensearch.index.codec.customcodecs.backward_codecs.lucene912.QatZstd912Codec
 org.opensearch.index.codec.customcodecs.Zstd101Codec
 org.opensearch.index.codec.customcodecs.ZstdNoDict101Codec
 org.opensearch.index.codec.customcodecs.QatDeflate101Codec
 org.opensearch.index.codec.customcodecs.QatLz4101Codec
+org.opensearch.index.codec.customcodecs.QatZstd101Codec

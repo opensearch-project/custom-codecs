@@ -31,7 +31,10 @@ public abstract class Lucene912QatCodec extends FilterCodec {
         QAT_LZ4("QATLZ4912", Set.of("qat_lz4")),
 
         /** QAT deflate mode. */
-        QAT_DEFLATE("QATDEFLATE912", Set.of("qat_deflate"));
+        QAT_DEFLATE("QATDEFLATE912", Set.of("qat_deflate")),
+
+        /** QAT zstd mode. */
+        QAT_ZSTD("QATZSTD912", Set.of("qat_zstd"));
 
         private final String codec;
         private final Set<String> aliases;
@@ -60,7 +63,7 @@ public abstract class Lucene912QatCodec extends FilterCodec {
     /**
      * Creates a new compression codec with the default compression level.
      *
-     * @param mode The compression codec (QAT_LZ4 or QAT_DEFLATE).
+     * @param mode The compression codec (QAT_LZ4, QAT_DEFLATE, or QAT_ZSTD).
      */
     public Lucene912QatCodec(Mode mode) {
         this(mode, DEFAULT_COMPRESSION_LEVEL);
@@ -71,7 +74,7 @@ public abstract class Lucene912QatCodec extends FilterCodec {
      * registering the codec so that we remain consistent with the other compression codecs: default,
      * lucene_default, and best_compression.
      *
-     * @param mode The compression codec (QAT_LZ4 or QAT_DEFLATE).
+     * @param mode The compression codec (QAT_LZ4, QAT_DEFLATE, or QAT_ZSTD).
      * @param compressionLevel The compression level.
      */
     public Lucene912QatCodec(Mode mode, int compressionLevel) {
@@ -84,7 +87,7 @@ public abstract class Lucene912QatCodec extends FilterCodec {
      * registering the codec so that we remain consistent with the other compression codecs: default,
      * lucene_default, and best_compression.
      *
-     * @param mode The compression codec (QAT_LZ4 or QAT_DEFLATE).
+     * @param mode The compression codec (QAT_LZ4, QAT_DEFLATE, or QAT_ZSTD).
      * @param compressionLevel The compression level.
      * @param supplier supplier for QAT mode.
      */
