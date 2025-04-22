@@ -70,10 +70,8 @@ public final class CustomCodecPlugin extends Plugin implements EnginePlugin {
     private static boolean isQatCodec(String codecName) {
         return codecName.equals(Lucene99QatCodec.Mode.QAT_LZ4.getCodec())
             || codecName.equals(Lucene99QatCodec.Mode.QAT_DEFLATE.getCodec())
-            || codecName.equals(Lucene99QatCodec.Mode.QAT_ZSTD.getCodec())
             || codecName.equals(Lucene912QatCodec.Mode.QAT_LZ4.getCodec())
             || codecName.equals(Lucene912QatCodec.Mode.QAT_DEFLATE.getCodec())
-            || codecName.equals(Lucene912QatCodec.Mode.QAT_ZSTD.getCodec())
             || codecName.equals(Lucene101QatCodec.Mode.QAT_LZ4.getCodec())
             || codecName.equals(Lucene101QatCodec.Mode.QAT_DEFLATE.getCodec())
             || codecName.equals(Lucene101QatCodec.Mode.QAT_ZSTD.getCodec());
