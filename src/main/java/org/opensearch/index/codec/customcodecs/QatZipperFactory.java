@@ -31,9 +31,12 @@ public class QatZipperFactory {
      * @param pmode polling mode.
      */
     public static QatZipper createInstance(Algorithm algorithm, int level, Mode mode, int retryCount, PollingMode pmode) {
-        return java.security.AccessController.doPrivileged(
-            (java.security.PrivilegedAction<QatZipper>) () -> new QatZipper(algorithm, level, mode, retryCount, pmode)
-        );
+        return new QatZipper.Builder().setAlgorithm(algorithm)
+            .setLevel(level)
+            .setMode(mode)
+            .setRetryCount(retryCount)
+            .setPollingMode(pmode)
+            .build();
     }
 
     /**
@@ -78,7 +81,7 @@ public class QatZipperFactory {
      * Creates a new QatZipper with the specified algorithm and compression level. Uses the default
      * mode, retry count, and polling mode.
      *
-     * @param algorithm the compression algorithm (deflate or LZ4).
+     * @param algorithm the compression algorithm (DEFLATE, LZ4, or ZSTD).
      * @param level the compression level.
      */
     public static QatZipper createInstance(Algorithm algorithm, int level) {
@@ -123,7 +126,7 @@ public class QatZipperFactory {
      * Creates a new QatZipper with the specified algorithm, compression level, and mode . Uses the
      * default retry count and polling mode.
      *
-     * @param algorithm the compression algorithm (deflate or LZ4).
+     * @param algorithm the compression algorithm (DEFLATE, LZ4, or ZSTD).
      * @param level the compression level.
      * @param mode the mode of operation (HARDWARE - only hardware, AUTO - hardware with a software
      *     failover.)
@@ -136,7 +139,7 @@ public class QatZipperFactory {
      * Creates a new QatZipper with the specified algorithm, compression level, and polling mode .
      * Uses the default mode and retry count.
      *
-     * @param algorithm the compression algorithm (deflate or LZ4).
+     * @param algorithm the compression algorithm (DEFLATE, LZ4, or ZSTD).
      * @param level the compression level.
      * @param pmode the polling mode.
      */

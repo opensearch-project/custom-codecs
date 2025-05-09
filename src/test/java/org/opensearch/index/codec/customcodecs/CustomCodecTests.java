@@ -67,6 +67,7 @@ import java.util.Optional;
 
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_DEFLATE_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_LZ4_CODEC;
+import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_ZSTD_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.ZSTD_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.ZSTD_NO_DICT_CODEC;
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99CustomCodec.DEFAULT_COMPRESSION_LEVEL;
@@ -183,12 +184,16 @@ public class CustomCodecTests extends OpenSearchTestCase {
         if (!QatZipperFactory.isQatAvailable()) {
             assertThrows(IllegalArgumentException.class, () -> createCodecService(false).codec("qat_lz4"));
             assertThrows(IllegalArgumentException.class, () -> createCodecService(false).codec("qat_deflate"));
+            assertThrows(IllegalArgumentException.class, () -> createCodecService(false).codec("qat_zstd"));
 
             QatLz4101Codec qatLz4101Codec = new QatLz4101Codec();
             assertTrue(qatLz4101Codec.aliases().isEmpty());
 
             QatDeflate101Codec qatDeflate101Codec = new QatDeflate101Codec();
             assertTrue(qatDeflate101Codec.aliases().isEmpty());
+
+            QatZstd101Codec qatZstd101Codec = new QatZstd101Codec();
+            assertTrue(qatZstd101Codec.aliases().isEmpty());
         }
     }
 
@@ -196,7 +201,7 @@ public class CustomCodecTests extends OpenSearchTestCase {
         if (!QatZipperFactory.isQatAvailable()) {
             Settings nodeSettings = Settings.builder()
                 .put(Environment.PATH_HOME_SETTING.getKey(), createTempDir())
-                .put("index.codec", randomFrom(QAT_DEFLATE_CODEC, QAT_LZ4_CODEC))
+                .put("index.codec", randomFrom(QAT_DEFLATE_CODEC, QAT_LZ4_CODEC, QAT_ZSTD_CODEC))
                 .build();
             IndexSettings indexSettings = IndexSettingsModule.newIndexSettings("_na", nodeSettings);
             assertThrows(IllegalArgumentException.class, () -> plugin.getCustomCodecServiceFactory(indexSettings));
