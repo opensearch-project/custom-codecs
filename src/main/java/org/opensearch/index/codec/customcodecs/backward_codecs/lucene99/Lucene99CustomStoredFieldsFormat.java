@@ -77,7 +77,7 @@ public class Lucene99CustomStoredFieldsFormat extends StoredFieldsFormat {
     */
     @Override
     public StoredFieldsReader fieldsReader(Directory directory, SegmentInfo si, FieldInfos fn, IOContext context) throws IOException {
-        if (si.getAttribute(MODE_KEY) !=null){
+        if (si.getAttribute(MODE_KEY) != null) {
             String value = si.getAttribute(MODE_KEY);
             Lucene99CustomCodec.Mode mode = Lucene99CustomCodec.Mode.valueOf(value);
             return impl(mode).fieldsReader(directory, si, fn, context);
@@ -114,14 +114,13 @@ public class Lucene99CustomStoredFieldsFormat extends StoredFieldsFormat {
         }
     }
 
-
     private StoredFieldsFormat getCustomCompressingStoredFieldsFormat(String formatName, CompressionMode compressionMode) {
         return new Lucene90CompressingStoredFieldsFormat(
-                formatName,
-                compressionMode,
-                ZSTD_BLOCK_LENGTH,
-                ZSTD_MAX_DOCS_PER_BLOCK,
-                ZSTD_BLOCK_SHIFT
+            formatName,
+            compressionMode,
+            ZSTD_BLOCK_LENGTH,
+            ZSTD_MAX_DOCS_PER_BLOCK,
+            ZSTD_BLOCK_SHIFT
         );
     }
 

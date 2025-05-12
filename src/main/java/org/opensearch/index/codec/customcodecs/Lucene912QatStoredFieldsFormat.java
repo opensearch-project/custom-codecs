@@ -41,6 +41,10 @@ public class Lucene912QatStoredFieldsFormat extends StoredFieldsFormat {
     private static final int QAT_LZ4_MAX_DOCS_PER_BLOCK = 4096;
     private static final int QAT_LZ4_BLOCK_SHIFT = 10;
 
+    private static final int QAT_ZSTD_BLOCK_LENGTH = 10 * 48 * 1024;
+    private static final int QAT_ZSTD_MAX_DOCS_PER_BLOCK = 4096;
+    private static final int QAT_ZSTD_BLOCK_SHIFT = 10;
+
     private final QatCompressionMode qatCompressionMode;
     private final Lucene912QatCodec.Mode mode;
 
@@ -52,7 +56,7 @@ public class Lucene912QatStoredFieldsFormat extends StoredFieldsFormat {
     /**
      * Creates a new instance.
      *
-     * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
+     * @param mode The mode represents QAT_LZ4, QAT_DEFLATE, or QAT_ZSTD
      */
     public Lucene912QatStoredFieldsFormat(Lucene912QatCodec.Mode mode) {
         this(mode, DEFAULT_COMPRESSION_LEVEL);
@@ -61,7 +65,7 @@ public class Lucene912QatStoredFieldsFormat extends StoredFieldsFormat {
     /**
      * Creates a new instance with the specified mode and compression level.
      *
-     * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
+     * @param mode The mode represents QAT_LZ4, QAT_DEFLATE, or QAT_ZSTD
      * @param compressionLevel The compression level for the mode.
      */
     public Lucene912QatStoredFieldsFormat(Lucene912QatCodec.Mode mode, int compressionLevel) {
@@ -71,7 +75,7 @@ public class Lucene912QatStoredFieldsFormat extends StoredFieldsFormat {
     /**
      * Creates a new instance.
      *
-     * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
+     * @param mode The mode represents QAT_LZ4, QAT_DEFLATE, or QAT_ZSTD
      * @param supplier a supplier for QAT acceleration mode.
      */
     public Lucene912QatStoredFieldsFormat(Lucene912QatCodec.Mode mode, Supplier<QatZipper.Mode> supplier) {
@@ -81,7 +85,7 @@ public class Lucene912QatStoredFieldsFormat extends StoredFieldsFormat {
     /**
      * Creates a new instance with the specified mode and compression level.
      *
-     * @param mode The mode represents QAT_LZ4 or QAT_DEFLATE
+     * @param mode The mode represents QAT_LZ4, QAT_DEFLATE, or QAT_ZSTD
      * @param compressionLevel The compression level for the mode.
      * @param supplier a supplier for QAT acceleration mode.
      */
@@ -145,6 +149,14 @@ public class Lucene912QatStoredFieldsFormat extends StoredFieldsFormat {
                     QAT_DEFLATE_MAX_DOCS_PER_BLOCK,
                     QAT_DEFLATE_BLOCK_SHIFT
                 );
+            case QAT_ZSTD:
+                return getQatCompressingStoredFieldsFormat(
+                    "QatStoredFieldsZstd",
+                    qatCompressionMode,
+                    QAT_ZSTD_BLOCK_LENGTH,
+                    QAT_ZSTD_MAX_DOCS_PER_BLOCK,
+                    QAT_ZSTD_BLOCK_SHIFT
+                );
             default:
                 throw new IllegalStateException("Unsupported compression mode: " + mode);
         }
@@ -163,7 +175,7 @@ public class Lucene912QatStoredFieldsFormat extends StoredFieldsFormat {
     /**
      * Gets the mode of compression.
      *
-     * @return either QAT_LZ4 or QAT_DEFLATE
+     * @return either QAT_LZ4, QAT_DEFLATE, or QAT_ZSTD
      */
     public Lucene912QatCodec.Mode getMode() {
         return mode;
@@ -176,13 +188,22 @@ public class Lucene912QatStoredFieldsFormat extends StoredFieldsFormat {
     public QatCompressionMode getCompressionMode() {
         return qatCompressionMode;
     }
-    
+
     /**
-     * Returns {@link QatZipper.Algorithm} instance that corresponds codec's {@link Lucene912QatCodec.Mode mode} 
+     * Returns {@link QatZipper.Algorithm} instance that corresponds codec's {@link Lucene912QatCodec.Mode mode}
      * @param mode codec's {@link Lucene912QatCodec.Mode mode}
      * @return the {@link QatZipper.Algorithm} instance that corresponds codec's {@link Lucene912QatCodec.Mode mode}
      */
     private static QatZipper.Algorithm getAlgorithm(Lucene912QatCodec.Mode mode) {
-        return (mode == Lucene912QatCodec.Mode.QAT_LZ4) ? QatZipper.Algorithm.LZ4 : QatZipper.Algorithm.DEFLATE;
+        switch (mode) {
+            case QAT_LZ4:
+                return QatZipper.Algorithm.LZ4;
+            case QAT_DEFLATE:
+                return QatZipper.Algorithm.DEFLATE;
+            case QAT_ZSTD:
+                return QatZipper.Algorithm.ZSTD;
+            default:
+                throw new IllegalStateException("Unsupported compression mode: " + mode);
+        }
     }
 }

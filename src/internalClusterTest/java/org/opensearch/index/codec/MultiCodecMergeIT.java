@@ -64,6 +64,7 @@ public class MultiCodecMergeIT extends OpenSearchIntegTestCase {
                 if (QatZipperFactory.isQatAvailable()) {
                     put("qat_lz4", "QAT_LZ4");
                     put("qat_deflate", "QAT_DEFLATE");
+                    put("qat_zstd", "QAT_ZSTD");
                 }
             }
         };

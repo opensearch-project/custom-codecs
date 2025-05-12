@@ -38,6 +38,9 @@ public class CustomCodecService extends CodecService {
     /** Hardware accelerated (Intel QAT) compression codec for DEFLATE. */
     public static final String QAT_DEFLATE_CODEC = "qat_deflate";
 
+    /** Hardware accelerated (Intel QAT) compression codec for ZSTD. */
+    public static final String QAT_ZSTD_CODEC = "qat_zstd";
+
     /**
      * Creates a new CustomCodecService.
      *
@@ -60,6 +63,10 @@ public class CustomCodecService extends CodecService {
                 codecs.put(QAT_DEFLATE_CODEC, new QatDeflate912Codec(compressionLevel, () -> {
                     return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING);
                 }));
+                codecs.put(
+                    QAT_ZSTD_CODEC,
+                    new QatZstd912Codec(compressionLevel, () -> { return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING); })
+                );
             }
         } else {
             codecs.put(ZSTD_CODEC, new Zstd912Codec(mapperService, logger, compressionLevel));
@@ -69,6 +76,9 @@ public class CustomCodecService extends CodecService {
                     return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING);
                 }));
                 codecs.put(QAT_DEFLATE_CODEC, new QatDeflate912Codec(mapperService, logger, compressionLevel, () -> {
+                    return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING);
+                }));
+                codecs.put(QAT_ZSTD_CODEC, new QatZstd912Codec(mapperService, logger, compressionLevel, () -> {
                     return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING);
                 }));
             }

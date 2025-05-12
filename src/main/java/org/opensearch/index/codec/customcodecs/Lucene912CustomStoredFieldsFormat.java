@@ -67,12 +67,12 @@ public class Lucene912CustomStoredFieldsFormat extends StoredFieldsFormat {
     }
 
     /**
-      * Returns a {@link StoredFieldsReader} to load stored fields.
-      * @param directory The index directory.
-      * @param si The SegmentInfo that stores segment information.
-      * @param fn The fieldInfos.
-      * @param context The IOContext that holds additional details on the merge/search context.
-    */
+     * Returns a {@link StoredFieldsReader} to load stored fields.
+     * @param directory The index directory.
+     * @param si The SegmentInfo that stores segment information.
+     * @param fn The fieldInfos.
+     * @param context The IOContext that holds additional details on the merge/search context.
+     */
     @Override
     public StoredFieldsReader fieldsReader(Directory directory, SegmentInfo si, FieldInfos fn, IOContext context) throws IOException {
         if (si.getAttribute(MODE_KEY) != null) {
@@ -85,11 +85,11 @@ public class Lucene912CustomStoredFieldsFormat extends StoredFieldsFormat {
     }
 
     /**
-      * Returns a {@link StoredFieldsReader} to write stored fields.
-      * @param directory The index directory.
-      * @param si The SegmentInfo that stores segment information.
-      * @param context The IOContext that holds additional details on the merge/search context.
-    */
+     * Returns a {@link StoredFieldsReader} to write stored fields.
+     * @param directory The index directory.
+     * @param si The SegmentInfo that stores segment information.
+     * @param context The IOContext that holds additional details on the merge/search context.
+     */
     @Override
     public StoredFieldsWriter fieldsWriter(Directory directory, SegmentInfo si, IOContext context) throws IOException {
         String previous = si.putAttribute(MODE_KEY, mode.name());

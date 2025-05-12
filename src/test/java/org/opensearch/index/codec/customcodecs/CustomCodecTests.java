@@ -34,8 +34,8 @@ package org.opensearch.index.codec.customcodecs;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.lucene.codecs.Codec;
-import org.apache.lucene.codecs.lucene90.Lucene90StoredFieldsFormat;
 import org.apache.lucene.codecs.lucene912.Lucene912Codec;
+import org.apache.lucene.codecs.lucene90.Lucene90StoredFieldsFormat;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexWriter;
@@ -67,6 +67,7 @@ import java.util.Optional;
 
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_DEFLATE_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_LZ4_CODEC;
+import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_ZSTD_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.ZSTD_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.ZSTD_NO_DICT_CODEC;
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99CustomCodec.DEFAULT_COMPRESSION_LEVEL;
@@ -183,12 +184,16 @@ public class CustomCodecTests extends OpenSearchTestCase {
         if (!QatZipperFactory.isQatAvailable()) {
             assertThrows(IllegalArgumentException.class, () -> createCodecService(false).codec("qat_lz4"));
             assertThrows(IllegalArgumentException.class, () -> createCodecService(false).codec("qat_deflate"));
+            assertThrows(IllegalArgumentException.class, () -> createCodecService(false).codec("qat_zstd"));
 
             QatLz4912Codec qatLz4912Codec = new QatLz4912Codec();
             assertTrue(qatLz4912Codec.aliases().isEmpty());
 
             QatDeflate912Codec qatDeflate912Codec = new QatDeflate912Codec();
             assertTrue(qatDeflate912Codec.aliases().isEmpty());
+
+            QatZstd912Codec qatZstd912Codec = new QatZstd912Codec();
+            assertTrue(qatZstd912Codec.aliases().isEmpty());
         }
     }
 
@@ -196,7 +201,7 @@ public class CustomCodecTests extends OpenSearchTestCase {
         if (!QatZipperFactory.isQatAvailable()) {
             Settings nodeSettings = Settings.builder()
                 .put(Environment.PATH_HOME_SETTING.getKey(), createTempDir())
-                .put("index.codec", randomFrom(QAT_DEFLATE_CODEC, QAT_LZ4_CODEC))
+                .put("index.codec", randomFrom(QAT_DEFLATE_CODEC, QAT_LZ4_CODEC, QAT_ZSTD_CODEC))
                 .build();
             IndexSettings indexSettings = IndexSettingsModule.newIndexSettings("_na", nodeSettings);
             assertThrows(IllegalArgumentException.class, () -> plugin.getCustomCodecServiceFactory(indexSettings));

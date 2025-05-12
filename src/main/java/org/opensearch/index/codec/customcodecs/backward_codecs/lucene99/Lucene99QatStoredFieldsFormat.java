@@ -177,7 +177,7 @@ public class Lucene99QatStoredFieldsFormat extends StoredFieldsFormat {
     }
 
     /**
-     * Returns {@link QatZipper.Algorithm} instance that corresponds codec's {@link Lucene99QatCodec.Mode mode} 
+     * Returns {@link QatZipper.Algorithm} instance that corresponds codec's {@link Lucene99QatCodec.Mode mode}
      * @param mode codec's {@link Lucene99QatCodec.Mode mode}
      * @return the {@link QatZipper.Algorithm} instance that corresponds codec's {@link Lucene99QatCodec.Mode mode}
      */

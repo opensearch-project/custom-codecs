@@ -17,19 +17,19 @@ import com.intel.qat.QatZipper;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;
 
-/** Test QAT DEFLATE compression */
-public class QatDeflateCompressorTests extends AbstractCompressorTests {
+/** Test QAT ZSTD compression */
+public class QatZstdCompressorTests extends AbstractCompressorTests {
 
     @Override
     Compressor compressor() {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
-        return new QatCompressionMode(QatZipper.Algorithm.DEFLATE).newCompressor();
+        return new QatCompressionMode(QatZipper.Algorithm.ZSTD).newCompressor();
     }
 
     @Override
     Decompressor decompressor() {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
-        return new QatCompressionMode(QatZipper.Algorithm.DEFLATE).newDecompressor();
+        return new QatCompressionMode(QatZipper.Algorithm.ZSTD).newDecompressor();
     }
 
     @Override

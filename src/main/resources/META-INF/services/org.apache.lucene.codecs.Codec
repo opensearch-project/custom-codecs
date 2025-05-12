@@ -9,3 +9,4 @@ org.opensearch.index.codec.customcodecs.Zstd912Codec
 org.opensearch.index.codec.customcodecs.ZstdNoDict912Codec
 org.opensearch.index.codec.customcodecs.QatDeflate912Codec
 org.opensearch.index.codec.customcodecs.QatLz4912Codec
+org.opensearch.index.codec.customcodecs.QatZstd912Codec

@@ -10,9 +10,9 @@ package org.opensearch.index.codec.customcodecs;
 import org.apache.lucene.codecs.compressing.Compressor;
 import org.apache.lucene.codecs.compressing.Decompressor;
 
-import com.intel.qat.QatZipper;
-
 import java.io.IOException;
+
+import com.intel.qat.QatZipper;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assume.assumeThat;

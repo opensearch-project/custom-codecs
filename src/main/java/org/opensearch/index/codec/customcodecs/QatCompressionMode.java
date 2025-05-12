@@ -25,7 +25,7 @@ import com.intel.qat.QatZipper;
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_QAT_MODE;
 
-/** QatCompressionMode offers QAT_LZ4 and QAT_DEFLATE compressors. */
+/** QatCompressionMode offers QAT_LZ4, QAT_DEFLATE, and QAT_ZSTD compressors. */
 public class QatCompressionMode extends CompressionMode {
 
     private static final int NUM_SUB_BLOCKS = 10;
@@ -42,7 +42,7 @@ public class QatCompressionMode extends CompressionMode {
     /**
      * Creates a new instance.
      *
-     * @param algorithm The compression algorithm (LZ4 or DEFLATE)
+     * @param algorithm The compression algorithm (LZ4, DEFLATE, or ZSTD)
      */
     protected QatCompressionMode(QatZipper.Algorithm algorithm) {
         this(algorithm, DEFAULT_COMPRESSION_LEVEL, () -> { return DEFAULT_QAT_MODE; });
@@ -51,7 +51,7 @@ public class QatCompressionMode extends CompressionMode {
     /**
      * Creates a new instance.
      *
-     * @param algorithm The compression algorithm (LZ4 or DEFLATE)
+     * @param algorithm The compression algorithm (LZ4, DEFLATE, or ZSTD)
      * @param compressionLevel The compression level to use.
      */
     protected QatCompressionMode(QatZipper.Algorithm algorithm, int compressionLevel) {
@@ -61,7 +61,7 @@ public class QatCompressionMode extends CompressionMode {
     /**
      * Creates a new instance.
      *
-     * @param algorithm The compression algorithm (LZ4 or DEFLATE)
+     * @param algorithm The compression algorithm (LZ4, DEFLATE, or ZSTD)
      * @param compressionLevel The compression level to use.
      * @param supplier a supplier for QAT acceleration mode.
      */
@@ -91,7 +91,7 @@ public class QatCompressionMode extends CompressionMode {
         private byte[] compressedBuffer;
         private final QatZipper qatZipper;
 
-        /** compressor with a given compresion level */
+        /** compressor with a given algorithm, compresion level, and execution mode */
         public QatCompressor(QatZipper.Algorithm algorithm, int compressionLevel, QatZipper.Mode qatMode) {
             compressedBuffer = BytesRef.EMPTY_BYTES;
             qatZipper = QatZipperFactory.createInstance(algorithm, compressionLevel, qatMode, QatZipper.PollingMode.PERIODICAL);
@@ -125,7 +125,7 @@ public class QatCompressionMode extends CompressionMode {
 
         @Override
         public void compress(ByteBuffersDataInput buffersInput, DataOutput out) throws IOException {
-            final int length = (int) buffersInput.size();
+            final int length = (int) buffersInput.length();
             byte[] bytes = new byte[length];
             buffersInput.readBytes(bytes, 0, length);
             compress(bytes, 0, length, out);
@@ -135,7 +135,7 @@ public class QatCompressionMode extends CompressionMode {
         public void close() throws IOException {}
     }
 
-    /** QAT_DEFLATE decompressor */
+    /** The QatDecompressor */
     private static final class QatDecompressor extends Decompressor {
 
         private byte[] compressed;
@@ -143,7 +143,7 @@ public class QatCompressionMode extends CompressionMode {
         private final QatZipper.Mode qatMode;
         private final QatZipper.Algorithm algorithm;
 
-        /** default decompressor */
+        /** decompressor with a given algorithm, compression level, and execution mode */
         public QatDecompressor(QatZipper.Algorithm algorithm, QatZipper.Mode qatMode) {
             this.algorithm = algorithm;
             this.qatMode = qatMode;
