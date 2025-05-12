@@ -29,6 +29,7 @@ import java.util.Optional;
  *   <li>ZSTD_NO_DICT_CODEC
  *   <li>QAT_LZ4
  *   <li>QAT_DEFLATE
+ *   <li>QAT_ZSTD
  * </ul>
  *
  * @opensearch.internal
@@ -48,7 +49,8 @@ public final class CustomCodecPlugin extends Plugin implements EnginePlugin {
         if (codecName.equals(CustomCodecService.ZSTD_NO_DICT_CODEC)
             || codecName.equals(CustomCodecService.ZSTD_CODEC)
             || codecName.equals(CustomCodecService.QAT_LZ4_CODEC)
-            || codecName.equals(CustomCodecService.QAT_DEFLATE_CODEC)) {
+            || codecName.equals(CustomCodecService.QAT_DEFLATE_CODEC)
+            || codecName.equals(CustomCodecService.QAT_ZSTD_CODEC)) {
             return Optional.of(new CustomCodecServiceFactory());
         } else {
             if (!QatZipperFactory.isQatAvailable() && isQatCodec(codecName)) {
@@ -71,6 +73,7 @@ public final class CustomCodecPlugin extends Plugin implements EnginePlugin {
             || codecName.equals(Lucene912QatCodec.Mode.QAT_LZ4.getCodec())
             || codecName.equals(Lucene912QatCodec.Mode.QAT_DEFLATE.getCodec())
             || codecName.equals(Lucene101QatCodec.Mode.QAT_LZ4.getCodec())
-            || codecName.equals(Lucene101QatCodec.Mode.QAT_DEFLATE.getCodec());
+            || codecName.equals(Lucene101QatCodec.Mode.QAT_DEFLATE.getCodec())
+            || codecName.equals(Lucene101QatCodec.Mode.QAT_ZSTD.getCodec());
     }
 }
