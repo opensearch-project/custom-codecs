@@ -31,9 +31,12 @@ public class QatZipperFactory {
      * @param pmode polling mode.
      */
     public static QatZipper createInstance(Algorithm algorithm, int level, Mode mode, int retryCount, PollingMode pmode) {
-        return java.security.AccessController.doPrivileged(
-            (java.security.PrivilegedAction<QatZipper>) () -> new QatZipper(algorithm, level, mode, retryCount, pmode)
-        );
+        return new QatZipper.Builder().setAlgorithm(algorithm)
+            .setLevel(level)
+            .setMode(mode)
+            .setRetryCount(retryCount)
+            .setPollingMode(pmode)
+            .build();
     }
 
     /**
