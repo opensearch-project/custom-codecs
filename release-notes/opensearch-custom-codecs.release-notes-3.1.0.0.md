@@ -7,7 +7,3 @@ Add QAT-Accelerated Zstandard Compression Support ([#238](https://github.com/ope
 
 ### Bug Fixes
 Fix version on bwc test dependency ([#255](https://github.com/opensearch-project/custom-codecs/pull/255)) ([#256](https://github.com/opensearch-project/custom-codecs/pull/256))
-
-
-
- 
