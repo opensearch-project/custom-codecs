@@ -8,12 +8,11 @@
 
 package org.opensearch.index.codec.customcodecs;
 
-import org.apache.logging.log4j.Logger;
+import org.apache.lucene.codecs.Codec;
 import org.opensearch.common.settings.Setting;
 import org.opensearch.index.codec.CodecAliases;
 import org.opensearch.index.codec.CodecSettings;
 import org.opensearch.index.engine.EngineConfig;
-import org.opensearch.index.mapper.MapperService;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -55,24 +54,22 @@ public class QatZstd101Codec extends Lucene101QatCodec implements CodecSettings,
     /**
      * Creates a new QatZstd101Codec instance.
      *
-     * @param mapperService The mapper service.
-     * @param logger The logger.
+     * @param defaultCodecSupplier default opensearch codec supplier
      * @param compressionLevel The compression level.
      */
-    public QatZstd101Codec(MapperService mapperService, Logger logger, int compressionLevel) {
-        super(Mode.QAT_ZSTD, compressionLevel, mapperService, logger);
+    public QatZstd101Codec(Supplier<Codec> defaultCodecSupplier, int compressionLevel) {
+        super(Mode.QAT_ZSTD, defaultCodecSupplier, compressionLevel);
     }
 
     /**
      * Creates a new QatZstd101Codec instance.
      *
-     * @param mapperService The mapper service.
-     * @param logger The logger.
      * @param compressionLevel The compression level.
      * @param supplier supplier for QAT acceleration mode.
+     * @param defaultCodecSupplier default opensearch codec supplier
      */
-    public QatZstd101Codec(MapperService mapperService, Logger logger, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
-        super(Mode.QAT_ZSTD, compressionLevel, mapperService, logger, supplier);
+    public QatZstd101Codec(int compressionLevel, Supplier<QatZipper.Mode> supplier, Supplier<Codec> defaultCodecSupplier) {
+        super(Mode.QAT_ZSTD, compressionLevel, supplier, defaultCodecSupplier);
     }
 
     /** The name for this codec. */

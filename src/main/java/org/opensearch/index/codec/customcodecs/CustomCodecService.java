@@ -17,6 +17,7 @@ import org.opensearch.index.mapper.MapperService;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING;
@@ -52,6 +53,8 @@ public class CustomCodecService extends CodecService {
         super(mapperService, indexSettings, logger);
         int compressionLevel = indexSettings.getValue(INDEX_CODEC_COMPRESSION_LEVEL_SETTING);
         final MapBuilder<String, Codec> codecs = MapBuilder.<String, Codec>newMapBuilder();
+        // setup "default" codec from OpenSearch core to delegate
+        Supplier<Codec> defaultCodecSupplier = () -> super.codec("default");
         if (mapperService == null) {
             codecs.put(ZSTD_CODEC, new Zstd101Codec(compressionLevel));
             codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict101Codec(compressionLevel));
@@ -69,18 +72,28 @@ public class CustomCodecService extends CodecService {
                 );
             }
         } else {
-            codecs.put(ZSTD_CODEC, new Zstd101Codec(mapperService, logger, compressionLevel));
-            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict101Codec(mapperService, logger, compressionLevel));
+            codecs.put(ZSTD_CODEC, new Zstd101Codec(compressionLevel, defaultCodecSupplier));
+            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict101Codec(compressionLevel, defaultCodecSupplier));
             if (QatZipperFactory.isQatAvailable()) {
-                codecs.put(QAT_LZ4_CODEC, new QatLz4101Codec(mapperService, logger, compressionLevel, () -> {
+                codecs.put(
+                    QAT_LZ4_CODEC,
+                    new QatLz4101Codec(
+                        compressionLevel,
+                        () -> { return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING); },
+                        defaultCodecSupplier
+                    )
+                );
+                codecs.put(QAT_DEFLATE_CODEC, new QatDeflate101Codec(compressionLevel, () -> {
                     return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING);
-                }));
-                codecs.put(QAT_DEFLATE_CODEC, new QatDeflate101Codec(mapperService, logger, compressionLevel, () -> {
-                    return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING);
-                }));
-                codecs.put(QAT_ZSTD_CODEC, new QatZstd101Codec(mapperService, logger, compressionLevel, () -> {
-                    return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING);
-                }));
+                }, defaultCodecSupplier));
+                codecs.put(
+                    QAT_ZSTD_CODEC,
+                    new QatZstd101Codec(
+                        compressionLevel,
+                        () -> { return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING); },
+                        defaultCodecSupplier
+                    )
+                );
             }
         }
         this.codecs = codecs.immutableMap();
