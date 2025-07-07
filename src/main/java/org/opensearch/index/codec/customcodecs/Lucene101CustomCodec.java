@@ -9,10 +9,12 @@
 package org.opensearch.index.codec.customcodecs;
 
 import org.apache.logging.log4j.Logger;
+import org.apache.lucene.codecs.Codec;
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;
 import org.apache.lucene.codecs.lucene101.Lucene101Codec;
 import org.opensearch.index.codec.PerFieldMappingPostingFormatCodec;
+import org.opensearch.index.codec.composite.composite101.Composite101Codec;
 import org.opensearch.index.mapper.MapperService;
 
 import java.util.Set;
@@ -98,8 +100,16 @@ public abstract class Lucene101CustomCodec extends FilterCodec {
      * @param logger The logger.
      */
     public Lucene101CustomCodec(Mode mode, int compressionLevel, MapperService mapperService, Logger logger) {
-        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene101Codec.Mode.BEST_SPEED, mapperService, logger));
+        super(mode.getCodec(), getDelegateCodec(mapperService, logger));
         this.storedFieldsFormat = new Lucene101CustomStoredFieldsFormat(mode, compressionLevel);
+    }
+
+    private static Codec getDelegateCodec(MapperService mapperService, Logger logger) {
+        if (mapperService.isCompositeIndexPresent()) {
+            return new Composite101Codec(Lucene101Codec.Mode.BEST_SPEED, mapperService, logger);
+        } else {
+            return new PerFieldMappingPostingFormatCodec(Lucene101Codec.Mode.BEST_SPEED, mapperService, logger);
+        }
     }
 
     @Override
