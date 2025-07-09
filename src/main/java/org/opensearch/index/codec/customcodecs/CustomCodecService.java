@@ -53,8 +53,8 @@ public class CustomCodecService extends CodecService {
         super(mapperService, indexSettings, logger);
         int compressionLevel = indexSettings.getValue(INDEX_CODEC_COMPRESSION_LEVEL_SETTING);
         final MapBuilder<String, Codec> codecs = MapBuilder.<String, Codec>newMapBuilder();
-        // setup "default" codec from OpenSearch core to delegate
-        Supplier<Codec> defaultCodecSupplier = () -> super.codec("default");
+        // Delegate to OpenSearch "default" codec
+        Supplier<Codec> defaultCodecSupplier = () -> super.defaultCodec();
         if (mapperService == null) {
             codecs.put(ZSTD_CODEC, new Zstd101Codec(compressionLevel));
             codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict101Codec(compressionLevel));
