@@ -93,7 +93,7 @@ public abstract class Lucene101CustomCodec extends FilterCodec {
      *
      * @param mode The compression codec (ZSTD or ZSTDNODICT).
      * @param compressionLevel The compression level.
-     * @param defaultCodecSupplier Default codec supplier
+     * @param defaultCodecSupplier Default OpenSearch codec supplier
      */
     public Lucene101CustomCodec(Mode mode, int compressionLevel, Supplier<Codec> defaultCodecSupplier) {
         super(mode.getCodec(), defaultCodecSupplier.get());

@@ -65,7 +65,8 @@ public class QatDeflate101Codec extends Lucene101QatCodec implements CodecSettin
      * Creates a new QatDeflate101Codec instance.
      *
      * @param compressionLevel The compression level.
-     * @param supplier supplier for QAT acceleration mode.
+     * @param supplier supplier for QAT acceleration mode
+     * @param defaultCodecSupplier default opensearch codec supplier
      */
     public QatDeflate101Codec(int compressionLevel, Supplier<QatZipper.Mode> supplier, Supplier<Codec> defaultCodecSupplier) {
         super(Mode.QAT_DEFLATE, compressionLevel, supplier, defaultCodecSupplier);

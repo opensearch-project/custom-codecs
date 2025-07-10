@@ -43,7 +43,7 @@ public class Zstd101Codec extends Lucene101CustomCodec implements CodecSettings,
      * Creates a new ZstdCodec instance.
      *
      * @param compressionLevel The compression level.
-     *
+     * @param defaultCodecSupplier default opensearch codec supplier
      */
     public Zstd101Codec(int compressionLevel, Supplier<Codec> defaultCodecSupplier) {
         super(Mode.ZSTD, compressionLevel, defaultCodecSupplier);
