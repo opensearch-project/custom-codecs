@@ -52,6 +52,7 @@ import org.opensearch.index.codec.CodecService;
 import org.opensearch.index.codec.CodecServiceConfig;
 import org.opensearch.index.codec.CodecServiceFactory;
 import org.opensearch.index.codec.CodecSettings;
+import org.opensearch.index.codec.composite.composite912.Composite912DocValuesFormat;
 import org.opensearch.index.engine.EngineConfig;
 import org.opensearch.index.mapper.MapperService;
 import org.opensearch.index.similarity.SimilarityService;
@@ -64,6 +65,8 @@ import org.junit.Before;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
+
+import org.mockito.Mockito;
 
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_DEFLATE_CODEC;
 import static org.opensearch.index.codec.customcodecs.CustomCodecService.QAT_LZ4_CODEC;
@@ -90,11 +93,29 @@ public class CustomCodecTests extends OpenSearchTestCase {
         assertEquals(DEFAULT_COMPRESSION_LEVEL, storedFieldsFormat.getCompressionLevel());
     }
 
+    public void testZstdWithCompositeIndex() throws Exception {
+        Codec codec = createCodecService(false, true).codec("zstd");
+        assertStoredFieldsCompressionEquals(Lucene101CustomCodec.Mode.ZSTD, codec);
+        Lucene101CustomStoredFieldsFormat storedFieldsFormat = (Lucene101CustomStoredFieldsFormat) codec.storedFieldsFormat();
+        assertEquals(DEFAULT_COMPRESSION_LEVEL, storedFieldsFormat.getCompressionLevel());
+        // assert docValues to be of compositeCodec's docValuesFormat
+        assert codec.docValuesFormat() instanceof Composite912DocValuesFormat;
+    }
+
     public void testZstdNoDict() throws Exception {
         Codec codec = createCodecService(false).codec("zstd_no_dict");
         assertStoredFieldsCompressionEquals(Lucene101CustomCodec.Mode.ZSTD_NO_DICT, codec);
         Lucene101CustomStoredFieldsFormat storedFieldsFormat = (Lucene101CustomStoredFieldsFormat) codec.storedFieldsFormat();
         assertEquals(DEFAULT_COMPRESSION_LEVEL, storedFieldsFormat.getCompressionLevel());
+    }
+
+    public void testZstdNoDictWithCompositeIndex() throws Exception {
+        Codec codec = createCodecService(false, true).codec("zstd_no_dict");
+        assertStoredFieldsCompressionEquals(Lucene101CustomCodec.Mode.ZSTD_NO_DICT, codec);
+        Lucene101CustomStoredFieldsFormat storedFieldsFormat = (Lucene101CustomStoredFieldsFormat) codec.storedFieldsFormat();
+        assertEquals(DEFAULT_COMPRESSION_LEVEL, storedFieldsFormat.getCompressionLevel());
+        // assert docValues to be of compositeCodec's docValuesFormat
+        assert codec.docValuesFormat() instanceof Composite912DocValuesFormat;
     }
 
     public void testZstdDeprecatedCodec() {
@@ -224,11 +245,25 @@ public class CustomCodecTests extends OpenSearchTestCase {
     }
 
     private CodecService createCodecService(boolean isMapperServiceNull) throws IOException {
+        return createCodecService(isMapperServiceNull, false);
+    }
+
+    private CodecService createCodecService(boolean isMapperServiceNull, boolean isCompositeIndexPresent) throws IOException {
         Settings nodeSettings = Settings.builder().put(Environment.PATH_HOME_SETTING.getKey(), createTempDir()).build();
         if (isMapperServiceNull) {
             return new CustomCodecService(null, IndexSettingsModule.newIndexSettings("_na", nodeSettings), LogManager.getLogger("test"));
         }
+        if (isCompositeIndexPresent) {
+            return buildCodecServiceWithCompositeIndex(nodeSettings);
+        }
         return buildCodecService(nodeSettings);
+    }
+
+    private CodecService buildCodecServiceWithCompositeIndex(Settings nodeSettings) throws IOException {
+        IndexSettings indexSettings = IndexSettingsModule.newIndexSettings("_na", nodeSettings);
+        MapperService service = Mockito.mock(MapperService.class);
+        Mockito.when(service.isCompositeIndexPresent()).thenReturn(true);
+        return new CustomCodecService(service, indexSettings, LogManager.getLogger("test"));
     }
 
     private CodecService createCodecService(int randomCompressionLevel, String codec) throws IOException {

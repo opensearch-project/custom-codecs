@@ -8,12 +8,10 @@
 
 package org.opensearch.index.codec.customcodecs;
 
-import org.apache.logging.log4j.Logger;
+import org.apache.lucene.codecs.Codec;
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;
 import org.apache.lucene.codecs.lucene101.Lucene101Codec;
-import org.opensearch.index.codec.PerFieldMappingPostingFormatCodec;
-import org.opensearch.index.mapper.MapperService;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -105,12 +103,11 @@ public abstract class Lucene101QatCodec extends FilterCodec {
      * lucene_default, and best_compression.
      *
      * @param mode The compression codec (QAT_LZ4, QAT_DEFLATE, or QAT_ZSTD).
+     * @param defaultCodecSupplier default opensearch codec supplier
      * @param compressionLevel The compression level.
-     * @param mapperService The mapper service.
-     * @param logger The logger.
      */
-    public Lucene101QatCodec(Mode mode, int compressionLevel, MapperService mapperService, Logger logger) {
-        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene101Codec.Mode.BEST_SPEED, mapperService, logger));
+    public Lucene101QatCodec(Mode mode, Supplier<Codec> defaultCodecSupplier, int compressionLevel) {
+        super(mode.getCodec(), defaultCodecSupplier.get());
         this.storedFieldsFormat = new Lucene101QatStoredFieldsFormat(mode, compressionLevel);
     }
 
@@ -121,18 +118,11 @@ public abstract class Lucene101QatCodec extends FilterCodec {
      *
      * @param mode The compression codec (QAT_LZ4, QAT_DEFLATE, or QAT_ZSTD).
      * @param compressionLevel The compression level.
-     * @param mapperService The mapper service.
-     * @param logger The logger.
      * @param supplier supplier for QAT mode.
+     * @param defaultCodecSupplier default opensearch codec supplier
      */
-    public Lucene101QatCodec(
-        Mode mode,
-        int compressionLevel,
-        MapperService mapperService,
-        Logger logger,
-        Supplier<QatZipper.Mode> supplier
-    ) {
-        super(mode.getCodec(), new PerFieldMappingPostingFormatCodec(Lucene101Codec.Mode.BEST_SPEED, mapperService, logger));
+    public Lucene101QatCodec(Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier, Supplier<Codec> defaultCodecSupplier) {
+        super(mode.getCodec(), defaultCodecSupplier.get());
         this.storedFieldsFormat = new Lucene101QatStoredFieldsFormat(mode, compressionLevel, supplier);
     }
 
