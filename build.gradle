@@ -53,6 +53,7 @@ buildscript {
 plugins {
   id 'java'
   id 'com.diffplug.spotless' version '6.25.0'
+  id 'jacoco'
 }
 
 apply plugin: 'opensearch.opensearchplugin'
@@ -233,5 +234,16 @@ task updateVersion {
         println "Setting version to ${newVersion}."
         // String tokenization to support -SNAPSHOT
         ant.replaceregexp(file:'build.gradle', match: '"opensearch.version", "\\d.*"', replace: '"opensearch.version", "' + newVersion.tokenize('-')[0] + '-SNAPSHOT"', flags:'g', byline:true)
+    }
+}
+
+test {
+    finalizedBy jacocoTestReport // report is always generated after tests run
+}
+
+jacocoTestReport {
+    dependsOn test, integTest
+    reports {
+        xml.required = true
     }
 }

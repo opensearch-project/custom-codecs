@@ -37,6 +37,7 @@ jobs:
         if: ${{ !cancelled() && contains(matrix.java, '21') }}
         uses: codecov/codecov-action@v3
         with:
+          files: build/reports/jacoco/test/jacocoTestReport.xml
           token: ${{ secrets.CODECOV_TOKEN }}
 
   precommit-windows-macos:
