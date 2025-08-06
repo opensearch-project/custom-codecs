@@ -1,4 +1,4 @@
-## Version 3.2.0 Release Notes
+## 2025-08-19 Version 3.2.0.0
 
 Compatible with OpenSearch and OpenSearch Dashboards version 3.2.0
 
