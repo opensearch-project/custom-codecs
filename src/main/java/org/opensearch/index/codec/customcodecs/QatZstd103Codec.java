@@ -22,54 +22,54 @@ import com.intel.qat.QatZipper;
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
 
 /**
- * QatLz4101Codec provides an LZ4 compressor using the <a
+ * QatZstd103Codec provides a ZSTD compressor using the <a
  * href="https://github.com/intel/qat-java">qat-java</a> library.
  */
-public class QatLz4101Codec extends Lucene101QatCodec implements CodecSettings, CodecAliases {
+public class QatZstd103Codec extends Lucene103QatCodec implements CodecSettings, CodecAliases {
 
-    /** Creates a new QatLz4101Codec instance with the default compression level. */
-    public QatLz4101Codec() {
+    /** Creates a new QatZstd103Codec instance with the default compression level. */
+    public QatZstd103Codec() {
         this(DEFAULT_COMPRESSION_LEVEL);
     }
 
     /**
-     * Creates a new QatLz4101Codec instance.
+     * Creates a new QatZstd103Codec instance.
      *
      * @param compressionLevel The compression level.
      */
-    public QatLz4101Codec(int compressionLevel) {
-        super(Mode.QAT_LZ4, compressionLevel);
+    public QatZstd103Codec(int compressionLevel) {
+        super(Mode.QAT_ZSTD, compressionLevel);
     }
 
     /**
-     * Creates a new QatLz4101Codec instance with the default compression level.
+     * Creates a new QatZstd103Codec instance with the default compression level.
      *
      * @param compressionLevel The compression level.
      * @param supplier supplier for QAT acceleration mode.
      */
-    public QatLz4101Codec(int compressionLevel, Supplier<QatZipper.Mode> supplier) {
-        super(Mode.QAT_LZ4, compressionLevel, supplier);
+    public QatZstd103Codec(int compressionLevel, Supplier<QatZipper.Mode> supplier) {
+        super(Mode.QAT_ZSTD, compressionLevel, supplier);
     }
 
     /**
-     * Creates a new QatLz4101Codec instance.
+     * Creates a new QatZstd103Codec instance.
      *
      * @param defaultCodecSupplier default opensearch codec supplier
      * @param compressionLevel The compression level.
      */
-    public QatLz4101Codec(Supplier<Codec> defaultCodecSupplier, int compressionLevel) {
-        super(Mode.QAT_LZ4, defaultCodecSupplier, compressionLevel);
+    public QatZstd103Codec(Supplier<Codec> defaultCodecSupplier, int compressionLevel) {
+        super(Mode.QAT_ZSTD, defaultCodecSupplier, compressionLevel);
     }
 
     /**
-     * Creates a new QatLz4101Codec instance.
+     * Creates a new QatZstd103Codec instance.
      *
      * @param compressionLevel The compression level.
      * @param supplier supplier for QAT acceleration mode.
      * @param defaultCodecSupplier default opensearch codec supplier
      */
-    public QatLz4101Codec(int compressionLevel, Supplier<QatZipper.Mode> supplier, Supplier<Codec> defaultCodecSupplier) {
-        super(Mode.QAT_LZ4, compressionLevel, supplier, defaultCodecSupplier);
+    public QatZstd103Codec(int compressionLevel, Supplier<QatZipper.Mode> supplier, Supplier<Codec> defaultCodecSupplier) {
+        super(Mode.QAT_ZSTD, compressionLevel, supplier, defaultCodecSupplier);
     }
 
     /** The name for this codec. */
@@ -88,6 +88,6 @@ public class QatLz4101Codec extends Lucene101QatCodec implements CodecSettings, 
         if (!QatZipperFactory.isQatAvailable()) {
             return Set.of();
         }
-        return Mode.QAT_LZ4.getAliases();
+        return Mode.QAT_ZSTD.getAliases();
     }
 }

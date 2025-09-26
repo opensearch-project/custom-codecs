@@ -6,7 +6,7 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs.lucene101;
 
 import org.apache.lucene.codecs.Codec;
 import org.opensearch.common.settings.Setting;
@@ -19,31 +19,34 @@ import java.util.function.Supplier;
 
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99CustomCodec.DEFAULT_COMPRESSION_LEVEL;
 
-/** ZstdNoDictCodec provides ZSTD compressor without a dictionary support. */
-public class ZstdNoDict101Codec extends Lucene101CustomCodec implements CodecSettings, CodecAliases {
+/**
+ * ZstdCodec provides ZSTD compressor using the <a
+ * href="https://github.com/luben/zstd-jni">zstd-jni</a> library.
+ */
+public class Zstd101Codec extends Lucene101CustomCodec implements CodecSettings, CodecAliases {
 
-    /** Creates a new ZstdNoDictCodec instance with the default compression level. */
-    public ZstdNoDict101Codec() {
+    /** Creates a new ZstdCodec instance with the default compression level. */
+    public Zstd101Codec() {
         this(DEFAULT_COMPRESSION_LEVEL);
     }
 
     /**
-     * Creates a new ZstdNoDictCodec instance.
+     * Creates a new ZstdCodec instance.
      *
      * @param compressionLevel The compression level.
      */
-    public ZstdNoDict101Codec(int compressionLevel) {
-        super(Mode.ZSTD_NO_DICT, compressionLevel);
+    public Zstd101Codec(int compressionLevel) {
+        super(Mode.ZSTD, compressionLevel);
     }
 
     /**
-     * Creates a new ZstdNoDictCodec instance.
+     * Creates a new ZstdCodec instance.
      *
      * @param compressionLevel The compression level.
      * @param defaultCodecSupplier default opensearch codec supplier
      */
-    public ZstdNoDict101Codec(int compressionLevel, Supplier<Codec> defaultCodecSupplier) {
-        super(Mode.ZSTD_NO_DICT, compressionLevel, defaultCodecSupplier);
+    public Zstd101Codec(int compressionLevel, Supplier<Codec> defaultCodecSupplier) {
+        super(Mode.ZSTD, compressionLevel, defaultCodecSupplier);
     }
 
     /** The name for this codec. */
@@ -59,6 +62,6 @@ public class ZstdNoDict101Codec extends Lucene101CustomCodec implements CodecSet
 
     @Override
     public Set<String> aliases() {
-        return Mode.ZSTD_NO_DICT.getAliases();
+        return Mode.ZSTD.getAliases();
     }
 }

@@ -11,7 +11,7 @@ package org.opensearch.index.codec.customcodecs;
 import org.apache.lucene.codecs.Codec;
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;
-import org.apache.lucene.codecs.lucene101.Lucene101Codec;
+import org.apache.lucene.codecs.lucene103.Lucene103Codec;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -22,22 +22,22 @@ import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.L
  *
  * Extends {@link FilterCodec} to reuse the functionality of Lucene Codec.
  * Supports two modes zstd and zstd_no_dict.
- * Uses Lucene101 as the delegate codec
+ * Uses Lucene103 as the delegate codec
  *
  * @opensearch.internal
  */
-public abstract class Lucene101CustomCodec extends FilterCodec {
+public abstract class Lucene103CustomCodec extends FilterCodec {
 
     /** Each mode represents a compression algorithm. */
     public enum Mode {
         /**
          * ZStandard mode with dictionary
          */
-        ZSTD("ZSTD101", Set.of("zstd")),
+        ZSTD("ZSTD103", Set.of("zstd")),
         /**
          * ZStandard mode without dictionary
          */
-        ZSTD_NO_DICT("ZSTDNODICT101", Set.of("zstd_no_dict"));
+        ZSTD_NO_DICT("ZSTDNODICT103", Set.of("zstd_no_dict"));
 
         private final String codec;
         private final Set<String> aliases;
@@ -69,7 +69,7 @@ public abstract class Lucene101CustomCodec extends FilterCodec {
      *
      * @param mode The compression codec (ZSTD or ZSTDNODICT).
      */
-    public Lucene101CustomCodec(Mode mode) {
+    public Lucene103CustomCodec(Mode mode) {
         this(mode, DEFAULT_COMPRESSION_LEVEL);
     }
 
@@ -81,9 +81,9 @@ public abstract class Lucene101CustomCodec extends FilterCodec {
      * @param mode The compression codec (ZSTD or ZSTDNODICT).
      * @param compressionLevel The compression level.
      */
-    public Lucene101CustomCodec(Mode mode, int compressionLevel) {
-        super(mode.getCodec(), new Lucene101Codec());
-        this.storedFieldsFormat = new Lucene101CustomStoredFieldsFormat(mode, compressionLevel);
+    public Lucene103CustomCodec(Mode mode, int compressionLevel) {
+        super(mode.getCodec(), new Lucene103Codec());
+        this.storedFieldsFormat = new Lucene103CustomStoredFieldsFormat(mode, compressionLevel);
     }
 
     /**
@@ -95,9 +95,9 @@ public abstract class Lucene101CustomCodec extends FilterCodec {
      * @param compressionLevel The compression level.
      * @param defaultCodecSupplier Default OpenSearch codec supplier
      */
-    public Lucene101CustomCodec(Mode mode, int compressionLevel, Supplier<Codec> defaultCodecSupplier) {
+    public Lucene103CustomCodec(Mode mode, int compressionLevel, Supplier<Codec> defaultCodecSupplier) {
         super(mode.getCodec(), defaultCodecSupplier.get());
-        this.storedFieldsFormat = new Lucene101CustomStoredFieldsFormat(mode, compressionLevel);
+        this.storedFieldsFormat = new Lucene103CustomStoredFieldsFormat(mode, compressionLevel);
     }
 
     @Override
