@@ -6,8 +6,10 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs.lucene101;
 
+import org.opensearch.index.codec.customcodecs.ZstdCompressionMode;
+import org.opensearch.index.codec.customcodecs.ZstdNoDictCompressionMode;
 import org.opensearch.test.OpenSearchTestCase;
 
 public class Lucene101CustomStoredFieldsFormatTests extends OpenSearchTestCase {

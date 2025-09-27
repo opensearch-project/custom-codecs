@@ -23,10 +23,10 @@ import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.L
  * ZstdCodec provides ZSTD compressor using the <a
  * href="https://github.com/luben/zstd-jni">zstd-jni</a> library.
  */
-public class Zstd101Codec extends Lucene101CustomCodec implements CodecSettings, CodecAliases {
+public class Zstd103Codec extends Lucene103CustomCodec implements CodecSettings, CodecAliases {
 
     /** Creates a new ZstdCodec instance with the default compression level. */
-    public Zstd101Codec() {
+    public Zstd103Codec() {
         this(DEFAULT_COMPRESSION_LEVEL);
     }
 
@@ -35,7 +35,7 @@ public class Zstd101Codec extends Lucene101CustomCodec implements CodecSettings,
      *
      * @param compressionLevel The compression level.
      */
-    public Zstd101Codec(int compressionLevel) {
+    public Zstd103Codec(int compressionLevel) {
         super(Mode.ZSTD, compressionLevel);
     }
 
@@ -45,7 +45,7 @@ public class Zstd101Codec extends Lucene101CustomCodec implements CodecSettings,
      * @param compressionLevel The compression level.
      * @param defaultCodecSupplier default opensearch codec supplier
      */
-    public Zstd101Codec(int compressionLevel, Supplier<Codec> defaultCodecSupplier) {
+    public Zstd103Codec(int compressionLevel, Supplier<Codec> defaultCodecSupplier) {
         super(Mode.ZSTD, compressionLevel, defaultCodecSupplier);
     }
 
