@@ -22,8 +22,7 @@ jobs:
           distribution: temurin
           java-version: 11
       - uses: actions/checkout@v4
-      - uses: aws-actions/configure-aws-credentials@v1
-
+      
       - name: Load secret
         uses: 1password/load-secrets-action@v2
         with:
