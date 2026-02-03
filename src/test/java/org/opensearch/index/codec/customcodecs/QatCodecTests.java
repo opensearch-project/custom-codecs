@@ -59,6 +59,7 @@ import org.junit.Before;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.DEFAULT_COMPRESSION_LEVEL;
@@ -177,7 +178,8 @@ public class QatCodecTests extends OpenSearchTestCase {
             return new CustomCodecService(
                 null,
                 IndexSettingsModule.newIndexSettings("_na", nodeSettings, INDEX_CODEC_QAT_MODE_SETTING),
-                LogManager.getLogger("test")
+                LogManager.getLogger("test"),
+                List.of()
             );
         }
         return buildCodecService(nodeSettings);
@@ -210,9 +212,9 @@ public class QatCodecTests extends OpenSearchTestCase {
 
         Optional<CodecServiceFactory> customCodecServiceFactory = plugin.getCustomCodecServiceFactory(indexSettings);
         if (customCodecServiceFactory.isPresent()) {
-            return customCodecServiceFactory.get().createCodecService(new CodecServiceConfig(indexSettings, service, logger));
+            return customCodecServiceFactory.get().createCodecService(new CodecServiceConfig(indexSettings, service, logger, List.of()));
         }
-        return new CustomCodecService(service, indexSettings, LogManager.getLogger("test"));
+        return new CustomCodecService(service, indexSettings, LogManager.getLogger("test"), List.of());
     }
 
     private SegmentReader getSegmentReader(Codec codec) throws IOException {

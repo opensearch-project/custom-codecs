@@ -20,6 +20,11 @@ public class CustomCodecServiceFactory implements CodecServiceFactory {
 
     @Override
     public CodecService createCodecService(CodecServiceConfig config) {
-        return new CustomCodecService(config.getMapperService(), config.getIndexSettings(), config.getLogger());
+        return new CustomCodecService(
+            config.getMapperService(),
+            config.getIndexSettings(),
+            config.getLogger(),
+            config.getAdditionalCodecs()
+        );
     }
 }
