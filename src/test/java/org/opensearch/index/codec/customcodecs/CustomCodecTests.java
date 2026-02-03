@@ -64,6 +64,7 @@ import org.junit.Before;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.mockito.Mockito;
@@ -251,7 +252,12 @@ public class CustomCodecTests extends OpenSearchTestCase {
     private CodecService createCodecService(boolean isMapperServiceNull, boolean isCompositeIndexPresent) throws IOException {
         Settings nodeSettings = Settings.builder().put(Environment.PATH_HOME_SETTING.getKey(), createTempDir()).build();
         if (isMapperServiceNull) {
-            return new CustomCodecService(null, IndexSettingsModule.newIndexSettings("_na", nodeSettings), LogManager.getLogger("test"));
+            return new CustomCodecService(
+                null,
+                IndexSettingsModule.newIndexSettings("_na", nodeSettings),
+                LogManager.getLogger("test"),
+                List.of()
+            );
         }
         if (isCompositeIndexPresent) {
             return buildCodecServiceWithCompositeIndex(nodeSettings);
@@ -263,7 +269,7 @@ public class CustomCodecTests extends OpenSearchTestCase {
         IndexSettings indexSettings = IndexSettingsModule.newIndexSettings("_na", nodeSettings);
         MapperService service = Mockito.mock(MapperService.class);
         Mockito.when(service.isCompositeIndexPresent()).thenReturn(true);
-        return new CustomCodecService(service, indexSettings, LogManager.getLogger("test"));
+        return new CustomCodecService(service, indexSettings, LogManager.getLogger("test"), List.of());
     }
 
     private CodecService createCodecService(int randomCompressionLevel, String codec) throws IOException {
@@ -294,9 +300,9 @@ public class CustomCodecTests extends OpenSearchTestCase {
 
         Optional<CodecServiceFactory> customCodecServiceFactory = plugin.getCustomCodecServiceFactory(indexSettings);
         if (customCodecServiceFactory.isPresent()) {
-            return customCodecServiceFactory.get().createCodecService(new CodecServiceConfig(indexSettings, service, logger));
+            return customCodecServiceFactory.get().createCodecService(new CodecServiceConfig(indexSettings, service, logger, List.of()));
         }
-        return new CustomCodecService(service, indexSettings, LogManager.getLogger("test"));
+        return new CustomCodecService(service, indexSettings, LogManager.getLogger("test"), List.of());
     }
 
     private SegmentReader getSegmentReader(Codec codec) throws IOException {

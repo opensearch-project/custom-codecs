@@ -12,10 +12,12 @@ import org.apache.logging.log4j.Logger;
 import org.apache.lucene.codecs.Codec;
 import org.opensearch.common.collect.MapBuilder;
 import org.opensearch.index.IndexSettings;
+import org.opensearch.index.codec.AdditionalCodecs;
 import org.opensearch.index.codec.CodecService;
 import org.opensearch.index.mapper.MapperService;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -48,8 +50,13 @@ public class CustomCodecService extends CodecService {
      * @param indexSettings The index settings.
      * @param logger The logger.
      */
-    public CustomCodecService(MapperService mapperService, IndexSettings indexSettings, Logger logger) {
-        super(mapperService, indexSettings, logger);
+    public CustomCodecService(
+        MapperService mapperService,
+        IndexSettings indexSettings,
+        Logger logger,
+        Collection<AdditionalCodecs> registries
+    ) {
+        super(mapperService, indexSettings, logger, registries);
         int compressionLevel = indexSettings.getValue(INDEX_CODEC_COMPRESSION_LEVEL_SETTING);
         final MapBuilder<String, Codec> codecs = MapBuilder.<String, Codec>newMapBuilder();
         if (mapperService == null) {
