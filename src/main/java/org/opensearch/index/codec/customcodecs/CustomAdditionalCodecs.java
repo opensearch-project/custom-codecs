@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.Lucene99QatCodec.INDEX_CODEC_QAT_MODE_SETTING;
 import static org.opensearch.index.engine.EngineConfig.INDEX_CODEC_COMPRESSION_LEVEL_SETTING;
 
-/** CustomCodecService provides ZSTD, ZSTD_NO_DICT, QAT_LZ4, and QAT_DEFLATE compression codecs. */
+/** CustomAdditionalCodecs provides ZSTD, ZSTD_NO_DICT, QAT_LZ4, and QAT_DEFLATE compression codecs. */
 public class CustomAdditionalCodecs implements AdditionalCodecs {
     /** ZStandard codec */
     public static final String ZSTD_CODEC = "zstd";
