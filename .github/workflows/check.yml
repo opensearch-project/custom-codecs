@@ -13,7 +13,8 @@ jobs:
       matrix:
         java: [21, 25]
     if: github.repository == 'opensearch-project/custom-codecs'
-    runs-on: ubuntu-latest
+    # Workaround for https://bugs.openjdk.org/browse/JDK-8287073
+    runs-on: ubuntu-22.04
     container:
       # using the same image which is used by opensearch-build team to build the OpenSearch Distribution
       # this image tag is subject to change as more dependencies and updates will arrive over time
