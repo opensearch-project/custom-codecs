@@ -17,7 +17,7 @@ public class Lucene104CustomStoredFieldsFormatTests extends OpenSearchTestCase {
         assertEquals(Lucene104CustomCodec.Mode.ZSTD, lucene104CustomStoredFieldsFormat.getMode());
     }
 
-    public void testZstdNoDictLucene101CustomCodecMode() {
+    public void testZstdNoDictLucene104CustomCodecMode() {
         Lucene104CustomStoredFieldsFormat lucene104CustomStoredFieldsFormat = new Lucene104CustomStoredFieldsFormat(
             Lucene104CustomCodec.Mode.ZSTD_NO_DICT
         );
