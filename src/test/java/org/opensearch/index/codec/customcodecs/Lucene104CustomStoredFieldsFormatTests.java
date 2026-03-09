@@ -34,7 +34,7 @@ public class Lucene104CustomStoredFieldsFormatTests extends OpenSearchTestCase {
         assertEquals(randomCompressionLevel, lucene104CustomStoredFieldsFormat.getCompressionLevel());
     }
 
-    public void testZstdNoDictLucene101CustomCodecModeWithCompressionLevel() {
+    public void testZstdNoDictLucene104CustomCodecModeWithCompressionLevel() {
         int randomCompressionLevel = randomIntBetween(1, 6);
         Lucene104CustomStoredFieldsFormat lucene104CustomStoredFieldsFormat = new Lucene104CustomStoredFieldsFormat(
             Lucene104CustomCodec.Mode.ZSTD_NO_DICT,
