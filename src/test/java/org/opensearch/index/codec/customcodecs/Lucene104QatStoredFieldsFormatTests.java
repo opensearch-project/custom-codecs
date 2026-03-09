@@ -21,7 +21,7 @@ public class Lucene104QatStoredFieldsFormatTests extends OpenSearchTestCase {
         assertEquals(Lucene104QatCodec.Mode.QAT_LZ4, lucene104QatStoredFieldsFormat.getMode());
     }
 
-    public void testDeflateLucene101QatCodecMode() {
+    public void testDeflateLucene104QatCodecMode() {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         Lucene104QatStoredFieldsFormat lucene104QatStoredFieldsFormat = new Lucene104QatStoredFieldsFormat(
             Lucene104QatCodec.Mode.QAT_DEFLATE
