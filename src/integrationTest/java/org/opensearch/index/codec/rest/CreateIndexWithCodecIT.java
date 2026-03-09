@@ -26,7 +26,7 @@ import org.opensearch.client.RestClientBuilder;
 import org.opensearch.cluster.metadata.IndexMetadata;
 import org.opensearch.common.settings.Settings;
 import org.opensearch.core.common.Strings;
-import org.opensearch.index.codec.customcodecs.Lucene103QatCodec;
+import org.opensearch.index.codec.customcodecs.Lucene104QatCodec;
 import org.opensearch.index.codec.customcodecs.QatZipperFactory;
 import org.opensearch.test.rest.OpenSearchRestTestCase;
 
@@ -107,9 +107,9 @@ public class CreateIndexWithCodecIT extends OpenSearchRestTestCase {
                     .put(
                         "index.codec",
                         randomFrom(
-                            Lucene103QatCodec.Mode.QAT_LZ4.getCodec(),
-                            Lucene103QatCodec.Mode.QAT_DEFLATE.getCodec(),
-                            Lucene103QatCodec.Mode.QAT_ZSTD.getCodec()
+                            Lucene104QatCodec.Mode.QAT_LZ4.getCodec(),
+                            Lucene104QatCodec.Mode.QAT_DEFLATE.getCodec(),
+                            Lucene104QatCodec.Mode.QAT_ZSTD.getCodec()
                         )
                     )
                     .put("index.codec.compression_level", randomIntBetween(1, 6))

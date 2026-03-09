@@ -76,8 +76,8 @@ public final class CustomCodecPlugin extends Plugin implements EnginePlugin {
             || codecName.equals(Lucene101QatCodec.Mode.QAT_LZ4.getCodec())
             || codecName.equals(Lucene101QatCodec.Mode.QAT_DEFLATE.getCodec())
             || codecName.equals(Lucene101QatCodec.Mode.QAT_ZSTD.getCodec())
-            || codecName.equals(Lucene103QatCodec.Mode.QAT_LZ4.getCodec())
-            || codecName.equals(Lucene103QatCodec.Mode.QAT_DEFLATE.getCodec())
-            || codecName.equals(Lucene103QatCodec.Mode.QAT_ZSTD.getCodec());
+            || codecName.equals(Lucene104QatCodec.Mode.QAT_LZ4.getCodec())
+            || codecName.equals(Lucene104QatCodec.Mode.QAT_DEFLATE.getCodec())
+            || codecName.equals(Lucene104QatCodec.Mode.QAT_ZSTD.getCodec());
     }
 }

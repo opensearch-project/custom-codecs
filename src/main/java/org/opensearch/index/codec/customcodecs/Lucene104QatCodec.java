@@ -11,7 +11,7 @@ package org.opensearch.index.codec.customcodecs;
 import org.apache.lucene.codecs.Codec;
 import org.apache.lucene.codecs.FilterCodec;
 import org.apache.lucene.codecs.StoredFieldsFormat;
-import org.apache.lucene.codecs.lucene103.Lucene103Codec;
+import org.apache.lucene.codecs.lucene104.Lucene104Codec;
 
 import java.util.Set;
 import java.util.function.Supplier;
@@ -25,17 +25,17 @@ import static org.opensearch.index.codec.customcodecs.backward_codecs.lucene99.L
  *
  * @opensearch.internal
  */
-public abstract class Lucene103QatCodec extends FilterCodec {
+public abstract class Lucene104QatCodec extends FilterCodec {
     /** Each mode represents a compression algorithm. */
     public enum Mode {
         /** QAT lz4 mode. */
-        QAT_LZ4("QATLZ4103", Set.of("qat_lz4")),
+        QAT_LZ4("QATLZ4104", Set.of("qat_lz4")),
 
         /** QAT deflate mode. */
-        QAT_DEFLATE("QATDEFLATE103", Set.of("qat_deflate")),
+        QAT_DEFLATE("QATDEFLATE104", Set.of("qat_deflate")),
 
         /** QAT zstd mode. */
-        QAT_ZSTD("QATZSTD103", Set.of("qat_zstd"));
+        QAT_ZSTD("QATZSTD104", Set.of("qat_zstd"));
 
         private final String codec;
         private final Set<String> aliases;
@@ -66,7 +66,7 @@ public abstract class Lucene103QatCodec extends FilterCodec {
      *
      * @param mode The compression codec (QAT_LZ4, QAT_DEFLATE, or QAT_ZSTD).
      */
-    public Lucene103QatCodec(Mode mode) {
+    public Lucene104QatCodec(Mode mode) {
         this(mode, DEFAULT_COMPRESSION_LEVEL);
     }
 
@@ -78,9 +78,9 @@ public abstract class Lucene103QatCodec extends FilterCodec {
      * @param mode The compression codec (QAT_LZ4, QAT_DEFLATE, or QAT_ZSTD).
      * @param compressionLevel The compression level.
      */
-    public Lucene103QatCodec(Mode mode, int compressionLevel) {
-        super(mode.getCodec(), new Lucene103Codec());
-        this.storedFieldsFormat = new Lucene103QatStoredFieldsFormat(mode, compressionLevel);
+    public Lucene104QatCodec(Mode mode, int compressionLevel) {
+        super(mode.getCodec(), new Lucene104Codec());
+        this.storedFieldsFormat = new Lucene104QatStoredFieldsFormat(mode, compressionLevel);
     }
 
     /**
@@ -92,9 +92,9 @@ public abstract class Lucene103QatCodec extends FilterCodec {
      * @param compressionLevel The compression level.
      * @param supplier supplier for QAT mode.
      */
-    public Lucene103QatCodec(Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
-        super(mode.getCodec(), new Lucene103Codec());
-        this.storedFieldsFormat = new Lucene103QatStoredFieldsFormat(mode, compressionLevel, supplier);
+    public Lucene104QatCodec(Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
+        super(mode.getCodec(), new Lucene104Codec());
+        this.storedFieldsFormat = new Lucene104QatStoredFieldsFormat(mode, compressionLevel, supplier);
     }
 
     /**
@@ -106,9 +106,9 @@ public abstract class Lucene103QatCodec extends FilterCodec {
      * @param defaultCodecSupplier default opensearch codec supplier
      * @param compressionLevel The compression level.
      */
-    public Lucene103QatCodec(Mode mode, Supplier<Codec> defaultCodecSupplier, int compressionLevel) {
+    public Lucene104QatCodec(Mode mode, Supplier<Codec> defaultCodecSupplier, int compressionLevel) {
         super(mode.getCodec(), defaultCodecSupplier.get());
-        this.storedFieldsFormat = new Lucene103QatStoredFieldsFormat(mode, compressionLevel);
+        this.storedFieldsFormat = new Lucene104QatStoredFieldsFormat(mode, compressionLevel);
     }
 
     /**
@@ -121,9 +121,9 @@ public abstract class Lucene103QatCodec extends FilterCodec {
      * @param supplier supplier for QAT mode.
      * @param defaultCodecSupplier default opensearch codec supplier
      */
-    public Lucene103QatCodec(Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier, Supplier<Codec> defaultCodecSupplier) {
+    public Lucene104QatCodec(Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier, Supplier<Codec> defaultCodecSupplier) {
         super(mode.getCodec(), defaultCodecSupplier.get());
-        this.storedFieldsFormat = new Lucene103QatStoredFieldsFormat(mode, compressionLevel, supplier);
+        this.storedFieldsFormat = new Lucene104QatStoredFieldsFormat(mode, compressionLevel, supplier);
     }
 
     @Override

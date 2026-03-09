@@ -42,39 +42,39 @@ public class CustomAdditionalCodecs implements AdditionalCodecs {
         final int compressionLevel = indexSettings.getValue(INDEX_CODEC_COMPRESSION_LEVEL_SETTING);
         final MapBuilder<String, Codec> codecs = MapBuilder.<String, Codec>newMapBuilder();
         if (mapperService == null) {
-            codecs.put(ZSTD_CODEC, new Zstd103Codec(compressionLevel));
-            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict103Codec(compressionLevel));
+            codecs.put(ZSTD_CODEC, new Zstd104Codec(compressionLevel));
+            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict104Codec(compressionLevel));
             if (QatZipperFactory.isQatAvailable()) {
                 codecs.put(
                     QAT_LZ4_CODEC,
-                    new QatLz4103Codec(compressionLevel, () -> { return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING); })
+                    new QatLz4104Codec(compressionLevel, () -> { return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING); })
                 );
-                codecs.put(QAT_DEFLATE_CODEC, new QatDeflate103Codec(compressionLevel, () -> {
+                codecs.put(QAT_DEFLATE_CODEC, new QatDeflate104Codec(compressionLevel, () -> {
                     return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING);
                 }));
                 codecs.put(
                     QAT_ZSTD_CODEC,
-                    new QatZstd103Codec(compressionLevel, () -> { return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING); })
+                    new QatZstd104Codec(compressionLevel, () -> { return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING); })
                 );
             }
         } else {
-            codecs.put(ZSTD_CODEC, new Zstd103Codec(compressionLevel, defaultCodec));
-            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict103Codec(compressionLevel, defaultCodec));
+            codecs.put(ZSTD_CODEC, new Zstd104Codec(compressionLevel, defaultCodec));
+            codecs.put(ZSTD_NO_DICT_CODEC, new ZstdNoDict104Codec(compressionLevel, defaultCodec));
             if (QatZipperFactory.isQatAvailable()) {
                 codecs.put(
                     QAT_LZ4_CODEC,
-                    new QatLz4103Codec(
+                    new QatLz4104Codec(
                         compressionLevel,
                         () -> { return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING); },
                         defaultCodec
                     )
                 );
-                codecs.put(QAT_DEFLATE_CODEC, new QatDeflate103Codec(compressionLevel, () -> {
+                codecs.put(QAT_DEFLATE_CODEC, new QatDeflate104Codec(compressionLevel, () -> {
                     return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING);
                 }, defaultCodec));
                 codecs.put(
                     QAT_ZSTD_CODEC,
-                    new QatZstd103Codec(
+                    new QatZstd104Codec(
                         compressionLevel,
                         () -> { return indexSettings.getValue(INDEX_CODEC_QAT_MODE_SETTING); },
                         defaultCodec

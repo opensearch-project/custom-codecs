@@ -6,7 +6,7 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs.lucene103;
 
 import org.apache.lucene.codecs.Codec;
 import org.opensearch.common.settings.Setting;

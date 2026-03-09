@@ -78,24 +78,24 @@ public class QatCodecTests extends OpenSearchTestCase {
     public void testQatLz4() throws Exception {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         Codec codec = createCodecService(false).codec("qat_lz4");
-        assertStoredFieldsCompressionEquals(Lucene103QatCodec.Mode.QAT_LZ4, codec);
-        Lucene103QatStoredFieldsFormat storedFieldsFormat = (Lucene103QatStoredFieldsFormat) codec.storedFieldsFormat();
+        assertStoredFieldsCompressionEquals(Lucene104QatCodec.Mode.QAT_LZ4, codec);
+        Lucene104QatStoredFieldsFormat storedFieldsFormat = (Lucene104QatStoredFieldsFormat) codec.storedFieldsFormat();
         assertEquals(DEFAULT_COMPRESSION_LEVEL, storedFieldsFormat.getCompressionMode().getCompressionLevel());
     }
 
     public void testQatDeflate() throws Exception {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         Codec codec = createCodecService(false).codec("qat_deflate");
-        assertStoredFieldsCompressionEquals(Lucene103QatCodec.Mode.QAT_DEFLATE, codec);
-        Lucene103QatStoredFieldsFormat storedFieldsFormat = (Lucene103QatStoredFieldsFormat) codec.storedFieldsFormat();
+        assertStoredFieldsCompressionEquals(Lucene104QatCodec.Mode.QAT_DEFLATE, codec);
+        Lucene104QatStoredFieldsFormat storedFieldsFormat = (Lucene104QatStoredFieldsFormat) codec.storedFieldsFormat();
         assertEquals(DEFAULT_COMPRESSION_LEVEL, storedFieldsFormat.getCompressionMode().getCompressionLevel());
     }
 
     public void testQatZstd() throws Exception {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         Codec codec = createCodecService(false).codec("qat_zstd");
-        assertStoredFieldsCompressionEquals(Lucene103QatCodec.Mode.QAT_ZSTD, codec);
-        Lucene103QatStoredFieldsFormat storedFieldsFormat = (Lucene103QatStoredFieldsFormat) codec.storedFieldsFormat();
+        assertStoredFieldsCompressionEquals(Lucene104QatCodec.Mode.QAT_ZSTD, codec);
+        Lucene104QatStoredFieldsFormat storedFieldsFormat = (Lucene104QatStoredFieldsFormat) codec.storedFieldsFormat();
         assertEquals(DEFAULT_COMPRESSION_LEVEL, storedFieldsFormat.getCompressionMode().getCompressionLevel());
     }
 
@@ -103,8 +103,8 @@ public class QatCodecTests extends OpenSearchTestCase {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         int randomCompressionLevel = randomIntBetween(1, 6);
         Codec codec = createCodecService(randomCompressionLevel, "qat_lz4").codec("qat_lz4");
-        assertStoredFieldsCompressionEquals(Lucene103QatCodec.Mode.QAT_LZ4, codec);
-        Lucene103QatStoredFieldsFormat storedFieldsFormat = (Lucene103QatStoredFieldsFormat) codec.storedFieldsFormat();
+        assertStoredFieldsCompressionEquals(Lucene104QatCodec.Mode.QAT_LZ4, codec);
+        Lucene104QatStoredFieldsFormat storedFieldsFormat = (Lucene104QatStoredFieldsFormat) codec.storedFieldsFormat();
         assertEquals(randomCompressionLevel, storedFieldsFormat.getCompressionMode().getCompressionLevel());
     }
 
@@ -112,8 +112,8 @@ public class QatCodecTests extends OpenSearchTestCase {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         int randomCompressionLevel = randomIntBetween(1, 6);
         Codec codec = createCodecService(randomCompressionLevel, "qat_deflate").codec("qat_deflate");
-        assertStoredFieldsCompressionEquals(Lucene103QatCodec.Mode.QAT_DEFLATE, codec);
-        Lucene103QatStoredFieldsFormat storedFieldsFormat = (Lucene103QatStoredFieldsFormat) codec.storedFieldsFormat();
+        assertStoredFieldsCompressionEquals(Lucene104QatCodec.Mode.QAT_DEFLATE, codec);
+        Lucene104QatStoredFieldsFormat storedFieldsFormat = (Lucene104QatStoredFieldsFormat) codec.storedFieldsFormat();
         assertEquals(randomCompressionLevel, storedFieldsFormat.getCompressionMode().getCompressionLevel());
     }
 
@@ -121,8 +121,8 @@ public class QatCodecTests extends OpenSearchTestCase {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         int randomCompressionLevel = randomIntBetween(1, 6);
         Codec codec = createCodecService(randomCompressionLevel, "qat_zstd").codec("qat_zstd");
-        assertStoredFieldsCompressionEquals(Lucene103QatCodec.Mode.QAT_ZSTD, codec);
-        Lucene103QatStoredFieldsFormat storedFieldsFormat = (Lucene103QatStoredFieldsFormat) codec.storedFieldsFormat();
+        assertStoredFieldsCompressionEquals(Lucene104QatCodec.Mode.QAT_ZSTD, codec);
+        Lucene104QatStoredFieldsFormat storedFieldsFormat = (Lucene104QatStoredFieldsFormat) codec.storedFieldsFormat();
         assertEquals(randomCompressionLevel, storedFieldsFormat.getCompressionMode().getCompressionLevel());
     }
 
@@ -140,33 +140,33 @@ public class QatCodecTests extends OpenSearchTestCase {
     public void testQatLz4MapperServiceNull() throws Exception {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         Codec codec = createCodecService(true).codec("qat_lz4");
-        assertStoredFieldsCompressionEquals(Lucene103QatCodec.Mode.QAT_LZ4, codec);
-        Lucene103QatStoredFieldsFormat storedFieldsFormat = (Lucene103QatStoredFieldsFormat) codec.storedFieldsFormat();
+        assertStoredFieldsCompressionEquals(Lucene104QatCodec.Mode.QAT_LZ4, codec);
+        Lucene104QatStoredFieldsFormat storedFieldsFormat = (Lucene104QatStoredFieldsFormat) codec.storedFieldsFormat();
         assertEquals(DEFAULT_COMPRESSION_LEVEL, storedFieldsFormat.getCompressionMode().getCompressionLevel());
     }
 
     public void testQatDeflateMapperServiceNull() throws Exception {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         Codec codec = createCodecService(true).codec("qat_deflate");
-        assertStoredFieldsCompressionEquals(Lucene103QatCodec.Mode.QAT_DEFLATE, codec);
-        Lucene103QatStoredFieldsFormat storedFieldsFormat = (Lucene103QatStoredFieldsFormat) codec.storedFieldsFormat();
+        assertStoredFieldsCompressionEquals(Lucene104QatCodec.Mode.QAT_DEFLATE, codec);
+        Lucene104QatStoredFieldsFormat storedFieldsFormat = (Lucene104QatStoredFieldsFormat) codec.storedFieldsFormat();
         assertEquals(DEFAULT_COMPRESSION_LEVEL, storedFieldsFormat.getCompressionMode().getCompressionLevel());
     }
 
     public void testQatZstdMapperServiceNull() throws Exception {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         Codec codec = createCodecService(true).codec("qat_zstd");
-        assertStoredFieldsCompressionEquals(Lucene103QatCodec.Mode.QAT_ZSTD, codec);
-        Lucene103QatStoredFieldsFormat storedFieldsFormat = (Lucene103QatStoredFieldsFormat) codec.storedFieldsFormat();
+        assertStoredFieldsCompressionEquals(Lucene104QatCodec.Mode.QAT_ZSTD, codec);
+        Lucene104QatStoredFieldsFormat storedFieldsFormat = (Lucene104QatStoredFieldsFormat) codec.storedFieldsFormat();
         assertEquals(DEFAULT_COMPRESSION_LEVEL, storedFieldsFormat.getCompressionMode().getCompressionLevel());
     }
 
-    private void assertStoredFieldsCompressionEquals(Lucene103QatCodec.Mode expected, Codec actual) throws Exception {
+    private void assertStoredFieldsCompressionEquals(Lucene104QatCodec.Mode expected, Codec actual) throws Exception {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         SegmentReader sr = getSegmentReader(actual);
-        String v = sr.getSegmentInfo().info.getAttribute(Lucene103QatStoredFieldsFormat.MODE_KEY);
+        String v = sr.getSegmentInfo().info.getAttribute(Lucene104QatStoredFieldsFormat.MODE_KEY);
         assertNotNull(v);
-        assertEquals(expected, Lucene103QatCodec.Mode.valueOf(v));
+        assertEquals(expected, Lucene104QatCodec.Mode.valueOf(v));
     }
 
     private CodecService createCodecService(boolean isMapperServiceNull) throws IOException {

@@ -6,7 +6,7 @@
  * compatible open source license.
  */
 
-package org.opensearch.index.codec.customcodecs;
+package org.opensearch.index.codec.customcodecs.backward_codecs.lucene103;
 
 import org.apache.lucene.codecs.StoredFieldsFormat;
 import org.apache.lucene.codecs.StoredFieldsReader;
@@ -17,6 +17,7 @@ import org.apache.lucene.index.FieldInfos;
 import org.apache.lucene.index.SegmentInfo;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.IOContext;
+import org.opensearch.index.codec.customcodecs.QatCompressionMode;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -91,7 +92,8 @@ public class Lucene103QatStoredFieldsFormat extends StoredFieldsFormat {
      */
     public Lucene103QatStoredFieldsFormat(Lucene103QatCodec.Mode mode, int compressionLevel, Supplier<QatZipper.Mode> supplier) {
         this.mode = Objects.requireNonNull(mode);
-        qatCompressionMode = new QatCompressionMode(getAlgorithm(mode), compressionLevel, supplier);
+        qatCompressionMode = new QatCompressionMode(getAlgorithm(mode), compressionLevel, supplier) {
+        };
     }
 
     /**
