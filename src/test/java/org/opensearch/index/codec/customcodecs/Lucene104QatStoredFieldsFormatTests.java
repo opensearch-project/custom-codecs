@@ -15,7 +15,7 @@ import static org.junit.Assume.assumeThat;
 
 public class Lucene104QatStoredFieldsFormatTests extends OpenSearchTestCase {
 
-    public void testLz4Lucene101QatCodecMode() {
+    public void testLz4Lucene104QatCodecMode() {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         Lucene104QatStoredFieldsFormat lucene104QatStoredFieldsFormat = new Lucene104QatStoredFieldsFormat(Lucene104QatCodec.Mode.QAT_LZ4);
         assertEquals(Lucene104QatCodec.Mode.QAT_LZ4, lucene104QatStoredFieldsFormat.getMode());
