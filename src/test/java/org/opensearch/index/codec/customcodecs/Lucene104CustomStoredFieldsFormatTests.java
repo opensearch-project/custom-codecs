@@ -12,7 +12,7 @@ import org.opensearch.test.OpenSearchTestCase;
 
 public class Lucene104CustomStoredFieldsFormatTests extends OpenSearchTestCase {
 
-    public void testDefaultLucene101CustomCodecMode() {
+    public void testDefaultLucene104CustomCodecMode() {
         Lucene104CustomStoredFieldsFormat lucene104CustomStoredFieldsFormat = new Lucene104CustomStoredFieldsFormat();
         assertEquals(Lucene104CustomCodec.Mode.ZSTD, lucene104CustomStoredFieldsFormat.getMode());
     }
