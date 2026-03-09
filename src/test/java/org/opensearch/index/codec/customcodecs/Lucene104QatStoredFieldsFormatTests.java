@@ -57,7 +57,7 @@ public class Lucene104QatStoredFieldsFormatTests extends OpenSearchTestCase {
         assertEquals(randomCompressionLevel, lucene104QatStoredFieldsFormat.getCompressionMode().getCompressionLevel());
     }
 
-    public void testZstdLucene101QatCodecModeWithCompressionLevel() {
+    public void testZstdLucene104QatCodecModeWithCompressionLevel() {
         assumeThat("Qat library is available", QatZipperFactory.isQatAvailable(), is(true));
         int randomCompressionLevel = randomIntBetween(1, 6);
         Lucene104QatStoredFieldsFormat lucene104QatStoredFieldsFormat = new Lucene104QatStoredFieldsFormat(
