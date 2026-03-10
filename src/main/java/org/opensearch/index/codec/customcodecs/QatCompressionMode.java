@@ -115,7 +115,7 @@ public class QatCompressionMode extends CompressionMode {
                 }
 
                 final int maxCompressedLength = qatZipper.maxCompressedLength(l);
-                compressedBuffer = ArrayUtil.grow(compressedBuffer, maxCompressedLength);
+                compressedBuffer = ArrayUtil.growNoCopy(compressedBuffer, maxCompressedLength);
 
                 int compressedSize = qatZipper.compress(bytes, start, l, compressedBuffer, 0, compressedBuffer.length);
                 out.writeVInt(compressedSize);
@@ -180,7 +180,7 @@ public class QatCompressionMode extends CompressionMode {
                 if (compressedLength == 0) {
                     return;
                 }
-                compressed = ArrayUtil.grow(compressed, compressedLength);
+                compressed = ArrayUtil.growNoCopy(compressed, compressedLength);
                 in.readBytes(compressed, 0, compressedLength);
 
                 int l = Math.min(blockLength, originalLength - offsetInBlock);
