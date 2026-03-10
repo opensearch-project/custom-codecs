@@ -11,7 +11,8 @@ package org.opensearch.index.codec.customcodecs;
 import com.intel.qat.QatZipper;
 
 import static com.intel.qat.QatZipper.Algorithm;
-import static com.intel.qat.QatZipper.DEFAULT_COMPRESS_LEVEL;
+import static com.intel.qat.QatZipper.DEFAULT_COMPRESSION_LEVEL_DEFLATE;
+import static com.intel.qat.QatZipper.DEFAULT_COMPRESSION_LEVEL_ZSTD;
 import static com.intel.qat.QatZipper.DEFAULT_MODE;
 import static com.intel.qat.QatZipper.DEFAULT_POLLING_MODE;
 import static com.intel.qat.QatZipper.DEFAULT_RETRY_COUNT;
@@ -31,12 +32,25 @@ public class QatZipperFactory {
      * @param pmode polling mode.
      */
     public static QatZipper createInstance(Algorithm algorithm, int level, Mode mode, int retryCount, PollingMode pmode) {
-        return new QatZipper.Builder().setAlgorithm(algorithm)
-            .setLevel(level)
-            .setMode(mode)
-            .setRetryCount(retryCount)
-            .setPollingMode(pmode)
-            .build();
+        return new QatZipper.Builder().algorithm(algorithm).level(level).mode(mode).retryCount(retryCount).pollingMode(pmode).build();
+    }
+
+    /**
+     * Creates a new QatZipper with the specified parameters. The default compression level for the algorithm is used.
+     *
+     * @param algorithm the compression algorithm
+     * @param mode the mode of QAT execution
+     * @param retryCount the number of attempts to acquire hardware resources
+     * @param pmode polling mode.
+     */
+    public static QatZipper createInstance(Algorithm algorithm, Mode mode, int retryCount, PollingMode pmode) {
+        return createInstance(
+            algorithm,
+            algorithm == Algorithm.ZSTD ? DEFAULT_COMPRESSION_LEVEL_ZSTD : DEFAULT_COMPRESSION_LEVEL_DEFLATE,
+            mode,
+            retryCount,
+            pmode
+        );
     }
 
     /**
@@ -44,7 +58,7 @@ public class QatZipperFactory {
      * mode, retry count, and polling mode.
      */
     public static QatZipper createInstance() {
-        return createInstance(Algorithm.DEFLATE, DEFAULT_COMPRESS_LEVEL, DEFAULT_MODE, DEFAULT_RETRY_COUNT, DEFAULT_POLLING_MODE);
+        return createInstance(Algorithm.DEFLATE, DEFAULT_MODE, DEFAULT_RETRY_COUNT, DEFAULT_POLLING_MODE);
     }
 
     /**
@@ -54,7 +68,7 @@ public class QatZipperFactory {
      * @param algorithm the compression algorithm
      */
     public static QatZipper createInstance(Algorithm algorithm) {
-        return createInstance(algorithm, DEFAULT_COMPRESS_LEVEL, DEFAULT_MODE, DEFAULT_RETRY_COUNT, DEFAULT_POLLING_MODE);
+        return createInstance(algorithm, DEFAULT_MODE, DEFAULT_RETRY_COUNT, DEFAULT_POLLING_MODE);
     }
 
     /**
@@ -64,7 +78,7 @@ public class QatZipperFactory {
      * @param mode the mode of QAT execution
      */
     public static QatZipper createInstance(Mode mode) {
-        return createInstance(Algorithm.DEFLATE, DEFAULT_COMPRESS_LEVEL, mode, DEFAULT_RETRY_COUNT, DEFAULT_POLLING_MODE);
+        return createInstance(Algorithm.DEFLATE, mode, DEFAULT_RETRY_COUNT, DEFAULT_POLLING_MODE);
     }
 
     /**
@@ -74,7 +88,7 @@ public class QatZipperFactory {
      * @param pmode the polling mode.
      */
     public static QatZipper createInstance(PollingMode pmode) {
-        return createInstance(Algorithm.DEFLATE, DEFAULT_COMPRESS_LEVEL, DEFAULT_MODE, DEFAULT_RETRY_COUNT, pmode);
+        return createInstance(Algorithm.DEFLATE, DEFAULT_MODE, DEFAULT_RETRY_COUNT, pmode);
     }
 
     /**
@@ -96,7 +110,7 @@ public class QatZipperFactory {
      * @param mode the mode of QAT execution
      */
     public static QatZipper createInstance(Algorithm algorithm, Mode mode) {
-        return createInstance(algorithm, DEFAULT_COMPRESS_LEVEL, mode, DEFAULT_RETRY_COUNT, DEFAULT_POLLING_MODE);
+        return createInstance(algorithm, mode, DEFAULT_RETRY_COUNT, DEFAULT_POLLING_MODE);
     }
 
     /**
@@ -107,7 +121,7 @@ public class QatZipperFactory {
      * @param pmode the polling mode.
      */
     public static QatZipper createInstance(Algorithm algorithm, PollingMode pmode) {
-        return createInstance(algorithm, DEFAULT_COMPRESS_LEVEL, DEFAULT_MODE, DEFAULT_RETRY_COUNT, pmode);
+        return createInstance(algorithm, DEFAULT_MODE, DEFAULT_RETRY_COUNT, pmode);
     }
 
     /**
@@ -119,7 +133,7 @@ public class QatZipperFactory {
      * @param pmode the polling mode.
      */
     public static QatZipper createInstance(Algorithm algorithm, Mode mode, PollingMode pmode) {
-        return createInstance(algorithm, DEFAULT_COMPRESS_LEVEL, mode, DEFAULT_RETRY_COUNT, pmode);
+        return createInstance(algorithm, mode, DEFAULT_RETRY_COUNT, pmode);
     }
 
     /**
