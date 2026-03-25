@@ -236,6 +236,10 @@ task updateVersion {
     }
 }
 
+tasks.matching { it.name == 'generatePomFileForPluginZipPublication' }.configureEach {
+    mustRunAfter 'publishNebulaPublicationToMavenLocal'
+}
+
 test {
     finalizedBy jacocoTestReport // report is always generated after tests run
 }
