@@ -86,6 +86,7 @@ public class QatCompressionMode extends CompressionMode {
     }
 
     /** The QatCompressor.  */
+    /** The QatCompressor.  */
     private static final class QatCompressor extends Compressor {
 
         private byte[] compressedBuffer;
@@ -174,24 +175,35 @@ public class QatCompressionMode extends CompressionMode {
                 offsetInBytesRef -= blockLength;
             }
 
-            // Read blocks that intersect with the interval we need
+            // Read all needed sub-blocks into a packed compressed buffer.
+            // Pre-grow once to avoid per-iteration copies.
+            compressed = ArrayUtil.grow(compressed, originalLength);
+            int srcPos = 0;
+            int totalDecompressed = 0;
+
             while (offsetInBlock < offset + length) {
                 final int compressedLength = in.readVInt();
                 if (compressedLength == 0) {
-                    return;
+                    break;
                 }
-                compressed = ArrayUtil.growNoCopy(compressed, compressedLength);
-                in.readBytes(compressed, 0, compressedLength);
 
-                int l = Math.min(blockLength, originalLength - offsetInBlock);
-                bytes.bytes = ArrayUtil.grow(bytes.bytes, bytes.length + l);
-
-                final int uncompressed = qatZipper.decompress(compressed, 0, compressedLength, bytes.bytes, bytes.length, l);
-
-                bytes.length += uncompressed;
+                in.readBytes(compressed, srcPos, compressedLength);
+                srcPos += compressedLength;
+                totalDecompressed += Math.min(blockLength, originalLength - offsetInBlock);
                 offsetInBlock += blockLength;
             }
 
+            if (srcPos == 0) {
+                return;
+            }
+
+            bytes.bytes = ArrayUtil.grow(bytes.bytes, totalDecompressed);
+
+            // Single JNI call: native side loops through all concatenated
+            // compressed frames, decompressing them into the output buffer.
+            int totalWritten = qatZipper.decompressFull(compressed, 0, srcPos, bytes.bytes, 0, totalDecompressed);
+
+            bytes.length = totalWritten;
             bytes.offset = offsetInBytesRef;
             bytes.length = length;
 
