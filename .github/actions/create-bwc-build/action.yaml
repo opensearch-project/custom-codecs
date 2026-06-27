@@ -33,11 +33,11 @@ runs:
         path: ${{ inputs.plugin-branch }}
 
     - name: Build
-      uses: gradle/gradle-build-action@12318b01111bfa6462c00534ffa998f8b397b979 # v3
+      uses: gradle/actions/setup-gradle@d9c87d481d55275bb5441eef3fe0e46805f9ef70
       with:
         cache-disabled: true
-        arguments: assemble
         build-root-directory: ${{ inputs.plugin-branch }}
+        arguments: assemble
 
     - id: get-opensearch-version
       uses: peternied/get-opensearch-version@c13e2946341f9f17befbafe76327dae0d1e0b7a0 # v1
