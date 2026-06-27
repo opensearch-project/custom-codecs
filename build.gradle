@@ -27,6 +27,7 @@ buildscript {
   dependencies {
     classpath "${opensearch_group}.gradle:build-tools:${opensearch_version}"
     classpath "org.jacoco:org.jacoco.agent:0.8.5"
+    classpath "org.codehaus.plexus:plexus-utils:3.6.1"
   }
 }
 
