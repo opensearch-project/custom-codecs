@@ -97,7 +97,7 @@ opensearchplugin {
 
 dependencies {
   api "com.github.luben:zstd-jni:1.5.6-1"
-  api "com.intel.qat:qat-java:2.4.0"
+  api "com.intel.qat:qat-java:2.5.0"
 }
 
 allprojects {

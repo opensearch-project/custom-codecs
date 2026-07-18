@@ -174,23 +174,40 @@ public class QatCompressionMode extends CompressionMode {
                 offsetInBytesRef -= blockLength;
             }
 
-            // Read blocks that intersect with the interval we need
+            // Read all needed sub-blocks into a packed compressed buffer.
+            // Start from a modest estimate (compressed data is typically smaller
+            // than the decompressed size) and grow on demand while packing.
+            compressed = ArrayUtil.growNoCopy(compressed, originalLength / 2);
+            int srcPos = 0;
+            int totalDecompressed = 0;
+
             while (offsetInBlock < offset + length) {
                 final int compressedLength = in.readVInt();
                 if (compressedLength == 0) {
-                    return;
+                    break;
                 }
-                compressed = ArrayUtil.growNoCopy(compressed, compressedLength);
-                in.readBytes(compressed, 0, compressedLength);
 
-                int l = Math.min(blockLength, originalLength - offsetInBlock);
-                bytes.bytes = ArrayUtil.grow(bytes.bytes, bytes.length + l);
-
-                final int uncompressed = qatZipper.decompress(compressed, 0, compressedLength, bytes.bytes, bytes.length, l);
-
-                bytes.length += uncompressed;
+                compressed = ArrayUtil.grow(compressed, srcPos + compressedLength);
+                in.readBytes(compressed, srcPos, compressedLength);
+                srcPos += compressedLength;
+                totalDecompressed += Math.min(blockLength, originalLength - offsetInBlock);
                 offsetInBlock += blockLength;
             }
+
+            if (srcPos == 0) {
+                return;
+            }
+
+            bytes.bytes = ArrayUtil.grow(bytes.bytes, totalDecompressed);
+
+            // Single JNI call: native side loops through all concatenated
+            // compressed frames, decompressing them into the output buffer.
+            int totalWritten = qatZipper.decompressFull(compressed, 0, srcPos, bytes.bytes, 0, totalDecompressed);
+            assert totalWritten == totalDecompressed : "Decompressed byte count ("
+                + totalWritten
+                + ") does not match expected ("
+                + totalDecompressed
+                + ").";
 
             bytes.offset = offsetInBytesRef;
             bytes.length = length;
