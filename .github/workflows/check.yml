@@ -35,7 +35,7 @@ jobs:
           su ci-runner -c "source /etc/profile.d/java_home.sh && ./gradlew assemble -Dorg.gradle.java.home=/opt/java/openjdk-${{ matrix.java }}"
       - name: Upload Coverage Report
         if: ${{ !cancelled() && contains(matrix.java, '21') }}
-        uses: codecov/codecov-action@ab904c41d6ece82784817410c45d8b8c02684457 # v3
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
         with:
           files: build/reports/jacoco/test/jacocoTestReport.xml
           token: ${{ secrets.CODECOV_TOKEN }}
