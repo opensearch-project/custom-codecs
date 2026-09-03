@@ -9,6 +9,10 @@
  * GitHub history for details.
  */
 
+// Only wire the Eclipse JDT step when a spotless task is actually being run, so non-spotless
+// Gradle invocations (test, assemble) don't provision the formatter at configuration time.
+def runningSpotlessTask = gradle.startParameter.taskNames.any { it.toLowerCase(Locale.ROOT).contains('spotless') }
+
 spotless {
   java {
     target '**/*.java'
@@ -30,7 +34,13 @@ spotless {
         '\\#java|\\#org.opensearch|\\#org.hamcrest|\\#'
     )
 
-    eclipse().withP2Mirrors(Map.of("https://download.eclipse.org/", "https://ci.opensearch.org/")).configFile rootProject.file('gradle/formatterConfig.xml')
+    // Pin 4.29 explicitly: spotless 8.10.0+ ships an embedded lockfile for it, so the
+    // formatter resolves from Maven Central through the mirror below instead of querying a
+    // P2 update site at configuration time. Keep withP2Mirrors so any non-lockfile fallback
+    // still hits the ci.opensearch.org mirror rather than the eclipse.org origin.
+    if (runningSpotlessTask) {
+      eclipse('4.29').withP2Mirrors(Map.of("https://download.eclipse.org/", "https://ci.opensearch.org/")).configFile rootProject.file('gradle/formatterConfig.xml')
+    }
     trimTrailingWhitespace()
     endWithNewline()
 
