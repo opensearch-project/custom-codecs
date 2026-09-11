@@ -1,5 +1,11 @@
 name: Gradle Check
-on: [pull_request]
+on:
+  push:
+    branches:
+      - main
+      - '[0-9]+.[0-9]+'
+      - '[0-9]+.x'
+  pull_request:
 
 jobs:
   Get-CI-Image-Tag:
@@ -33,9 +39,6 @@ jobs:
           # https://github.com/opensearch-project/opensearch-build/issues/4191
           chown -R ci-runner:ci-runner `pwd`
           su ci-runner -c "source /etc/profile.d/java_home.sh && ./gradlew assemble -Dorg.gradle.java.home=/opt/java/openjdk-${{ matrix.java }}"
-      # The codecov action cannot run inside the OpenSearch CI image: its uploader is a
-      # PyInstaller binary that requires a newer glibc than the image provides. Instead
-      # publish the report as an artifact and upload it from the `codecov` job below.
       - name: Upload Coverage Report Artifact
         if: ${{ !cancelled() && contains(matrix.java, '21') }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
