@@ -109,7 +109,7 @@ public class ZstdCompressionMode extends CompressionMode {
                     try (var cctxWithDict = cctx.loadDict(dictCompress)) {
                         for (int start = offset + dictLength; start < end; start += blockLength) {
                             int l = Math.min(blockLength, end - start);
-                            doCompress(bytes, start, l, cctx, out);
+                            doCompress(bytes, start, l, cctxWithDict, out);
                         }
                     }
                 }
@@ -190,7 +190,7 @@ public class ZstdCompressionMode extends CompressionMode {
                         // Read blocks that intersect with the interval we need
                         while (offsetInBlock < offset + length) {
                             int l = Math.min(blockLength, originalLength - offsetInBlock);
-                            doDecompress(in, dctx, bytes, l);
+                            doDecompress(in, dctxWithDict, bytes, l);
                             offsetInBlock += blockLength;
                         }
 
